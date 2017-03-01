@@ -28,6 +28,16 @@
                        window.webkitRequestAnimationFrame;
             })();
 
+            //开始
+            function threeStart() {
+                initThree();
+                initCamera();
+                initScene();
+                initLight();
+                initObject();
+                render();
+            }
+
             //根据页面宽度和高度创建渲染器，并添加容器中
             function initThree() {
                 width = window.innerWidth;
@@ -80,16 +90,6 @@
                 renderer.clear();
                 renderer.render(scene, camera);
                 window.requestAnimFrame(render);
-            }
-
-            //开始
-            function threeStart() {
-                initThree();
-                initCamera();
-                initScene();
-                initLight();
-                initObject();
-                render();
             }
         </script>
     </body>
