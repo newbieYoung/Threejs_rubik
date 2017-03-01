@@ -20,6 +20,14 @@
             var width;//页面宽度
             var height;//页面高度
 
+            window.requestAnimFrame = (function() {//如果有变化则可能还需要requestAnimationFrame刷新
+                return window.requestAnimationFrame ||
+                       window.mozRequestAnimationFrame ||
+                       window.webkitRequestAnimationFrame ||
+                       window.msRequestAnimationFrame ||
+                       window.webkitRequestAnimationFrame;
+            })();
+
             //根据页面宽度和高度创建渲染器，并添加容器中
             function initThree() {
                 width = window.innerWidth;
