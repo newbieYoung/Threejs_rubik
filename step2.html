@@ -115,7 +115,7 @@
                         cube.position.x = (x+len/2)+(j%3)*len;
                         cube.position.y = (y-len/2)-parseInt(j/3)*len;
                         cube.position.z = (z-len/2)-i*len;
-                        
+
                         cubes.push(cube)
                     }
                 }
@@ -149,11 +149,12 @@
             //创建展示场景所需的各种元素
             var cubes
             function initObject() {
+            	//生成魔方小正方体
             	cubes = SimpleCube(cubeParams.x,cubeParams.y,cubeParams.z,cubeParams.num,cubeParams.len,cubeParams.colors);
             	for(var i=0;i<cubes.length;i++){
             		var item = cubes[i];
             		/* something */
-            		scene.add(cubes[i]);
+            		scene.add(cubes[i]);//并依次加入到场景中
             	}
             }
 
