@@ -1,4 +1,5 @@
 import * as THREE from 'libs/three.js'
+import Rubik from 'objects/rubik.js'
 
 let context   = canvas.getContext('webgl');
 
@@ -41,6 +42,9 @@ export default class Main {
       y: 0,
       z: 0
     });
+    //视角控制
+    //this.controller = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+    //this.controller.target = new THREE.Vector3(0, 0, -75);//设置控制点
   }
 
   //初始化场景
@@ -56,6 +60,22 @@ export default class Main {
 
   //初始化物体
   initObject() {
+    var cubeParams = {//魔方参数
+      x: -75,
+      y: 75,
+      z: 75,
+      num: 3,
+      len: 50,
+      colors: ['rgba(255,193,37,1)', 'rgba(0,191,255,1)',
+        'rgba(50,205,50,1)', 'rgba(178,34,34,1)',
+        'rgba(255,255,0,1)', 'rgba(255,255,255,1)']
+    };
+    //生成魔方小正方体
+    this.cubes = new Rubik(cubeParams.x, cubeParams.y, cubeParams.z, cubeParams.num, cubeParams.len, cubeParams.colors);
+    for (var i = 0; i < this.cubes.length; i++) {
+      var item = this.cubes[i];
+      this.scene.add(this.cubes[i]);//并依次加入到场景中
+    }
   }
 
   //渲染
