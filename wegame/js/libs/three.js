@@ -1086,7 +1086,8 @@
 
         } else {
 
-          canvas = document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas');
+          //canvas = document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas');
+          canavs = document.createElement('canvas');
           canvas.width = image.width;
           canvas.height = image.height;
 
@@ -6886,7 +6887,8 @@
         alphaTest: gl.getUniformLocation(program, 'alphaTest')
       };
 
-      var canvas = document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas');
+      //var canvas = document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas');
+      var canvas = document.createElement('canvas');
       canvas.width = 8;
       canvas.height = 8;
 
@@ -18455,7 +18457,8 @@
 
         var scale = maxSize / Math.max(image.width, image.height);
 
-        var canvas = document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas');
+        //var canvas = document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas');
+        var canvas = document.createElement('canvas');
         canvas.width = Math.floor(image.width * scale);
         canvas.height = Math.floor(image.height * scale);
 
@@ -18482,7 +18485,8 @@
 
       if (image instanceof HTMLImageElement || image instanceof HTMLCanvasElement) {
 
-        var canvas = document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas');
+        //var canvas = document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas');
+        var canvas = document.createElement('canvas');
         canvas.width = _Math.nearestPowerOfTwo(image.width);
         canvas.height = _Math.nearestPowerOfTwo(image.height);
 
@@ -20933,7 +20937,8 @@
 
     parameters = parameters || {};
 
-    var _canvas = parameters.canvas !== undefined ? parameters.canvas : document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas'),
+    //var _canvas = parameters.canvas !== undefined ? parameters.canvas : document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas'),
+    var _canvas = parameters.canvas !== undefined ? parameters.canvas : document.createElement('canvas'),
       _context = parameters.context !== undefined ? parameters.context : null,
 
       _alpha = parameters.alpha !== undefined ? parameters.alpha : false,
@@ -30467,7 +30472,8 @@
 
       }
 
-      var image = document.createElementNS('http://www.w3.org/1999/xhtml', 'img');
+      //var image = document.createElementNS('http://www.w3.org/1999/xhtml', 'img');
+      var image = document.createElement('img');
 
       image.addEventListener('load', function () {
 
@@ -43857,7 +43863,8 @@
 
     console.error('THREE.CanvasRenderer has been moved to /examples/js/renderers/CanvasRenderer.js');
 
-    this.domElement = document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas');
+    //this.domElement = document.createElementNS('http://www.w3.org/1999/xhtml', 'canvas');
+    this.domElement = document.createElement('canvas');
     this.clear = function () { };
     this.render = function () { };
     this.setClearColor = function () { };
