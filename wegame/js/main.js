@@ -1,4 +1,5 @@
 import * as THREE from 'libs/three.js'
+require('libs/three-orbit-controls.js')
 import Rubik from 'objects/rubik.js'
 
 let context   = canvas.getContext('webgl');
@@ -43,8 +44,8 @@ export default class Main {
       z: 0
     });
     //视角控制
-    //this.controller = new THREE.OrbitControls(this.camera, this.renderer.domElement);
-    //this.controller.target = new THREE.Vector3(0, 0, -75);//设置控制点
+    this.controller = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+    this.controller.target = new THREE.Vector3(0, 0, -75);//设置控制点
   }
 
   //初始化场景
