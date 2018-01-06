@@ -400,7 +400,10 @@ export default class Main {
     this.getIntersects(event);
     //魔方没有处于转动过程中且存在碰撞物体
     if (!this.isRotating && this.intersect) {
+      this.controller.enabled = false;//焦点在魔方上时禁止视角变换
       this.startPoint = this.intersect.point;//开始转动，设置起始点
+    }else{
+      this.controller.enabled = true;
     }
   }
 
@@ -444,10 +447,7 @@ export default class Main {
       } catch (err) {
         //nothing
       }
-      this.controller.enabled = false;//焦点在魔方上时禁止视角变换
-    } else {
-      this.controller.enabled = true;
-    }
+    } 
   }
 
   //初始化相机
