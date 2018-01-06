@@ -410,14 +410,19 @@ export default class Main {
   //初始化渲染器
   initThree(){
     this.context = context;
-    this.width = window.innerWidth;
-    this.height = window.innerHeight;
+    this.width = window.innerWidth ;
+    this.height = window.innerHeight ;
     this.renderer = new THREE.WebGLRenderer({
       antialias: true,
       context: this.context
     });
     this.renderer.setSize(this.width, this.height);
     this.renderer.setClearColor(0xFFFFFF, 1.0);
+
+    this.devicePixelRatio = window.devicePixelRatio;
+    canvas.width = this.width * this.devicePixelRatio;
+    canvas.height = this.height * this.devicePixelRatio;
+    this.renderer.setPixelRatio(this.devicePixelRatio);
   }
 
   //获取操作焦点以及该焦点所在平面的法向量
