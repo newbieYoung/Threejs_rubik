@@ -72,9 +72,6 @@
                     y : 0,
                     z : 0
                 });
-                //视角控制
-                controller = new THREE.OrbitControls(camera, renderer.domElement);
-                controller.target = new THREE.Vector3(0, 0, 0);//设置控制点
             }
 
             //创建场景，后续元素需要加入到场景中才会显示出来
@@ -218,13 +215,16 @@
                 initObject();
                 render();
                 //监听鼠标事件
-                window.addEventListener('mousedown', startCube, false);
-                window.addEventListener('mousemove', moveCube, false );
-                window.addEventListener('mouseup', stopCube,false);
+                renderer.domElement.addEventListener('mousedown', startCube, false);
+                renderer.domElement.addEventListener('mousemove', moveCube, false );
+                renderer.domElement.addEventListener('mouseup', stopCube,false);
                 //监听触摸事件
-                window.addEventListener('touchstart', startCube, false);
-                window.addEventListener('touchmove', moveCube, false);
-                window.addEventListener('touchend', stopCube, false);
+                renderer.domElement.addEventListener('touchstart', startCube, false);
+                renderer.domElement.addEventListener('touchmove', moveCube, false);
+                renderer.domElement.addEventListener('touchend', stopCube, false);
+                //视角控制
+                controller = new THREE.OrbitControls(camera, renderer.domElement);
+                controller.target = new THREE.Vector3(0, 0, 0);//设置控制点
             }
 
             //魔方操作结束
@@ -581,6 +581,7 @@
                     startPoint = intersect.point;//开始转动，设置起始点
                     controller.enabled = false;//当刚开始的接触点在魔方上时操作为转动魔方，屏蔽控制器转动
                 }else{
+                    console.log('startCube:'+controller.enabled);
                     controller.enabled = true;//当刚开始的接触点没有在魔方上或者在魔方上但是魔方正在转动时操作转动控制器
                 }
             }
