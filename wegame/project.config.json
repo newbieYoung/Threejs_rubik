@@ -11,6 +11,7 @@
 	"libVersion": "game",
 	"appid": "touristappid",
 	"projectname": "wegame",
+	"isGameTourist": true,
 	"condition": {
 		"search": {
 			"current": -1,
@@ -28,6 +29,5 @@
 			"current": -1,
 			"list": []
 		}
-	},
-	"isGameTourist": true
+	}
 }

@@ -471,7 +471,7 @@ export default class Main {
     });
     //视角控制
     this.controller = new THREE.OrbitControls(this.camera, this.renderer.domElement);
-    this.controller.target = new THREE.Vector3(0, 0, -75);//设置控制点
+    this.controller.target = new THREE.Vector3(0, 0, 0);//设置控制点
   }
 
   //初始化场景
