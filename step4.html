@@ -74,7 +74,7 @@
                 });
                 //视角控制
                 controller = new THREE.OrbitControls(camera, renderer.domElement);
-                controller.target = new THREE.Vector3(0, 0, -75);//设置控制点
+                controller.target = new THREE.Vector3(0, 0, 0);//设置控制点
             }
 
             //创建场景，后续元素需要加入到场景中才会显示出来
@@ -579,9 +579,9 @@
                 //魔方没有处于转动过程中且存在碰撞物体
                 if(!isRotating&&intersect){
                     startPoint = intersect.point;//开始转动，设置起始点
-                    controller.enabled = false;//焦点在魔方上时禁止视角变换
+                    controller.enabled = false;//当刚开始的接触点在魔方上时操作为转动魔方，屏蔽控制器转动
                 }else{
-                    controller.enabled = true;
+                    controller.enabled = true;//当刚开始的接触点没有在魔方上或者在魔方上但是魔方正在转动时操作转动控制器
                 }
             }
 
