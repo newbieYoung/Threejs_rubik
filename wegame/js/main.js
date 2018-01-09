@@ -46,6 +46,10 @@ export default class Main {
     wx.onTouchStart(this.startCube.bind(this))
     wx.onTouchMove(this.moveCube.bind(this))
     wx.onTouchEnd(this.stopCube.bind(this));
+
+    //视角控制
+    this.controller = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+    this.controller.target = new THREE.Vector3(0, 0, 0);//设置控制点
   }
 
   //魔方操作结束
@@ -469,9 +473,6 @@ export default class Main {
       y: 0,
       z: 0
     });
-    //视角控制
-    this.controller = new THREE.OrbitControls(this.camera, this.renderer.domElement);
-    this.controller.target = new THREE.Vector3(0, 0, 0);//设置控制点
   }
 
   //初始化场景
