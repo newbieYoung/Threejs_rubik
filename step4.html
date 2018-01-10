@@ -581,7 +581,6 @@
                     startPoint = intersect.point;//开始转动，设置起始点
                     controller.enabled = false;//当刚开始的接触点在魔方上时操作为转动魔方，屏蔽控制器转动
                 }else{
-                    console.log('startCube:'+controller.enabled);
                     controller.enabled = true;//当刚开始的接触点没有在魔方上或者在魔方上但是魔方正在转动时操作转动控制器
                 }
             }
@@ -600,7 +599,6 @@
                 raycaster.setFromCamera(mouse, camera);
                 //Raycaster方式定位选取元素，可能会选取多个，以第一个为准
                 var intersects = raycaster.intersectObjects(scene.children);
-                //如果操作焦点在魔方上则取消移动，反之恢复移动
                 if(intersects.length){
                     try{
                         if(intersects[0].object.cubeType==='coverCube'){
