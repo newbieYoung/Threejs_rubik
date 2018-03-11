@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>第五步：识别并组成魔方</title>
+</head>
+<body>
+	<video id="video" width="600" height="450" preload autoplay loop muted></video>
+	<script>
+		window.onload = function(){
+
+			let $video = document.getElementById("video");
+
+			navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+								.then(function(stream) {
+							    	$video.srcObject = stream;
+							   		$video.play();
+								})
+								.catch(function(err) {
+									console.log("An error occured! " + err);
+								});
+		}
+	</script>
+</body>
+</html>
