@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>第六步：求解真实魔方</title>
+</head>
+<body>
+	<video id="video" width="600" height="450" preload autoplay loop muted></video>
+	<script>
+		window.onload = function(){
+
+			let $video = document.getElementById("video");
+
+			navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+								.then(function(stream) {
+							    	$video.srcObject = stream;
+							   		$video.play();
+								})
+								.catch(function(err) {
+									console.log("An error occured! " + err);
+								});
+
+			//识别魔方
+
+			//获取魔方六色
+
+			//追踪魔方六色根据位置信息获得每个面的分布
+
+			//已知六个面的分布合成虚拟魔方
+
+			//根据魔方还原算法，还原虚拟魔方
+		}
+	</script>
+</body>
+</html>
