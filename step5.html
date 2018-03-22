@@ -35,6 +35,58 @@
             var yLineAd = new THREE.Vector3( 0, -1, 0 );//Y轴负方向
             var zLine = new THREE.Vector3( 0, 0, 1 );//Z轴正方向
             var zLineAd = new THREE.Vector3( 0, 0, -1 );//Z轴负方向
+            var cubeParams = {//魔方参数
+                x:-75,
+                y:75,
+                z:75,
+                num:3,
+                len:50,
+                colors:['rgba(255,193,37,1)','rgba(0,191,255,1)',
+                        'rgba(50,205,50,1)','rgba(178,34,34,1)',
+                        'rgba(255,255,0,1)','rgba(255,255,255,1)']
+            };
+
+            //自动还原第一版
+            function autoResetV1(cubes){
+            	var ids = [];    
+                for(var i=0;i<cubes.length;i++){
+                    ids.push(cubes[i].cubeIndex);
+                }
+                var minId = min(ids);
+            	/**
+            	 * 找到初始化时上表面颜色在中心的面，调整魔方让该表面依然为上表面；
+            	 * 然后对照初始化时下表面颜色的位置，按既定规律转动魔方；
+            	 * 直接找当前上表面中心面的颜色和其对应的下表面颜色，省去旋转调整的过程。
+            	 */
+            	var topCenter; 
+				for(var i=0;i<cubes.length;i++){
+					if(cubes[i].cubeIndex == 10+minId){
+						topCenter = cubes[i];
+						break;
+					}
+				}
+				getTopFaceColor(topCenter)
+            }
+            //根据颜色序号获取初始化时其对面颜色序号
+            function getBottomColor(no){
+            	if(no%0==0||no==0){
+            		return no+1;
+            	}else{
+            		return no-1;
+            	}
+            }
+            //获取上表面颜色
+            function getTopFaceColor(cube){
+            	var materials = cube.material.materials;
+            	var faces = cube.geometry.faces;
+            	for(var i=0;i<faces.length;i++){
+            		if(faces[i].normal.angleTo(yLine)==0){
+            			document.body.appendChild(materials[faces[i].materialIndex].map.image);
+            			$frame.style.display = 'none';
+            			//console.log(materials[faces[i].materialIndex].map.image);
+            		}
+            	}
+            }
 
             window.requestAnimFrame = (function() {//如果有变化则可能还需要requestAnimationFrame刷新
                 return window.requestAnimationFrame ||
@@ -45,6 +97,7 @@
             })();
 
             //根据页面宽度和高度创建渲染器，并添加容器中
+            var $frame = document.getElementById('canvas-frame');
             function initThree() {
                 width = window.innerWidth;
                 height = window.innerHeight;
@@ -53,7 +106,7 @@
                 });
                 renderer.setSize(width, height);
                 renderer.setClearColor(0xFFFFFF, 1.0);
-                document.getElementById('canvas-frame').appendChild(renderer.domElement);
+                $frame.appendChild(renderer.domElement);
             }
 
             //创建相机，并设置正方向和中心点
@@ -87,17 +140,6 @@
 				scene.add(light);
             }
 
-            var cubeParams = {//魔方参数
-                x:-75,
-                y:75,
-                z:75,
-                num:3,
-                len:50,
-                colors:['rgba(255,193,37,1)','rgba(0,191,255,1)',
-                        'rgba(50,205,50,1)','rgba(178,34,34,1)',
-                        'rgba(255,255,0,1)','rgba(255,255,255,1)']
-            };
-
             /**
              * 魔方
              * x、y、z 魔方正面左上角坐标
@@ -113,12 +155,12 @@
                         var materials = [];
                         var myFaces = [];
                         //一个小正方体有六个面，每个面使用相同材质的纹理，但是颜色不一样
-                        myFaces.push(faces(colors[0]));
-                        myFaces.push(faces(colors[1]));
-                        myFaces.push(faces(colors[2]));
-                        myFaces.push(faces(colors[3]));
-                        myFaces.push(faces(colors[4]));
-                        myFaces.push(faces(colors[5]));
+                        myFaces.push(faces(colors[0]));//右
+                        myFaces.push(faces(colors[1]));//左
+                        myFaces.push(faces(colors[2]));//上
+                        myFaces.push(faces(colors[3]));//下
+                        myFaces.push(faces(colors[4]));//前
+                        myFaces.push(faces(colors[5]));//后
                         for (var k = 0; k < 6; k++) {
                             var texture = new THREE.Texture(myFaces[k]);
                             texture.needsUpdate = true;
@@ -136,7 +178,6 @@
                         cubes.push(cube)
                     }
                 }
-                initResetModel(cubes);
                 return cubes;
             }
 
@@ -148,6 +189,7 @@
                 var context = canvas.getContext('2d');
                 if (context) {
                 	//画一个宽高都是256的黑色正方形
+                	canvas.setAttribute('color',rgbaColor);
                     context.fillStyle = 'rgba(0,0,0,1)';
                     context.fillRect(0, 0, 256, 256);
                     //在内部用某颜色的16px宽的线再画一个宽高为224的圆角正方形并用改颜色填充
@@ -200,47 +242,6 @@
                 scene.add( cube );
             }
 
-            //初始化还原算法模型
-            function initResetModel(cubes){
-            	cubes[0].faceColors = [4,2,1];
-            	cubes[1].faceColors = [4,2];
-            	cubes[2].faceColors = [4,2,0];
-            	cubes[3].faceColors = [4,1];
-            	cubes[4].faceColors = [4];
-            	cubes[5].faceColors = [4,0];
-            	cubes[6].faceColors = [4,1,3];
-            	cubes[7].faceColors = [4,3];
-            	cubes[8].faceColors = [4,0,3];
-            	cubes[9].faceColors = [2,1];
-            	cubes[10].faceColors = [2];
-            	cubes[11].faceColors = [2,0];
-            	cubes[12].faceColors = [1];
-            	cubes[13].faceColors = [];
-            	cubes[14].faceColors = [0];
-            	cubes[15].faceColors = [1,3];
-            	cubes[16].faceColors = [3];
-            	cubes[17].faceColors = [0,3];
-            	cubes[18].faceColors = [2,1,5];
-            	cubes[19].faceColors = [2,5];
-            	cubes[20].faceColors = [2,5,0];
-            	cubes[21].faceColors = [1,5];
-            	cubes[22].faceColors = [5];
-            	cubes[23].faceColors = [5,0];
-            	cubes[24].faceColors = [5,1,3];
-            	cubes[25].faceColors = [5,3];
-            	cubes[26].faceColors = [5,0,3];
-
-            	//测试还原算法模型
-            	// var colorNums = [0,0,0,0,0,0];
-            	// for(var i=0;i<cubes.length;i++){
-            	// 	var colors = cubes[i].faceColors;
-            	// 	for(var j=0;j<colors.length;j++){
-            	// 		colorNums[colors[j]]++;
-            	// 	}
-            	// }
-            	// console.log(colorNums);//[9,9,9,9,9,9]
-            }
-
             //渲染
             function render(){
                 renderer.clear();
@@ -267,6 +268,10 @@
                 //视角控制
                 controller = new THREE.OrbitControls(camera, renderer.domElement);
                 controller.target = new THREE.Vector3(0, 0, 0);//设置控制点
+
+                document.body.addEventListener('click',function(){
+                	autoResetV1(cubes)
+                },false);
             }
 
             //魔方操作结束
