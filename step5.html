@@ -34,13 +34,13 @@
             var movePoint;
             var initStatus = [];//魔方初始状态
             //魔方转动的六个方向
-            var xLine = new THREE.Vector3( 1, 0, 0 );//X轴正方向
-            var xLineAd = new THREE.Vector3( -1, 0, 0 );//X轴负方向
-            var yLine = new THREE.Vector3( 0, 1, 0 );//Y轴正方向
-            var yLineAd = new THREE.Vector3( 0, -1, 0 );//Y轴负方向
-            var zLine = new THREE.Vector3( 0, 0, 1 );//Z轴正方向
-            var zLineAd = new THREE.Vector3( 0, 0, -1 );//Z轴负方向
-            var cubeParams = {//魔方参数
+            const xLine = new THREE.Vector3( 1, 0, 0 );//X轴正方向
+            const xLineAd = new THREE.Vector3( -1, 0, 0 );//X轴负方向
+            const yLine = new THREE.Vector3( 0, 1, 0 );//Y轴正方向
+            const yLineAd = new THREE.Vector3( 0, -1, 0 );//Y轴负方向
+            const zLine = new THREE.Vector3( 0, 0, 1 );//Z轴正方向
+            const zLineAd = new THREE.Vector3( 0, 0, -1 );//Z轴负方向
+            const cubeParams = {//魔方参数
                 x:-75,
                 y:75,
                 z:75,
@@ -57,7 +57,7 @@
                 for(var i=0;i<cubes.length;i++){
                     ids.push(cubes[i].cubeIndex);
                 }
-                var minId = min(ids);
+                var minId = min(ids).value;
             	/**
             	 * 找到初始化时上表面颜色在中心的面，调整魔方让该表面依然为上表面；
             	 * 然后对照初始化时下表面颜色的位置，按既定规律转动魔方；
@@ -70,8 +70,6 @@
 						break;
 					}
 				}
-				console.log(camera);
-				//console.log(topCenter);
 				getTopFaceColor(topCenter)
             }
             //根据颜色序号获取初始化时其对面颜色序号
@@ -87,14 +85,32 @@
             	var materials = cube.material.materials;
             	var faces = cube.geometry.faces;
             	var normalMatrix = cube.normalMatrix;
+            	
+            	/**
+            	 * 转换视角时摄像机位置发生了变动，模型开始上表面的法向量是世界坐标系的Y轴，现在依然是世界坐标系的Y轴；
+            	 * 但是小方块面的法向量乘以其法向量矩阵得到的是视图坐标系中的向量；
+            	 * 世界坐标系转换成视图坐标系需要乘以视图矩阵的逆反矩阵。
+            	 */
+            	var viewMatrix = new THREE.Matrix4();
+            	viewMatrix.lookAt(camera.position,viewCenter,camera.up);
+		        viewMatrix.getInverse(viewMatrix);
+            	var tempYLine = yLine.clone();
+        		tempYLine.applyMatrix4(viewMatrix);
+        		var angles = [];
+
             	for(var i=0;i<faces.length;i++){
-            		console.log(faces[i].normal.applyMatrix3(normalMatrix).angleTo(yLine));
-            		// if(faces[i].normal.applyMatrix3(normalMatrix).angleTo(yLine)==0){
-            		// 	document.body.appendChild(materials[faces[i].materialIndex].map.image);
-            		// 	$frame.style.display = 'none';
-            		// 	console.log(materials[faces[i].materialIndex].map.image);
-            		// }
+            		var tempNormal = faces[i].normal.clone();
+            		tempNormal.applyMatrix3(normalMatrix);
+            		/**
+            		 * 按道理这里应该判断两向量夹角是否等于0，但是因为存在精度问题；
+            		 * 有可能得到的角度很接近0，但却不等于0，另外不确定到底保留几位小数合适；
+            		 * 因此使用判断最小值的方式。
+            		 */
+            		angles.push(tempNormal.angleTo(tempYLine));
             	}
+            	var minNo = min(angles).no;
+            	document.body.appendChild(materials[faces[minNo].materialIndex].map.image);
+    		 	$frame.style.display = 'none';
             }
 
             window.requestAnimFrame = (function() {//如果有变化则可能还需要requestAnimationFrame刷新
@@ -121,6 +137,7 @@
             //创建相机，并设置正方向和中心点
             var camera;
             var controller;//视角控制器
+            var viewCenter = new THREE.Vector3( 0, 0, 0 );
             function initCamera() {
                 camera = new THREE.PerspectiveCamera(45, width / height, 1, 1000);
                 camera.position.x = 0;
@@ -129,11 +146,7 @@
                 camera.up.x = 0;//正方向
                 camera.up.y = 1;
                 camera.up.z = 0;
-                camera.lookAt({
-                    x : 0,
-                    y : 0,
-                    z : 0
-                });
+                camera.lookAt(viewCenter);
             }
 
             //创建场景，后续元素需要加入到场景中才会显示出来
@@ -277,7 +290,7 @@
                 renderer.domElement.addEventListener('touchend', stopCube, false);
                 //视角控制
                 controller = new THREE.OrbitControls(camera, renderer.domElement);
-                controller.target = new THREE.Vector3(0, 0, 0);//设置控制点
+                controller.target = viewCenter;//设置控制点
 
                 //自动还原一
                 var $autoResetV1 = document.querySelector('#autoResetV1');
@@ -469,7 +482,7 @@
                 for(var i=0;i<cubes.length;i++){
                     ids.push(cubes[i].cubeIndex);
                 }
-                var minId = min(ids);
+                var minId = min(ids).value;
                 targetId = targetId-minId;
                 var numI = parseInt(targetId/9);
                 var numJ = targetId%9;
@@ -540,7 +553,7 @@
                 var yAngleAd = vector3.angleTo(yLineAd);
                 var zAngle = vector3.angleTo(zLine);
                 var zAngleAd = vector3.angleTo(zLineAd);
-                var minAngle = min([xAngle,xAngleAd,yAngle,yAngleAd,zAngle,zAngleAd]);//最小夹角
+                var minAngle = min([xAngle,xAngleAd,yAngle,yAngleAd,zAngle,zAngleAd]).value;//最小夹角
 
                 switch(minAngle){
                     case xAngle:
@@ -624,12 +637,14 @@
             //获取数组中的最小值
             function min(arr){
                 var min = arr[0];
+                var no = 0;
                 for(var i=1;i<arr.length;i++){
                     if(arr[i]<min){
                         min = arr[i];
+                        no = i;
                     }
                 }
-                return min;
+                return {no:no,value:min};
             }
 
             //开始操作魔方
