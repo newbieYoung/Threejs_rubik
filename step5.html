@@ -64,19 +64,57 @@
             	 */
             	var topCenter = getCubeByIndex(10,minId);
 				var topColor = getFaceColorByVector(topCenter,yLine);//获取上表面颜色
-				console.log(topColor);
 				var bottomColor = getOppositeColor(topColor);
-				console.log(bottomColor);
 
 				//console.log(checkStep1(minId,bottomColor));
 				//console.log(getCubeStatus());
 				//do{
-					//console.log(bottomColor);
-					//console.log(getFaceColorByVector(getCubeByIndex(3,minId),zLine));
-					//console.log(getFaceColorByVector(getCubeByIndex(9,minId),zLine));
-					if((getFaceColorByVector(getCubeByIndex(3,minId),zLine)==bottomColor)&&
-						getFaceColorByVector(getCubeByIndex(9,minId),yLine)!=bottomColor){//101
+					var cube3 = getCubeByIndex(3,minId);
+					var cube9 = getCubeByIndex(9,minId);
+					var cube5 = getCubeByIndex(5,minId);
+					var cube11 = getCubeByIndex(11,minId);
+					var cube15 = getCubeByIndex(15,minId);
+					var cube17 = getCubeByIndex(17,minId);
+					var cube1 = getCubeByIndex(1,minId);
+					var cube7 = getCubeByIndex(7,minId);
 
+					if((getFaceColorByVector(cube3,zLine)==bottomColor)&&
+						getFaceColorByVector(cube9,yLine)!=bottomColor&&
+						!isRotating){//101
+						rotateMove(cube3,yLine);
+					}
+					if((getFaceColorByVector(cube5,zLine)==bottomColor)&&
+						getFaceColorByVector(cube11,yLine)!=bottomColor&&
+						!isRotating){//102
+						rotateMove(cube5,yLine);
+					}
+					if((getFaceColorByVector(cube15,yLineAd)==bottomColor)&&
+						getFaceColorByVector(cube9,yLine)!=bottomColor&&
+						!isRotating){//103
+						rotateMove(cube15,zLine);
+					}
+					if((getFaceColorByVector(cube17,yLineAd)==bottomColor)&&
+						getFaceColorByVector(cube11,yLine)!=bottomColor&&
+						!isRotating){//104
+						rotateMove(cube17,zLine);
+					}
+					if((getFaceColorByVector(cube1,yLine)==bottomColor)&&
+						!isRotating){//105
+						rotateMove(cube1,xLine);
+					}
+					if((getFaceColorByVector(cube7,yLine)==bottomColor)&&
+						!isRotating){//106
+						rotateMove(cube7,xLineAd);
+					}
+					if((getFaceColorByVector(cube3,zLine)==bottomColor)&&
+						getFaceColorByVector(cube9,yLine)==bottomColor&&
+						!isRotating){//107
+						rotateMove(cube9,yLine);
+					}
+					if((getFaceColorByVector(cube5,zLine)==bottomColor)&&
+						getFaceColorByVector(cube11,yLine)==bottomColor&&
+						!isRotating){//108
+						rotateMove(cube11,yLine);
 					}
 				//}while(!checkStep1(minId,bottomColor)&&!getCubeStatus())
             }
@@ -382,18 +420,23 @@
                     if(!isRotating&&startPoint){//魔方没有进行转动且满足进行转动的条件
                         movePoint = intersect.point;
                         if(!movePoint.equals(startPoint)){//和起始点不一样则意味着可以得到转动向量了
-                            isRotating = true;//转动标识置为true
                             var sub = movePoint.sub(startPoint);//计算转动向量
-                            var direction = getDirection(sub);//获得方向
-                            var elements = getBoxs(intersect,direction);
-                            var startTime = new Date().getTime();
-                            window.requestAnimFrame(function(timestamp){
-                                rotateAnimation(elements,direction,timestamp,0);
-                            });
+                            rotateMove(intersect.object,sub);
                         }
                     }
                 }
                 event.preventDefault();
+            }
+
+            //某方块在某个方向转动
+            function rotateMove(target,vector){
+            	isRotating = true;//转动标识置为true
+            	var direction = getDirection(vector);//获得方向
+            	var elements = getBoxs(target,direction);
+            	var startTime = new Date().getTime();
+                window.requestAnimFrame(function(timestamp){
+                    rotateAnimation(elements,direction,timestamp,0);
+                });
             }
 
             /**
@@ -508,7 +551,7 @@
 
             //根据方向获得运动元素
             function getBoxs(target,direction){
-                var targetId = target.object.cubeIndex;
+                var targetId = target.cubeIndex;
                 var ids = [];    
                 for(var i=0;i<cubes.length;i++){
                     ids.push(cubes[i].cubeIndex);
