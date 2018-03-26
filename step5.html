@@ -46,9 +46,8 @@
                 z:75,
                 num:3,
                 len:50,
-                colors:['rgba(255,193,37,1)','rgba(0,191,255,1)',
-                        'rgba(50,205,50,1)','rgba(178,34,34,1)',
-                        'rgba(255,255,0,1)','rgba(255,255,255,1)']
+                //[右,左,上,下,前,后]
+                colors:['yellow','red','blue','green','white','pink']
             };
 
             //自动还原第一版
@@ -63,25 +62,58 @@
             	 * 然后对照初始化时下表面颜色的位置，按既定规律转动魔方；
             	 * 直接找当前上表面中心面的颜色和其对应的下表面颜色，省去旋转调整的过程。
             	 */
-            	var topCenter; 
+            	var topCenter = getCubeByIndex(10,minId);
+				var topColor = getFaceColorByVector(topCenter,yLine);//获取上表面颜色
+				console.log(topColor);
+				var bottomColor = getOppositeColor(topColor);
+				console.log(bottomColor);
+
+				//console.log(checkStep1(minId,bottomColor));
+				//console.log(getCubeStatus());
+				//do{
+					//console.log(bottomColor);
+					//console.log(getFaceColorByVector(getCubeByIndex(3,minId),zLine));
+					//console.log(getFaceColorByVector(getCubeByIndex(9,minId),zLine));
+					if((getFaceColorByVector(getCubeByIndex(3,minId),zLine)==bottomColor)&&
+						getFaceColorByVector(getCubeByIndex(9,minId),yLine)!=bottomColor){//101
+
+					}
+				//}while(!checkStep1(minId,bottomColor)&&!getCubeStatus())
+            }
+            //判断是否完成第一步小白花
+            function checkStep1(minId,bottomColor){
+            	var indexs = [1,9,11,19];
+            	var step1 = true;
+            	for(var i=0;i<indexs.length;i++){
+            		var item = getCubeByIndex(1,minId);
+            		var color = getFaceColorByVector(item,yLine);//获取上表面颜色
+            		if(color!=bottomColor){
+            			step1 = false;
+            			break;
+            		}
+            	}
+            	return step1;
+            }
+            //根据索引获取方块
+            function getCubeByIndex(index,minId){
+            	var cube; 
 				for(var i=0;i<cubes.length;i++){
-					if(cubes[i].cubeIndex == 10+minId){
-						topCenter = cubes[i];
-						break;
+					if(cubes[i].cubeIndex == index+minId){
+						cube = cubes[i];
 					}
 				}
-				getTopFaceColor(topCenter)
+				return cube;
             }
             //根据颜色序号获取初始化时其对面颜色序号
-            function getBottomColor(no){
-            	if(no%0==0||no==0){
+            function getOppositeColor(no){
+            	if(no%2==0||no==0){
             		return no+1;
             	}else{
             		return no-1;
             	}
             }
-            //获取上表面颜色
-            function getTopFaceColor(cube){
+            //获取法向量和已知向量方向相同的面的颜色序号
+            function getFaceColorByVector(cube,vector){
             	var materials = cube.material.materials;
             	var faces = cube.geometry.faces;
             	var normalMatrix = cube.normalMatrix;
@@ -94,8 +126,8 @@
             	var viewMatrix = new THREE.Matrix4();
             	viewMatrix.lookAt(camera.position,viewCenter,camera.up);
 		        viewMatrix.getInverse(viewMatrix);
-            	var tempYLine = yLine.clone();
-        		tempYLine.applyMatrix4(viewMatrix);
+            	var tempVector = vector.clone();
+        		tempVector.applyMatrix4(viewMatrix);
         		var angles = [];
 
             	for(var i=0;i<faces.length;i++){
@@ -106,11 +138,12 @@
             		 * 有可能得到的角度很接近0，但却不等于0，另外不确定到底保留几位小数合适；
             		 * 因此使用判断最小值的方式。
             		 */
-            		angles.push(tempNormal.angleTo(tempYLine));
+            		angles.push(tempNormal.angleTo(tempVector));
             	}
             	var minNo = min(angles).no;
-            	document.body.appendChild(materials[faces[minNo].materialIndex].map.image);
-    		 	$frame.style.display = 'none';
+            	return faces[minNo].materialIndex;
+            	//document.body.appendChild(materials[faces[minNo].materialIndex].map.image);
+    		 	//$frame.style.display = 'none';
             }
 
             window.requestAnimFrame = (function() {//如果有变化则可能还需要requestAnimationFrame刷新
@@ -177,12 +210,12 @@
                         var materials = [];
                         var myFaces = [];
                         //一个小正方体有六个面，每个面使用相同材质的纹理，但是颜色不一样
-                        myFaces.push(faces(colors[0]));//右
-                        myFaces.push(faces(colors[1]));//左
-                        myFaces.push(faces(colors[2]));//上
-                        myFaces.push(faces(colors[3]));//下
-                        myFaces.push(faces(colors[4]));//前
-                        myFaces.push(faces(colors[5]));//后
+                        myFaces.push(faces(colors[0]));
+                        myFaces.push(faces(colors[1]));
+                        myFaces.push(faces(colors[2]));
+                        myFaces.push(faces(colors[3]));
+                        myFaces.push(faces(colors[4]));
+                        myFaces.push(faces(colors[5]));
                         for (var k = 0; k < 6; k++) {
                             var texture = new THREE.Texture(myFaces[k]);
                             texture.needsUpdate = true;
@@ -377,8 +410,6 @@
                     isRotating = false;
                     startPoint = null;
                     updateCubeIndex(elements);
-                    //转动之后需要更新魔方此时所处的状态
-                    updateCubeStatus();
                 }
                 switch(direction){
                     //绕z轴顺时针
@@ -462,10 +493,10 @@
             }
 
             /**
-             * 更新魔方状态
+             * 获取魔方状态
              * 假设初始化时按固定位置给魔方编号，还原之后位置和编号不变
              */
-            function updateCubeStatus(){
+            function getCubeStatus(){
                 for(var i=0;i<cubes.length;i++){
                     var item = cubes[i];
                     if(item.id!==item.cubeIndex){
