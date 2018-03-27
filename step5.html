@@ -88,97 +88,166 @@
 					var cube17 = getCubeByIndex(17,minId);
 					var cube25 = getCubeByIndex(25,minId);
 
-					//101
-					if((getFaceColorByVector(cube3,zLine)==bottomColor)&&
-						getFaceColorByVector(cube9,yLine)!=bottomColor&&
-						!isRotating){
-						console.log('101-1');
-						normalize = zLine;
-						rotateMove(cube3,yLine);
+					//101、107
+					if(getFaceColorByVector(cube3,zLine)==bottomColor&&!isRotating){
+						if(getFaceColorByVector(cube9,yLine)!=bottomColor){
+							console.log('101-1');
+							normalize = zLine;
+							rotateMove(cube3,yLine);
+						}else{
+							console.log('107-1');
+							normalize = xLineAd;
+							rotateMove(cube9,zLine);
+						}
 					}
-					if((getFaceColorByVector(cube21,xLineAd)==bottomColor)&&
-						getFaceColorByVector(cube19,yLine)!=bottomColor&&
-						!isRotating){
-						console.log('101-2');
-						normalize = xLineAd;
-						rotateMove(cube21,yLine);
+					if(getFaceColorByVector(cube21,xLineAd)==bottomColor&&!isRotating){
+						if(getFaceColorByVector(cube19,yLine)!=bottomColor){
+							console.log('101-2');
+							normalize = xLineAd;
+							rotateMove(cube21,yLine);
+						}else{
+							console.log('107-2');
+							normalize = zLineAd;
+							rotateMove(cube19,xLine);
+						}
 					}
-					if((getFaceColorByVector(cube23,zLineAd)==bottomColor)&&
-						getFaceColorByVector(cube11,yLine)!=bottomColor&&
-						!isRotating){
-						console.log('101-3');
-						normalize = zLineAd;
-						rotateMove(cube23,yLine);
+					if(getFaceColorByVector(cube23,zLineAd)==bottomColor&&!isRotating){
+						if(getFaceColorByVector(cube11,yLine)!=bottomColor){
+							console.log('101-3');
+							normalize = zLineAd;
+							rotateMove(cube23,yLine);
+						}else{
+							console.log('107-3');
+							normalize = xLine;
+							rotateMove(cube11,zLine);
+						}
 					}
-					if((getFaceColorByVector(cube5,xLine)==bottomColor)&&
-						getFaceColorByVector(cube1,yLine)!=bottomColor&&
-						!isRotating){
-						console.log('101-4');
-						normalize = xLine;
-						rotateMove(cube5,yLine);
+					if(getFaceColorByVector(cube5,xLine)==bottomColor&&!isRotating){
+						if(getFaceColorByVector(cube1,yLine)!=bottomColor){
+							console.log('101-4');
+							normalize = xLine;
+							rotateMove(cube5,yLine);
+						}else{
+							console.log('107-4');
+							normalize = zLine;
+							rotateMove(cube1,xLine);
+						}
 					}
-					//102
-					if((getFaceColorByVector(cube5,zLine)==bottomColor)&&
-						getFaceColorByVector(cube11,yLine)!=bottomColor&&
-						!isRotating){
-						console.log('102-1');
-						normalize = zLine;
-						rotateMove(cube5,yLine);
+					//102、108
+					if(getFaceColorByVector(cube5,zLine)==bottomColor&&!isRotating){
+						if(getFaceColorByVector(cube11,yLine)!=bottomColor){
+							console.log('102-1');
+							normalize = zLine;
+							rotateMove(cube5,yLine);
+						}else{
+							console.log('108-1');
+							normalize = xLine;
+							rotateMove(cube11,zLine);
+						}
 					}
-					if((getFaceColorByVector(cube3,xLineAd)==bottomColor)&&
-						getFaceColorByVector(cube1,yLine)!=bottomColor&&
-						!isRotating){
-						console.log('102-2');
-						normalize = xLineAd;
-						rotateMove(cube3,yLine);
+					if(getFaceColorByVector(cube3,xLineAd)==bottomColor&&!isRotating){
+						if(getFaceColorByVector(cube1,yLine)!=bottomColor){
+							console.log('102-2');
+							normalize = xLineAd;
+							rotateMove(cube3,yLine);
+						}else{
+							console.log('108-2');
+							normalize = zLine;
+							rotateMove(cube1,xLine);
+						}
 					}
-					if((getFaceColorByVector(cube21,zLineAd)==bottomColor)&&
-						getFaceColorByVector(cube9,yLine)!=bottomColor&&
-						!isRotating){
-						console.log('102-3');
-						normalize = zLineAd;
-						rotateMove(cube21,yLine);
+					if(getFaceColorByVector(cube21,zLineAd)==bottomColor&&!isRotating){
+						if(getFaceColorByVector(cube9,yLine)!=bottomColor){
+							console.log('102-3');
+							normalize = zLineAd;
+							rotateMove(cube21,yLine);
+						}else{
+							console.log('108-3');
+							normalize = xLineAd;
+							rotateMove(cube9,zLine);
+						}
 					}
-					if((getFaceColorByVector(cube23,xLine)==bottomColor)&&
-						getFaceColorByVector(cube9,yLine)!=bottomColor&&
-						!isRotating){
-						console.log('102-4');
-						normalize = xLine;
-						rotateMove(cube23,yLine);
+					if(getFaceColorByVector(cube23,xLine)==bottomColor&&!isRotating){
+						if(getFaceColorByVector(cube19,yLine)!=bottomColor){
+							console.log('102-4');
+							normalize = xLine;
+							rotateMove(cube23,yLine);
+						}else{
+							console.log('108-4');
+							normalize = zLineAd;
+							rotateMove(cube19,xLine);
+						}
 					}
 					//103、104
-					if((getFaceColorByVector(cube15,yLineAd)==bottomColor)&&
+					if(getFaceColorByVector(cube15,yLineAd)==bottomColor&&
 						!isRotating){
-						console.log('103-1');
-						normalize = yLineAd;
-						rotateMove(cube15,zLine);
+						console.log('103/4-1');
+						if(getFaceColorByVector(cube9,yLine)!=bottomColor){
+							normalize = yLineAd;
+							rotateMove(cube15,zLine);
+						}else{
+							normalize = xLineAd;
+							rotateMove(cube9,zLine);
+						}
 					}
-					if((getFaceColorByVector(cube7,yLineAd)==bottomColor)&&
+					if(getFaceColorByVector(cube7,yLineAd)==bottomColor&&
 						!isRotating){
-						console.log('103-2');
-						normalize = yLineAd;
-						rotateMove(cube7,xLine);
+						console.log('103/4-2');
+						if(getFaceColorByVector(cube1,yLine)!=bottomColor){
+							normalize = yLineAd;
+							rotateMove(cube7,xLine);
+						}else{
+							normalize = zLine;
+							rotateMove(cube1,xLine);
+						}
 					}
-					if((getFaceColorByVector(cube17,yLineAd)==bottomColor)&&
+					if(getFaceColorByVector(cube17,yLineAd)==bottomColor&&
 						!isRotating){
-						console.log('103-3');
-						normalize = yLineAd;
-						rotateMove(cube17,zLineAd);
+						console.log('103/4-3');
+						if(getFaceColorByVector(cube11,yLine)!=bottomColor){
+							normalize = yLineAd;
+							rotateMove(cube17,zLineAd);
+						}else{
+							normalize = xLine;
+							rotateMove(cube11,zLine);
+						}
 					}
-					if((getFaceColorByVector(cube25,yLineAd)==bottomColor)&&
+					if(getFaceColorByVector(cube25,yLineAd)==bottomColor&&
 						!isRotating){
-						console.log('103-4');
-						normalize = yLineAd;
-						rotateMove(cube25,xLineAd);
+						console.log('103/4-4');
+						if(getFaceColorByVector(cube19,yLine)!=bottomColor){
+							normalize = yLineAd;
+							rotateMove(cube25,xLineAd);
+						}else{
+							normalize = zLineAd;
+							rotateMove(cube19,xLine);
+						}
 					}
 					//105、106
-					// if((getFaceColorByVector(cube1,zLine)==bottomColor||getFaceColorByVector(cube7,zLine))&&
-					// 	!isRotating){
-					// 	console.log('103-4');
-					// 	normalize = yLineAd;
-					// 	rotateMove(cube25,xLineAd);
-					// }
-					
+					if((getFaceColorByVector(cube1,zLine)==bottomColor||getFaceColorByVector(cube7,zLine)==bottomColor)&&
+						!isRotating){
+						console.log('105/6-1');
+						normalize = yLine;
+						rotateMove(cube1,xLine);
+					}
+					if((getFaceColorByVector(cube9,xLineAd)==bottomColor||getFaceColorByVector(cube15,xLineAd)==bottomColor)&&
+						!isRotating){
+						console.log('105/6-2');
+						normalize = yLine;
+						rotateMove(cube9,zLine);
+					}
+					if((getFaceColorByVector(cube19,zLineAd)==bottomColor||getFaceColorByVector(cube25,zLineAd)==bottomColor)&&
+						!isRotating){
+						console.log('105/6-3');
+						normalize = yLine;
+						rotateMove(cube19,xLine);
+					}
+					if((getFaceColorByVector(cube11,xLine)==bottomColor||getFaceColorByVector(cube17,xLine)==bottomColor)&&
+						!isRotating){
+						console.log('105/6-4');
+						normalize = yLine;
+						rotateMove(cube11,zLine);
+					}
 				//}while(!checkStep1(minId,bottomColor)&&!getCubeStatus())
             }
             //判断是否完成第一步小白花
