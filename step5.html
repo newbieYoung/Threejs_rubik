@@ -57,6 +57,11 @@
                     ids.push(cubes[i].cubeIndex);
                 }
                 var minId = min(ids).value;
+				
+				step1(minId);
+            }
+            //第一步小白花
+            function step1(minId){
             	/**
             	 * 找到初始化时上表面颜色在中心的面，调整魔方让该表面依然为上表面；
             	 * 然后对照初始化时下表面颜色的位置，按既定规律转动魔方；
@@ -68,54 +73,112 @@
 
 				//console.log(checkStep1(minId,bottomColor));
 				//console.log(getCubeStatus());
-				//do{
+				
+            	//do{
 					var cube3 = getCubeByIndex(3,minId);
 					var cube9 = getCubeByIndex(9,minId);
-					var cube5 = getCubeByIndex(5,minId);
+					var cube21 = getCubeByIndex(21,minId);
+					var cube19 = getCubeByIndex(19,minId);
+					var cube23 = getCubeByIndex(23,minId);
 					var cube11 = getCubeByIndex(11,minId);
-					var cube15 = getCubeByIndex(15,minId);
-					var cube17 = getCubeByIndex(17,minId);
+					var cube5 = getCubeByIndex(5,minId);
 					var cube1 = getCubeByIndex(1,minId);
+					var cube15 = getCubeByIndex(15,minId);
 					var cube7 = getCubeByIndex(7,minId);
+					var cube17 = getCubeByIndex(17,minId);
+					var cube25 = getCubeByIndex(25,minId);
 
+					//101
 					if((getFaceColorByVector(cube3,zLine)==bottomColor)&&
 						getFaceColorByVector(cube9,yLine)!=bottomColor&&
-						!isRotating){//101
+						!isRotating){
+						console.log('101-1');
+						normalize = zLine;
 						rotateMove(cube3,yLine);
 					}
-					if((getFaceColorByVector(cube5,zLine)==bottomColor)&&
+					if((getFaceColorByVector(cube21,xLineAd)==bottomColor)&&
+						getFaceColorByVector(cube19,yLine)!=bottomColor&&
+						!isRotating){
+						console.log('101-2');
+						normalize = xLineAd;
+						rotateMove(cube21,yLine);
+					}
+					if((getFaceColorByVector(cube23,zLineAd)==bottomColor)&&
 						getFaceColorByVector(cube11,yLine)!=bottomColor&&
-						!isRotating){//102
+						!isRotating){
+						console.log('101-3');
+						normalize = zLineAd;
+						rotateMove(cube23,yLine);
+					}
+					if((getFaceColorByVector(cube5,xLine)==bottomColor)&&
+						getFaceColorByVector(cube1,yLine)!=bottomColor&&
+						!isRotating){
+						console.log('101-4');
+						normalize = xLine;
 						rotateMove(cube5,yLine);
 					}
-					if((getFaceColorByVector(cube15,yLineAd)==bottomColor)&&
+					//102
+					if((getFaceColorByVector(cube5,zLine)==bottomColor)&&
+						getFaceColorByVector(cube11,yLine)!=bottomColor&&
+						!isRotating){
+						console.log('102-1');
+						normalize = zLine;
+						rotateMove(cube5,yLine);
+					}
+					if((getFaceColorByVector(cube3,xLineAd)==bottomColor)&&
+						getFaceColorByVector(cube1,yLine)!=bottomColor&&
+						!isRotating){
+						console.log('102-2');
+						normalize = xLineAd;
+						rotateMove(cube3,yLine);
+					}
+					if((getFaceColorByVector(cube21,zLineAd)==bottomColor)&&
 						getFaceColorByVector(cube9,yLine)!=bottomColor&&
-						!isRotating){//103
+						!isRotating){
+						console.log('102-3');
+						normalize = zLineAd;
+						rotateMove(cube21,yLine);
+					}
+					if((getFaceColorByVector(cube23,xLine)==bottomColor)&&
+						getFaceColorByVector(cube9,yLine)!=bottomColor&&
+						!isRotating){
+						console.log('102-4');
+						normalize = xLine;
+						rotateMove(cube23,yLine);
+					}
+					//103、104
+					if((getFaceColorByVector(cube15,yLineAd)==bottomColor)&&
+						!isRotating){
+						console.log('103-1');
+						normalize = yLineAd;
 						rotateMove(cube15,zLine);
 					}
+					if((getFaceColorByVector(cube7,yLineAd)==bottomColor)&&
+						!isRotating){
+						console.log('103-2');
+						normalize = yLineAd;
+						rotateMove(cube7,xLine);
+					}
 					if((getFaceColorByVector(cube17,yLineAd)==bottomColor)&&
-						getFaceColorByVector(cube11,yLine)!=bottomColor&&
-						!isRotating){//104
-						rotateMove(cube17,zLine);
+						!isRotating){
+						console.log('103-3');
+						normalize = yLineAd;
+						rotateMove(cube17,zLineAd);
 					}
-					if((getFaceColorByVector(cube1,yLine)==bottomColor)&&
-						!isRotating){//105
-						rotateMove(cube1,xLine);
+					if((getFaceColorByVector(cube25,yLineAd)==bottomColor)&&
+						!isRotating){
+						console.log('103-4');
+						normalize = yLineAd;
+						rotateMove(cube25,xLineAd);
 					}
-					if((getFaceColorByVector(cube7,yLine)==bottomColor)&&
-						!isRotating){//106
-						rotateMove(cube7,xLineAd);
-					}
-					if((getFaceColorByVector(cube3,zLine)==bottomColor)&&
-						getFaceColorByVector(cube9,yLine)==bottomColor&&
-						!isRotating){//107
-						rotateMove(cube9,yLine);
-					}
-					if((getFaceColorByVector(cube5,zLine)==bottomColor)&&
-						getFaceColorByVector(cube11,yLine)==bottomColor&&
-						!isRotating){//108
-						rotateMove(cube11,yLine);
-					}
+					//105、106
+					// if((getFaceColorByVector(cube1,zLine)==bottomColor||getFaceColorByVector(cube7,zLine))&&
+					// 	!isRotating){
+					// 	console.log('103-4');
+					// 	normalize = yLineAd;
+					// 	rotateMove(cube25,xLineAd);
+					// }
+					
 				//}while(!checkStep1(minId,bottomColor)&&!getCubeStatus())
             }
             //判断是否完成第一步小白花
