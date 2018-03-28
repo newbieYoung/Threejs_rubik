@@ -227,26 +227,47 @@
 					if((getFaceColorByVector(cube1,zLine)==bottomColor||getFaceColorByVector(cube7,zLine)==bottomColor)&&
 						!isRotating){
 						console.log('105/6-1');
-						normalize = yLine;
-						rotateMove(cube1,xLine);
+						if(getFaceColorByVector(cube1,yLine)!=bottomColor){
+							normalize = yLine;
+							rotateMove(cube1,xLine);
+						}else{
+							normalize = zLine;
+							rotateMove(cube7,xLine);
+						}
 					}
 					if((getFaceColorByVector(cube9,xLineAd)==bottomColor||getFaceColorByVector(cube15,xLineAd)==bottomColor)&&
 						!isRotating){
 						console.log('105/6-2');
-						normalize = yLine;
-						rotateMove(cube9,zLine);
+						if(getFaceColorByVector(cube9,yLine)!=bottomColor){
+							normalize = yLine;
+							rotateMove(cube15,zLine);
+						}else{
+							normalize = xLineAd;
+							rotateMove(cube15,zLine);
+						}
 					}
 					if((getFaceColorByVector(cube19,zLineAd)==bottomColor||getFaceColorByVector(cube25,zLineAd)==bottomColor)&&
 						!isRotating){
 						console.log('105/6-3');
-						normalize = yLine;
-						rotateMove(cube19,xLine);
+						if(getFaceColorByVector(cube19,yLine)!=bottomColor){
+							normalize = yLine;
+							rotateMove(cube19,xLine);
+						}else{
+							normalize = zLineAd;
+							rotateMove(cube25,xLineAd);
+						}
+						
 					}
 					if((getFaceColorByVector(cube11,xLine)==bottomColor||getFaceColorByVector(cube17,xLine)==bottomColor)&&
 						!isRotating){
 						console.log('105/6-4');
-						normalize = yLine;
-						rotateMove(cube11,zLine);
+						if(getFaceColorByVector(cube11,yLine)!=bottomColor){
+							normalize = yLine;
+							rotateMove(cube11,zLine);
+						}else{
+							normalize = xLine;
+							rotateMove(cube17,zLineAd);
+						}
 					}
 				//}while(!checkStep1(minId,bottomColor)&&!getCubeStatus())
             }
