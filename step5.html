@@ -32,6 +32,7 @@
             var normalize;//触发平面法向量
             var startPoint;//触发点
             var movePoint;
+            var minCubeIndex;
             var initStatus = [];//魔方初始状态
             //魔方转动的六个方向
             const xLine = new THREE.Vector3( 1, 0, 0 );//X轴正方向
@@ -51,232 +52,214 @@
             };
 
             //自动还原第一版
+            var isAutoReset = false;
+            var currentStep = 1;
             function autoResetV1(cubes){
-            	var ids = [];    
-                for(var i=0;i<cubes.length;i++){
-                    ids.push(cubes[i].cubeIndex);
-                }
-                var minId = min(ids).value;
-				
-				step1(minId);
+            	if(!getCubeStatus()){
+	                isAutoReset = true;
+					currentStep = 1;
+					step1();
+            	}
+            }
+            //第二步
+            function step2(){
+            	console.log('step2');
             }
             //第一步小白花
-            function step1(minId){
+            function step1(){
             	/**
             	 * 找到初始化时上表面颜色在中心的面，调整魔方让该表面依然为上表面；
             	 * 然后对照初始化时下表面颜色的位置，按既定规律转动魔方；
             	 * 直接找当前上表面中心面的颜色和其对应的下表面颜色，省去旋转调整的过程。
             	 */
-            	var topCenter = getCubeByIndex(10,minId);
+            	var topCenter = getCubeByIndex(10);
 				var topColor = getFaceColorByVector(topCenter,yLine);//获取上表面颜色
 				var bottomColor = getOppositeColor(topColor);
 
-				//console.log(checkStep1(minId,bottomColor));
-				//console.log(getCubeStatus());
+            	if(checkStep1(bottomColor)){
+					currentStep = 2;
+					step2();
+					return;
+				}
 				
-            	//do{
-					var cube3 = getCubeByIndex(3,minId);
-					var cube9 = getCubeByIndex(9,minId);
-					var cube21 = getCubeByIndex(21,minId);
-					var cube19 = getCubeByIndex(19,minId);
-					var cube23 = getCubeByIndex(23,minId);
-					var cube11 = getCubeByIndex(11,minId);
-					var cube5 = getCubeByIndex(5,minId);
-					var cube1 = getCubeByIndex(1,minId);
-					var cube15 = getCubeByIndex(15,minId);
-					var cube7 = getCubeByIndex(7,minId);
-					var cube17 = getCubeByIndex(17,minId);
-					var cube25 = getCubeByIndex(25,minId);
+				var cube3 = getCubeByIndex(3);
+				var cube9 = getCubeByIndex(9);
+				var cube21 = getCubeByIndex(21);
+				var cube19 = getCubeByIndex(19);
+				var cube23 = getCubeByIndex(23);
+				var cube11 = getCubeByIndex(11);
+				var cube5 = getCubeByIndex(5);
+				var cube1 = getCubeByIndex(1);
+				var cube15 = getCubeByIndex(15);
+				var cube7 = getCubeByIndex(7);
+				var cube17 = getCubeByIndex(17);
+				var cube25 = getCubeByIndex(25);
 
-					//101、107
-					if(getFaceColorByVector(cube3,zLine)==bottomColor&&!isRotating){
-						if(getFaceColorByVector(cube9,yLine)!=bottomColor){
-							console.log('101-1');
-							normalize = zLine;
-							rotateMove(cube3,yLine);
-						}else{
-							console.log('107-1');
-							normalize = xLineAd;
-							rotateMove(cube9,zLine);
-						}
+				//101、107
+				if(getFaceColorByVector(cube3,zLine)==bottomColor&&!isRotating){
+					if(getFaceColorByVector(cube9,yLine)!=bottomColor){
+						normalize = zLine;
+						rotateMove(cube3,yLine);
+					}else{
+						normalize = xLineAd;
+						rotateMove(cube9,zLine);
 					}
-					if(getFaceColorByVector(cube21,xLineAd)==bottomColor&&!isRotating){
-						if(getFaceColorByVector(cube19,yLine)!=bottomColor){
-							console.log('101-2');
-							normalize = xLineAd;
-							rotateMove(cube21,yLine);
-						}else{
-							console.log('107-2');
-							normalize = zLineAd;
-							rotateMove(cube19,xLine);
-						}
+				}
+				if(getFaceColorByVector(cube21,xLineAd)==bottomColor&&!isRotating){
+					if(getFaceColorByVector(cube19,yLine)!=bottomColor){
+						normalize = xLineAd;
+						rotateMove(cube21,yLine);
+					}else{
+						normalize = zLineAd;
+						rotateMove(cube19,xLine);
 					}
-					if(getFaceColorByVector(cube23,zLineAd)==bottomColor&&!isRotating){
-						if(getFaceColorByVector(cube11,yLine)!=bottomColor){
-							console.log('101-3');
-							normalize = zLineAd;
-							rotateMove(cube23,yLine);
-						}else{
-							console.log('107-3');
-							normalize = xLine;
-							rotateMove(cube11,zLine);
-						}
+				}
+				if(getFaceColorByVector(cube23,zLineAd)==bottomColor&&!isRotating){
+					if(getFaceColorByVector(cube11,yLine)!=bottomColor){
+						normalize = zLineAd;
+						rotateMove(cube23,yLine);
+					}else{
+						normalize = xLine;
+						rotateMove(cube11,zLine);
 					}
-					if(getFaceColorByVector(cube5,xLine)==bottomColor&&!isRotating){
-						if(getFaceColorByVector(cube1,yLine)!=bottomColor){
-							console.log('101-4');
-							normalize = xLine;
-							rotateMove(cube5,yLine);
-						}else{
-							console.log('107-4');
-							normalize = zLine;
-							rotateMove(cube1,xLine);
-						}
+				}
+				if(getFaceColorByVector(cube5,xLine)==bottomColor&&!isRotating){
+					if(getFaceColorByVector(cube1,yLine)!=bottomColor){
+						normalize = xLine;
+						rotateMove(cube5,yLine);
+					}else{
+						normalize = zLine;
+						rotateMove(cube1,xLine);
 					}
-					//102、108
-					if(getFaceColorByVector(cube5,zLine)==bottomColor&&!isRotating){
-						if(getFaceColorByVector(cube11,yLine)!=bottomColor){
-							console.log('102-1');
-							normalize = zLine;
-							rotateMove(cube5,yLine);
-						}else{
-							console.log('108-1');
-							normalize = xLine;
-							rotateMove(cube11,zLine);
-						}
+				}
+				//102、108
+				if(getFaceColorByVector(cube5,zLine)==bottomColor&&!isRotating){
+					if(getFaceColorByVector(cube11,yLine)!=bottomColor){
+						normalize = zLine;
+						rotateMove(cube5,yLine);
+					}else{
+						normalize = xLine;
+						rotateMove(cube11,zLine);
 					}
-					if(getFaceColorByVector(cube3,xLineAd)==bottomColor&&!isRotating){
-						if(getFaceColorByVector(cube1,yLine)!=bottomColor){
-							console.log('102-2');
-							normalize = xLineAd;
-							rotateMove(cube3,yLine);
-						}else{
-							console.log('108-2');
-							normalize = zLine;
-							rotateMove(cube1,xLine);
-						}
+				}
+				if(getFaceColorByVector(cube3,xLineAd)==bottomColor&&!isRotating){
+					if(getFaceColorByVector(cube1,yLine)!=bottomColor){
+						normalize = xLineAd;
+						rotateMove(cube3,yLine);
+					}else{
+						normalize = zLine;
+						rotateMove(cube1,xLine);
 					}
-					if(getFaceColorByVector(cube21,zLineAd)==bottomColor&&!isRotating){
-						if(getFaceColorByVector(cube9,yLine)!=bottomColor){
-							console.log('102-3');
-							normalize = zLineAd;
-							rotateMove(cube21,yLine);
-						}else{
-							console.log('108-3');
-							normalize = xLineAd;
-							rotateMove(cube9,zLine);
-						}
+				}
+				if(getFaceColorByVector(cube21,zLineAd)==bottomColor&&!isRotating){
+					if(getFaceColorByVector(cube9,yLine)!=bottomColor){
+						normalize = zLineAd;
+						rotateMove(cube21,yLine);
+					}else{
+						normalize = xLineAd;
+						rotateMove(cube9,zLine);
 					}
-					if(getFaceColorByVector(cube23,xLine)==bottomColor&&!isRotating){
-						if(getFaceColorByVector(cube19,yLine)!=bottomColor){
-							console.log('102-4');
-							normalize = xLine;
-							rotateMove(cube23,yLine);
-						}else{
-							console.log('108-4');
-							normalize = zLineAd;
-							rotateMove(cube19,xLine);
-						}
+				}
+				if(getFaceColorByVector(cube23,xLine)==bottomColor&&!isRotating){
+					if(getFaceColorByVector(cube19,yLine)!=bottomColor){
+						normalize = xLine;
+						rotateMove(cube23,yLine);
+					}else{
+						normalize = zLineAd;
+						rotateMove(cube19,xLine);
 					}
-					//103、104
-					if(getFaceColorByVector(cube15,yLineAd)==bottomColor&&
-						!isRotating){
-						console.log('103/4-1');
-						if(getFaceColorByVector(cube9,yLine)!=bottomColor){
-							normalize = yLineAd;
-							rotateMove(cube15,zLine);
-						}else{
-							normalize = xLineAd;
-							rotateMove(cube9,zLine);
-						}
+				}
+				//103、104
+				if(getFaceColorByVector(cube15,yLineAd)==bottomColor&&
+					!isRotating){
+					if(getFaceColorByVector(cube9,yLine)!=bottomColor){
+						normalize = yLineAd;
+						rotateMove(cube15,zLine);
+					}else{
+						normalize = xLineAd;
+						rotateMove(cube9,zLine);
 					}
-					if(getFaceColorByVector(cube7,yLineAd)==bottomColor&&
-						!isRotating){
-						console.log('103/4-2');
-						if(getFaceColorByVector(cube1,yLine)!=bottomColor){
-							normalize = yLineAd;
-							rotateMove(cube7,xLine);
-						}else{
-							normalize = zLine;
-							rotateMove(cube1,xLine);
-						}
+				}
+				if(getFaceColorByVector(cube7,yLineAd)==bottomColor&&
+					!isRotating){
+					if(getFaceColorByVector(cube1,yLine)!=bottomColor){
+						normalize = yLineAd;
+						rotateMove(cube7,xLine);
+					}else{
+						normalize = zLine;
+						rotateMove(cube1,xLine);
 					}
-					if(getFaceColorByVector(cube17,yLineAd)==bottomColor&&
-						!isRotating){
-						console.log('103/4-3');
-						if(getFaceColorByVector(cube11,yLine)!=bottomColor){
-							normalize = yLineAd;
-							rotateMove(cube17,zLineAd);
-						}else{
-							normalize = xLine;
-							rotateMove(cube11,zLine);
-						}
+				}
+				if(getFaceColorByVector(cube17,yLineAd)==bottomColor&&
+					!isRotating){
+					if(getFaceColorByVector(cube11,yLine)!=bottomColor){
+						normalize = yLineAd;
+						rotateMove(cube17,zLineAd);
+					}else{
+						normalize = xLine;
+						rotateMove(cube11,zLine);
 					}
-					if(getFaceColorByVector(cube25,yLineAd)==bottomColor&&
-						!isRotating){
-						console.log('103/4-4');
-						if(getFaceColorByVector(cube19,yLine)!=bottomColor){
-							normalize = yLineAd;
-							rotateMove(cube25,xLineAd);
-						}else{
-							normalize = zLineAd;
-							rotateMove(cube19,xLine);
-						}
+				}
+				if(getFaceColorByVector(cube25,yLineAd)==bottomColor&&
+					!isRotating){
+					if(getFaceColorByVector(cube19,yLine)!=bottomColor){
+						normalize = yLineAd;
+						rotateMove(cube25,xLineAd);
+					}else{
+						normalize = zLineAd;
+						rotateMove(cube19,xLine);
 					}
-					//105、106
-					if((getFaceColorByVector(cube1,zLine)==bottomColor||getFaceColorByVector(cube7,zLine)==bottomColor)&&
-						!isRotating){
-						console.log('105/6-1');
-						if(getFaceColorByVector(cube1,yLine)!=bottomColor){
-							normalize = yLine;
-							rotateMove(cube1,xLine);
-						}else{
-							normalize = zLine;
-							rotateMove(cube7,xLine);
-						}
+				}
+				//105、106
+				if((getFaceColorByVector(cube1,zLine)==bottomColor||getFaceColorByVector(cube7,zLine)==bottomColor)&&
+					!isRotating){
+					if(getFaceColorByVector(cube1,yLine)!=bottomColor){
+						normalize = yLine;
+						rotateMove(cube1,xLine);
+					}else{
+						normalize = zLine;
+						rotateMove(cube7,xLine);
 					}
-					if((getFaceColorByVector(cube9,xLineAd)==bottomColor||getFaceColorByVector(cube15,xLineAd)==bottomColor)&&
-						!isRotating){
-						console.log('105/6-2');
-						if(getFaceColorByVector(cube9,yLine)!=bottomColor){
-							normalize = yLine;
-							rotateMove(cube15,zLine);
-						}else{
-							normalize = xLineAd;
-							rotateMove(cube15,zLine);
-						}
+				}
+				if((getFaceColorByVector(cube9,xLineAd)==bottomColor||getFaceColorByVector(cube15,xLineAd)==bottomColor)&&
+					!isRotating){
+					if(getFaceColorByVector(cube9,yLine)!=bottomColor){
+						normalize = yLine;
+						rotateMove(cube15,zLine);
+					}else{
+						normalize = xLineAd;
+						rotateMove(cube15,zLine);
 					}
-					if((getFaceColorByVector(cube19,zLineAd)==bottomColor||getFaceColorByVector(cube25,zLineAd)==bottomColor)&&
-						!isRotating){
-						console.log('105/6-3');
-						if(getFaceColorByVector(cube19,yLine)!=bottomColor){
-							normalize = yLine;
-							rotateMove(cube19,xLine);
-						}else{
-							normalize = zLineAd;
-							rotateMove(cube25,xLineAd);
-						}
-						
+				}
+				if((getFaceColorByVector(cube19,zLineAd)==bottomColor||getFaceColorByVector(cube25,zLineAd)==bottomColor)&&
+					!isRotating){
+					if(getFaceColorByVector(cube19,yLine)!=bottomColor){
+						normalize = yLine;
+						rotateMove(cube19,xLine);
+					}else{
+						normalize = zLineAd;
+						rotateMove(cube25,xLineAd);
 					}
-					if((getFaceColorByVector(cube11,xLine)==bottomColor||getFaceColorByVector(cube17,xLine)==bottomColor)&&
-						!isRotating){
-						console.log('105/6-4');
-						if(getFaceColorByVector(cube11,yLine)!=bottomColor){
-							normalize = yLine;
-							rotateMove(cube11,zLine);
-						}else{
-							normalize = xLine;
-							rotateMove(cube17,zLineAd);
-						}
+					
+				}
+				if((getFaceColorByVector(cube11,xLine)==bottomColor||getFaceColorByVector(cube17,xLine)==bottomColor)&&
+					!isRotating){
+					if(getFaceColorByVector(cube11,yLine)!=bottomColor){
+						normalize = yLine;
+						rotateMove(cube11,zLine);
+					}else{
+						normalize = xLine;
+						rotateMove(cube17,zLineAd);
 					}
-				//}while(!checkStep1(minId,bottomColor)&&!getCubeStatus())
+				}
+				
             }
             //判断是否完成第一步小白花
-            function checkStep1(minId,bottomColor){
+            function checkStep1(bottomColor){
             	var indexs = [1,9,11,19];
             	var step1 = true;
             	for(var i=0;i<indexs.length;i++){
-            		var item = getCubeByIndex(1,minId);
+            		var item = getCubeByIndex(indexs[i]);
             		var color = getFaceColorByVector(item,yLine);//获取上表面颜色
             		if(color!=bottomColor){
             			step1 = false;
@@ -286,10 +269,10 @@
             	return step1;
             }
             //根据索引获取方块
-            function getCubeByIndex(index,minId){
+            function getCubeByIndex(index){
             	var cube; 
 				for(var i=0;i<cubes.length;i++){
-					if(cubes[i].cubeIndex == index+minId){
+					if(cubes[i].cubeIndex == index+minCubeIndex){
 						cube = cubes[i];
 					}
 				}
@@ -458,6 +441,7 @@
             function initObject() {
             	//生成魔方小正方体
             	cubes = SimpleCube(cubeParams.x,cubeParams.y,cubeParams.z,cubeParams.num,cubeParams.len,cubeParams.colors);
+            	var ids = [];   
             	for(var i=0;i<cubes.length;i++){
             		var item = cubes[i];
             		/**
@@ -473,8 +457,10 @@
                         cubeIndex:item.id
                     });
                     item.cubeIndex = item.id;
+                    ids.push(item.id);
                     scene.add(cubes[i]);//并依次加入到场景中
             	}
+                minCubeIndex = min(ids).value;
 
             	//透明正方体
                 var cubegeo = new THREE.BoxGeometry(150,150,150);
@@ -669,6 +655,20 @@
                     window.requestAnimFrame(function(timestamp){
                         rotateAnimation(elements,direction,timestamp,startstamp,currentstamp);
                     });
+                }else{
+                	//转动结束
+                	if(getCubeStatus()){
+                		isAutoReset = false;
+                	}
+                	if(isAutoReset){
+                		switch(currentStep){
+                			case 1:
+                				step1();
+                				break;
+                			default:
+                				break;
+                		}
+                	}
                 }
             }
 
@@ -705,12 +705,7 @@
             //根据方向获得运动元素
             function getBoxs(target,direction){
                 var targetId = target.cubeIndex;
-                var ids = [];    
-                for(var i=0;i<cubes.length;i++){
-                    ids.push(cubes[i].cubeIndex);
-                }
-                var minId = min(ids).value;
-                targetId = targetId-minId;
+                targetId = targetId-minCubeIndex;
                 var numI = parseInt(targetId/9);
                 var numJ = targetId%9;
                 var boxs = [];
@@ -726,7 +721,7 @@
                     case 3.3:
                     case 3.4:
                         for(var i=0;i<cubes.length;i++){
-                            var tempId = cubes[i].cubeIndex-minId;
+                            var tempId = cubes[i].cubeIndex-minCubeIndex;
                             if(numI===parseInt(tempId/9)){
                                 boxs.push(cubes[i]);
                             }
@@ -742,7 +737,7 @@
                     case 5.3:
                     case 5.4:
                         for(var i=0;i<cubes.length;i++){
-                            var tempId = cubes[i].cubeIndex-minId;
+                            var tempId = cubes[i].cubeIndex-minCubeIndex;
                             if(parseInt(numJ/3)===parseInt(tempId%9/3)){
                                 boxs.push(cubes[i]);
                             }
@@ -758,7 +753,7 @@
                     case 5.1:
                     case 5.2:
                         for(var i=0;i<cubes.length;i++){
-                            var tempId = cubes[i].cubeIndex-minId;
+                            var tempId = cubes[i].cubeIndex-minCubeIndex;
                             if(tempId%9%3===numJ%3){
                                 boxs.push(cubes[i]);
                             }
