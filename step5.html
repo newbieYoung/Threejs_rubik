@@ -54,6 +54,7 @@
             //自动还原第一版
             var isAutoReset = false;
             var currentStep = 1;
+            var bottomColor;
             function autoResetV1(cubes){
             	if(!getCubeStatus()){
 	                isAutoReset = true;
@@ -61,9 +62,67 @@
 					step1();
             	}
             }
-            //第二步
+            //第三步
+            function step3(){
+            	console.log('step3');
+            }
+            //第二步底棱归位
             function step2(){
-            	console.log('step2');
+            	if(checkStep2()){
+            		currentStep = 3;
+					step3();
+					return;
+            	}
+            	var cube1 = getCubeByIndex(1);
+            	var cube4 = getCubeByIndex(4);
+            	if(getFaceColorByVector(cube1,yLine)==bottomColor&&!isRotating){
+            		if(getFaceColorByVector(cube1,zLine)==getFaceColorByVector(cube4,zLine)){
+            			normalize = yLine;
+						rotateMove(cube1,xLine,function(){
+							normalize = xLine;
+							rotateMove(cube1,yLineAd);
+						});
+            		}else{
+            			normalize = zLine;
+            			rotateMove(cube1,xLine);
+            		}
+            	}
+            	var cube11 = getCubeByIndex(11);
+            	var cube14 = getCubeByIndex(14);
+            	if(getFaceColorByVector(cube11,yLine)==bottomColor&&isRotating){
+            		if(getFaceColorByVector(cube11,xLine)==getFaceColorByVector(cube14,xLine)){
+            			normalize = yLine;
+            			rotateMove(cube11,zLineAd,function(){
+
+            			});
+            		}
+            	}
+            }
+            function checkStep2(){
+            	var cube4 = getCubeByIndex(4);
+            	var cube7 = getCubeByIndex(7);
+            	if(getFaceColorByVector(cube4,zLine)!=getFaceColorByVector(cube7,zLine)){
+            		return false;
+            	}
+
+            	var cube14 = getCubeByIndex(14);
+            	var cube17 = getCubeByIndex(17);
+            	if(getFaceColorByVector(cube14,xLine)!=getFaceColorByVector(cube17,xLine)){
+            		return false;
+            	}
+
+            	var cube22 = getCubeByIndex(22);
+            	var cube25 = getCubeByIndex(25);
+            	if(getFaceColorByVector(cube22,zLineAd)!=getFaceColorByVector(cube25,zLineAd)){
+            		return false;
+            	}
+
+            	var cube12 = getCubeByIndex(12);
+            	var cube15 = getCubeByIndex(15);
+            	if(getFaceColorByVector(cube12,xLineAd)!=getFaceColorByVector(cube15,xLineAd)){
+            		return false;
+            	}
+            	return true;
             }
             //第一步小白花
             function step1(){
@@ -74,7 +133,7 @@
             	 */
             	var topCenter = getCubeByIndex(10);
 				var topColor = getFaceColorByVector(topCenter,yLine);//获取上表面颜色
-				var bottomColor = getOppositeColor(topColor);
+				bottomColor = getOppositeColor(topColor);
 
             	if(checkStep1(bottomColor)){
 					currentStep = 2;
@@ -240,7 +299,6 @@
 						normalize = zLineAd;
 						rotateMove(cube25,xLineAd);
 					}
-					
 				}
 				if((getFaceColorByVector(cube11,xLine)==bottomColor||getFaceColorByVector(cube17,xLine)==bottomColor)&&
 					!isRotating){
@@ -252,10 +310,9 @@
 						rotateMove(cube17,zLineAd);
 					}
 				}
-				
             }
             //判断是否完成第一步小白花
-            function checkStep1(bottomColor){
+            function checkStep1(){
             	var indexs = [1,9,11,19];
             	var step1 = true;
             	for(var i=0;i<indexs.length;i++){
@@ -581,7 +638,7 @@
             /**
              * 旋转动画
              */
-            function rotateAnimation(elements,direction,currentstamp,startstamp,laststamp){
+            function rotateAnimation(elements,direction,currentstamp,startstamp,laststamp,next){
                 var totalTime = 500;//转动的总运动时间
                 if(startstamp===0){
                     startstamp = currentstamp;
@@ -661,12 +718,16 @@
                 		isAutoReset = false;
                 	}
                 	if(isAutoReset){
-                		switch(currentStep){
-                			case 1:
-                				step1();
-                				break;
-                			default:
-                				break;
+                		if(next){
+                			next();
+                		}else{
+                			switch(currentStep){
+	                			case 1:
+	                				step1();
+	                				break;
+	                			default:
+	                				break;
+	                		}
                 		}
                 	}
                 }
