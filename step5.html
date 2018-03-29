@@ -154,8 +154,7 @@
 				var cube17 = getCubeByIndex(17);
 				var cube25 = getCubeByIndex(25);
 
-				//101、107
-				if(getFaceColorByVector(cube3,zLine)==bottomColor){
+				if(getFaceColorByVector(cube3,zLine)==bottomColor){//101、107
 					if(getFaceColorByVector(cube9,yLine)!=bottomColor){
 						normalize = zLine;
 						rotateMove(cube3,yLine);
@@ -163,8 +162,7 @@
 						normalize = xLineAd;
 						rotateMove(cube9,zLine);
 					}
-				}
-				if(getFaceColorByVector(cube21,xLineAd)==bottomColor){
+				}else if(getFaceColorByVector(cube21,xLineAd)==bottomColor){
 					if(getFaceColorByVector(cube19,yLine)!=bottomColor){
 						normalize = xLineAd;
 						rotateMove(cube21,yLine);
@@ -172,8 +170,7 @@
 						normalize = zLineAd;
 						rotateMove(cube19,xLine);
 					}
-				}
-				if(getFaceColorByVector(cube23,zLineAd)==bottomColor&&!isRotating){
+				}else if(getFaceColorByVector(cube23,zLineAd)==bottomColor){
 					if(getFaceColorByVector(cube11,yLine)!=bottomColor){
 						normalize = zLineAd;
 						rotateMove(cube23,yLine);
@@ -181,8 +178,7 @@
 						normalize = xLine;
 						rotateMove(cube11,zLine);
 					}
-				}
-				if(getFaceColorByVector(cube5,xLine)==bottomColor&&!isRotating){
+				}else if(getFaceColorByVector(cube5,xLine)==bottomColor){
 					if(getFaceColorByVector(cube1,yLine)!=bottomColor){
 						normalize = xLine;
 						rotateMove(cube5,yLine);
@@ -190,9 +186,7 @@
 						normalize = zLine;
 						rotateMove(cube1,xLine);
 					}
-				}
-				//102、108
-				if(getFaceColorByVector(cube5,zLine)==bottomColor&&!isRotating){
+				}else if(getFaceColorByVector(cube5,zLine)==bottomColor){//102、108
 					if(getFaceColorByVector(cube11,yLine)!=bottomColor){
 						normalize = zLine;
 						rotateMove(cube5,yLine);
@@ -200,8 +194,7 @@
 						normalize = xLine;
 						rotateMove(cube11,zLine);
 					}
-				}
-				if(getFaceColorByVector(cube3,xLineAd)==bottomColor&&!isRotating){
+				}else if(getFaceColorByVector(cube3,xLineAd)==bottomColor){
 					if(getFaceColorByVector(cube1,yLine)!=bottomColor){
 						normalize = xLineAd;
 						rotateMove(cube3,yLine);
@@ -209,8 +202,7 @@
 						normalize = zLine;
 						rotateMove(cube1,xLine);
 					}
-				}
-				if(getFaceColorByVector(cube21,zLineAd)==bottomColor&&!isRotating){
+				}else if(getFaceColorByVector(cube21,zLineAd)==bottomColor){
 					if(getFaceColorByVector(cube9,yLine)!=bottomColor){
 						normalize = zLineAd;
 						rotateMove(cube21,yLine);
@@ -218,8 +210,7 @@
 						normalize = xLineAd;
 						rotateMove(cube9,zLine);
 					}
-				}
-				if(getFaceColorByVector(cube23,xLine)==bottomColor&&!isRotating){
+				}else if(getFaceColorByVector(cube23,xLine)==bottomColor){
 					if(getFaceColorByVector(cube19,yLine)!=bottomColor){
 						normalize = xLine;
 						rotateMove(cube23,yLine);
@@ -227,10 +218,7 @@
 						normalize = zLineAd;
 						rotateMove(cube19,xLine);
 					}
-				}
-				//103、104
-				if(getFaceColorByVector(cube15,yLineAd)==bottomColor&&
-					!isRotating){
+				}else if(getFaceColorByVector(cube15,yLineAd)==bottomColor){//103、104
 					if(getFaceColorByVector(cube9,yLine)!=bottomColor){
 						normalize = yLineAd;
 						rotateMove(cube15,zLine);
@@ -238,9 +226,7 @@
 						normalize = xLineAd;
 						rotateMove(cube9,zLine);
 					}
-				}
-				if(getFaceColorByVector(cube7,yLineAd)==bottomColor&&
-					!isRotating){
+				}else if(getFaceColorByVector(cube7,yLineAd)==bottomColor){
 					if(getFaceColorByVector(cube1,yLine)!=bottomColor){
 						normalize = yLineAd;
 						rotateMove(cube7,xLine);
@@ -248,9 +234,7 @@
 						normalize = zLine;
 						rotateMove(cube1,xLine);
 					}
-				}
-				if(getFaceColorByVector(cube17,yLineAd)==bottomColor&&
-					!isRotating){
+				}else if(getFaceColorByVector(cube17,yLineAd)==bottomColor){
 					if(getFaceColorByVector(cube11,yLine)!=bottomColor){
 						normalize = yLineAd;
 						rotateMove(cube17,zLineAd);
@@ -258,9 +242,7 @@
 						normalize = xLine;
 						rotateMove(cube11,zLine);
 					}
-				}
-				if(getFaceColorByVector(cube25,yLineAd)==bottomColor&&
-					!isRotating){
+				}else if(getFaceColorByVector(cube25,yLineAd)==bottomColor){
 					if(getFaceColorByVector(cube19,yLine)!=bottomColor){
 						normalize = yLineAd;
 						rotateMove(cube25,xLineAd);
@@ -268,10 +250,7 @@
 						normalize = zLineAd;
 						rotateMove(cube19,xLine);
 					}
-				}
-				//105、106
-				if((getFaceColorByVector(cube1,zLine)==bottomColor||getFaceColorByVector(cube7,zLine)==bottomColor)&&
-					!isRotating){
+				}else if(getFaceColorByVector(cube1,zLine)==bottomColor||getFaceColorByVector(cube7,zLine)==bottomColor){//105、106
 					if(getFaceColorByVector(cube1,yLine)!=bottomColor){
 						normalize = yLine;
 						rotateMove(cube1,xLine);
@@ -279,9 +258,7 @@
 						normalize = zLine;
 						rotateMove(cube7,xLine);
 					}
-				}
-				if((getFaceColorByVector(cube9,xLineAd)==bottomColor||getFaceColorByVector(cube15,xLineAd)==bottomColor)&&
-					!isRotating){
+				}else if(getFaceColorByVector(cube9,xLineAd)==bottomColor||getFaceColorByVector(cube15,xLineAd)==bottomColor){
 					if(getFaceColorByVector(cube9,yLine)!=bottomColor){
 						normalize = yLine;
 						rotateMove(cube15,zLine);
@@ -289,9 +266,7 @@
 						normalize = xLineAd;
 						rotateMove(cube15,zLine);
 					}
-				}
-				if((getFaceColorByVector(cube19,zLineAd)==bottomColor||getFaceColorByVector(cube25,zLineAd)==bottomColor)&&
-					!isRotating){
+				}else if(getFaceColorByVector(cube19,zLineAd)==bottomColor||getFaceColorByVector(cube25,zLineAd)==bottomColor){
 					if(getFaceColorByVector(cube19,yLine)!=bottomColor){
 						normalize = yLine;
 						rotateMove(cube19,xLine);
@@ -299,9 +274,7 @@
 						normalize = zLineAd;
 						rotateMove(cube25,xLineAd);
 					}
-				}
-				if((getFaceColorByVector(cube11,xLine)==bottomColor||getFaceColorByVector(cube17,xLine)==bottomColor)&&
-					!isRotating){
+				}else if(getFaceColorByVector(cube11,xLine)==bottomColor||getFaceColorByVector(cube17,xLine)==bottomColor){
 					if(getFaceColorByVector(cube11,yLine)!=bottomColor){
 						normalize = yLine;
 						rotateMove(cube11,zLine);
