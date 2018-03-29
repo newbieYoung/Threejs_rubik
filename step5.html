@@ -67,12 +67,13 @@
             	console.log('step3');
             }
             //第二步底棱归位
-            function step2(){
+            function step2(indexNo){
             	if(checkStep2()){
             		currentStep = 3;
 					step3();
 					return;
             	}
+
             	var cube1 = getCubeByIndex(1);
             	var cube4 = getCubeByIndex(4);
             	var cube11 = getCubeByIndex(11);
@@ -81,50 +82,73 @@
             	var cube22 = getCubeByIndex(22);
             	var cube9 = getCubeByIndex(9);
             	var cube12 = getCubeByIndex(12);
-            	if(getFaceColorByVector(cube1,yLine)==bottomColor){
-            		if(getFaceColorByVector(cube1,zLine)==getFaceColorByVector(cube4,zLine)){
-            			normalize = yLine;
-						rotateMove(cube1,xLine,function(){
-							normalize = xLine;
-							rotateMove(cube1,yLineAd);
-						});
-            		}else{
-            			normalize = zLine;
-            			rotateMove(cube1,xLine);
-            		}
-            	}else if(getFaceColorByVector(cube11,yLine)==bottomColor){
-            		if(getFaceColorByVector(cube11,xLine)==getFaceColorByVector(cube14,xLine)){
-            			normalize = yLine;
-            			rotateMove(cube11,zLineAd,function(){
-            				normalize = zLineAd;
-            				rotateMove(cube11,yLineAd);
-            			});
-            		}else{
-            			normalize = xLine;
-            			rotateMove(cube11,zLineAd);
-            		}
-            	}else if(getFaceColorByVector(cube19,yLine)==bottomColor){
-            		if(getFaceColorByVector(cube19,zLineAd)==getFaceColorByVector(cube22,zLineAd)){
-            			normalize = yLine;
-            			rotateMove(cube19,xLineAd,function(){
-            				normalize = xLineAd;
-            				rotateMove(cube19,yLineAd);
-            			});
-            		}else{
-            			normalize = zLineAd;
-            			rotateMove(cube19,xLineAd);
-            		}
-            	}else if(getFaceColorByVector(cube9,yLine)==bottomColor){
-            		if(getFaceColorByVector(cube9,xLineAd)==getFaceColorByVector(cube12,xLineAd)){
-            			normalize = yLine;
-            			rotateMove(cube9,zLine,function(){
-            				normalize = zLine;
-            				rotateMove(cube9,yLineAd);
-            			});
-            		}else{
-            			normalize = xLineAd;
-            			rotateMove(cube9,zLine);
-            		}
+
+            	switch(indexNo){
+            		default:
+            		case 1:
+            			if(getFaceColorByVector(cube1,yLine)==bottomColor){
+		            		if(getFaceColorByVector(cube1,zLine)==getFaceColorByVector(cube4,zLine)){
+		            			normalize = yLine;
+								rotateMove(cube1,xLine,function(){
+									normalize = xLine;
+									rotateMove(cube1,yLineAd);
+								});
+		            		}else{
+		            			normalize = zLine;
+		            			rotateMove(cube1,xLine,function(){
+		            				step2(11);
+		            			});
+		            		}
+		            		break;
+		            	}
+		            case 11:
+		            	if(getFaceColorByVector(cube11,yLine)==bottomColor){
+		            		if(getFaceColorByVector(cube11,xLine)==getFaceColorByVector(cube14,xLine)){
+		            			normalize = yLine;
+		            			rotateMove(cube11,zLineAd,function(){
+		            				normalize = zLineAd;
+		            				rotateMove(cube11,yLineAd);
+		            			});
+		            		}else{
+		            			normalize = xLine;
+		            			rotateMove(cube11,zLineAd,function(){
+		            				step2(19);
+		            			});
+		            		}
+		            		break;
+		            	}
+		            case 19:
+		            	if(getFaceColorByVector(cube19,yLine)==bottomColor){
+		            		if(getFaceColorByVector(cube19,zLineAd)==getFaceColorByVector(cube22,zLineAd)){
+		            			normalize = yLine;
+		            			rotateMove(cube19,xLineAd,function(){
+		            				normalize = xLineAd;
+		            				rotateMove(cube19,yLineAd);
+		            			});
+		            		}else{
+		            			normalize = zLineAd;
+		            			rotateMove(cube19,xLineAd,function(){
+		            				step2(9)
+		            			});
+		            		}
+		            		break;
+		            	}
+		            case 9:
+			            if(getFaceColorByVector(cube9,yLine)==bottomColor){
+		            		if(getFaceColorByVector(cube9,xLineAd)==getFaceColorByVector(cube12,xLineAd)){
+		            			normalize = yLine;
+		            			rotateMove(cube9,zLine,function(){
+		            				normalize = zLine;
+		            				rotateMove(cube9,yLineAd);
+		            			});
+		            		}else{
+		            			normalize = xLineAd;
+		            			rotateMove(cube9,zLine,function(){
+		            				step(1)
+		            			});
+		            		}
+		            		break;
+		            	}
             	}
             }
             function checkStep2(){
@@ -642,6 +666,9 @@
              */
             function rotateAnimation(elements,direction,currentstamp,startstamp,laststamp,next){
                 var totalTime = 500;//转动的总运动时间
+                if(isAutoReset&&currentStep==2){//测试第二步
+                	totalTime = 500;
+                }
                 if(startstamp===0){
                     startstamp = currentstamp;
                     laststamp = currentstamp;
