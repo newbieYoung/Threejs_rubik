@@ -644,12 +644,6 @@
                     startstamp = currentstamp;
                     laststamp = currentstamp;
                 }
-                if(currentstamp-startstamp>=totalTime){
-                    currentstamp = startstamp+totalTime;
-                    isRotating = false;
-                    startPoint = null;
-                    updateCubeIndex(elements);
-                }
                 switch(direction){
                     //绕z轴顺时针
                     case 0.1:
@@ -708,12 +702,13 @@
                     default:
                         break;
                 }
-                if(currentstamp-startstamp<totalTime){
-                    window.requestAnimFrame(function(timestamp){
-                        rotateAnimation(elements,direction,timestamp,startstamp,currentstamp);
-                    });
-                }else{
-                	//转动结束
+                if(currentstamp-startstamp>=totalTime){
+                    currentstamp = startstamp+totalTime;
+                    isRotating = false;
+                    startPoint = null;
+                    updateCubeIndex(elements);
+
+                    //转动结束
                 	if(getCubeStatus()){
                 		isAutoReset = false;
                 	}
@@ -730,6 +725,10 @@
 	                		}
                 		}
                 	}
+                }else{
+                	window.requestAnimFrame(function(timestamp){
+                        rotateAnimation(elements,direction,timestamp,startstamp,currentstamp);
+                    });
                 }
             }
 
