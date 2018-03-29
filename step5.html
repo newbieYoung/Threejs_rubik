@@ -155,7 +155,7 @@
 				var cube25 = getCubeByIndex(25);
 
 				//101、107
-				if(getFaceColorByVector(cube3,zLine)==bottomColor&&!isRotating){
+				if(getFaceColorByVector(cube3,zLine)==bottomColor){
 					if(getFaceColorByVector(cube9,yLine)!=bottomColor){
 						normalize = zLine;
 						rotateMove(cube3,yLine);
@@ -164,7 +164,7 @@
 						rotateMove(cube9,zLine);
 					}
 				}
-				if(getFaceColorByVector(cube21,xLineAd)==bottomColor&&!isRotating){
+				if(getFaceColorByVector(cube21,xLineAd)==bottomColor){
 					if(getFaceColorByVector(cube19,yLine)!=bottomColor){
 						normalize = xLineAd;
 						rotateMove(cube21,yLine);
@@ -625,13 +625,13 @@
             }
 
             //某方块在某个方向转动
-            function rotateMove(target,vector){
+            function rotateMove(target,vector,next){
             	isRotating = true;//转动标识置为true
             	var direction = getDirection(vector);//获得方向
             	var elements = getBoxs(target,direction);
             	var startTime = new Date().getTime();
                 window.requestAnimFrame(function(timestamp){
-                    rotateAnimation(elements,direction,timestamp,0);
+                    rotateAnimation(elements,direction,timestamp,0,next);
                 });
             }
 
@@ -643,6 +643,12 @@
                 if(startstamp===0){
                     startstamp = currentstamp;
                     laststamp = currentstamp;
+                }
+                if(currentstamp-startstamp>=totalTime){
+                    currentstamp = startstamp+totalTime;
+                    isRotating = false;
+                    startPoint = null;
+                    updateCubeIndex(elements);
                 }
                 switch(direction){
                     //绕z轴顺时针
@@ -702,19 +708,18 @@
                     default:
                         break;
                 }
-                if(currentstamp-startstamp>=totalTime){
-                    currentstamp = startstamp+totalTime;
-                    isRotating = false;
-                    startPoint = null;
-                    updateCubeIndex(elements);
-
-                    //转动结束
+                if(currentstamp-startstamp<totalTime){
+                	window.requestAnimFrame(function(timestamp){
+                        rotateAnimation(elements,direction,timestamp,startstamp,currentstamp);
+                    });
+                }else{
+                	//转动结束
                 	if(getCubeStatus()){
                 		isAutoReset = false;
                 	}
                 	if(isAutoReset){
                 		if(next){
-                			next();
+                			//next();
                 		}else{
                 			switch(currentStep){
 	                			case 1:
@@ -725,10 +730,6 @@
 	                		}
                 		}
                 	}
-                }else{
-                	window.requestAnimFrame(function(timestamp){
-                        rotateAnimation(elements,direction,timestamp,startstamp,currentstamp);
-                    });
                 }
             }
 
