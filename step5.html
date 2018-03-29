@@ -75,7 +75,9 @@
             	}
             	var cube1 = getCubeByIndex(1);
             	var cube4 = getCubeByIndex(4);
-            	if(getFaceColorByVector(cube1,yLine)==bottomColor&&!isRotating){
+            	var cube11 = getCubeByIndex(11);
+            	var cube14 = getCubeByIndex(14);
+            	if(getFaceColorByVector(cube1,yLine)==bottomColor){
             		if(getFaceColorByVector(cube1,zLine)==getFaceColorByVector(cube4,zLine)){
             			normalize = yLine;
 						rotateMove(cube1,xLine,function(){
@@ -86,10 +88,7 @@
             			normalize = zLine;
             			rotateMove(cube1,xLine);
             		}
-            	}
-            	var cube11 = getCubeByIndex(11);
-            	var cube14 = getCubeByIndex(14);
-            	if(getFaceColorByVector(cube11,yLine)==bottomColor&&isRotating){
+            	}else if(getFaceColorByVector(cube11,yLine)==bottomColor){
             		if(getFaceColorByVector(cube11,xLine)==getFaceColorByVector(cube14,xLine)){
             			normalize = yLine;
             			rotateMove(cube11,zLineAd,function(){
@@ -604,7 +603,7 @@
             	var elements = getBoxs(target,direction);
             	var startTime = new Date().getTime();
                 window.requestAnimFrame(function(timestamp){
-                    rotateAnimation(elements,direction,timestamp,0,next);
+                    rotateAnimation(elements,direction,timestamp,0,null,next);
                 });
             }
 
@@ -683,7 +682,7 @@
                 }
                 if(currentstamp-startstamp<totalTime){
                 	window.requestAnimFrame(function(timestamp){
-                        rotateAnimation(elements,direction,timestamp,startstamp,currentstamp);
+                        rotateAnimation(elements,direction,timestamp,startstamp,currentstamp,next);
                     });
                 }else{
                 	//转动结束
@@ -692,7 +691,7 @@
                 	}
                 	if(isAutoReset){
                 		if(next){
-                			//next();
+                			next();
                 		}else{
                 			switch(currentStep){
 	                			case 1:
