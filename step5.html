@@ -152,81 +152,39 @@
 					return;
             	}
 
-            	var cube1 = getCubeByIndex(1);
-            	var cube4 = getCubeByIndex(4);
-            	var cube11 = getCubeByIndex(11);
-            	var cube14 = getCubeByIndex(14);
-            	var cube19 = getCubeByIndex(19);
-            	var cube22 = getCubeByIndex(22);
-            	var cube9 = getCubeByIndex(9);
-            	var cube12 = getCubeByIndex(12);
+            	step2Case1(0);
+            	step2Case1(1);
+            	step2Case1(2);
+            	step2Case1(3);
+            }
+            //底棱归位第一种情况
+            function step2Case1(rotateNum){
+            	if(!isRotating){
+            		var cube1 = getCubeByIndex(1,rotateNum);
+            		var cube4 = getCubeByIndex(4,rotateNum);
+            		var yLine = rotateAxisByYLine(YLine,rotateNum);
+            		var zLine = rotateAxisByYLine(ZLine,rotateNum);
+            		var xLine = rotateAxisByYLine(XLine,rotateNum);
+            		var yLineAd = rotateAxisByYLine(YLineAd,rotateNum);
 
-            	switch(indexNo){
-            		default:
-            		case 1:
-            			if(getFaceColorByVector(cube1,YLine)==bottomColor){
-		            		if(getFaceColorByVector(cube1,ZLine)==getFaceColorByVector(cube4,ZLine)){
-		            			normalize = YLine;
-								rotateMove(cube1,XLine,function(){
-									normalize = XLine;
-									rotateMove(cube1,YLineAd);
-								});
-		            		}else{
-		            			normalize = ZLine;
-		            			rotateMove(cube1,XLine,function(){
-		            				step2(11);
-		            			});
-		            		}
-		            		break;
-		            	}
-		            case 11:
-		            	if(getFaceColorByVector(cube11,YLine)==bottomColor){
-		            		if(getFaceColorByVector(cube11,XLine)==getFaceColorByVector(cube14,XLine)){
-		            			normalize = YLine;
-		            			rotateMove(cube11,ZLineAd,function(){
-		            				normalize = ZLineAd;
-		            				rotateMove(cube11,YLineAd);
-		            			});
-		            		}else{
-		            			normalize = XLine;
-		            			rotateMove(cube11,ZLineAd,function(){
-		            				step2(19);
-		            			});
-		            		}
-		            		break;
-		            	}
-		            case 19:
-		            	if(getFaceColorByVector(cube19,YLine)==bottomColor){
-		            		if(getFaceColorByVector(cube19,ZLineAd)==getFaceColorByVector(cube22,ZLineAd)){
-		            			normalize = YLine;
-		            			rotateMove(cube19,XLineAd,function(){
-		            				normalize = XLineAd;
-		            				rotateMove(cube19,YLineAd);
-		            			});
-		            		}else{
-		            			normalize = ZLineAd;
-		            			rotateMove(cube19,XLineAd,function(){
-		            				step2(9)
-		            			});
-		            		}
-		            		break;
-		            	}
-		            case 9:
-			            if(getFaceColorByVector(cube9,YLine)==bottomColor){
-		            		if(getFaceColorByVector(cube9,XLineAd)==getFaceColorByVector(cube12,XLineAd)){
-		            			normalize = YLine;
-		            			rotateMove(cube9,ZLine,function(){
-		            				normalize = ZLine;
-		            				rotateMove(cube9,YLineAd);
-		            			});
-		            		}else{
-		            			normalize = XLineAd;
-		            			rotateMove(cube9,ZLine,function(){
-		            				step2(1)
-		            			});
-		            		}
-		            		break;
-		            	}
+            		if(getFaceColorByVector(cube1,yLine)==bottomColor){
+	            		if(getFaceColorByVector(cube1,zLine)==getFaceColorByVector(cube4,zLine)){
+	            			normalize = yLine;
+							rotateMove(cube1,xLine,function(){
+								normalize = xLine;
+								rotateMove(cube1,yLineAd);
+							});
+	            		}else{
+	            			normalize = zLine;
+	            			rotateMove(cube1,xLine,function(){
+	            				if(rotateNum+1>3){
+	            					step2Case1(0);
+	            				}else{
+	            					step2Case1(rotateNum+1);
+	            				}
+	            			});
+	            		}
+	            	}
             	}
             }
             //判断是否完成第二部底棱归位
