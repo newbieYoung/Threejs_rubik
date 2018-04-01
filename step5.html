@@ -222,7 +222,7 @@
 		            		}else{
 		            			normalize = XLineAd;
 		            			rotateMove(cube9,ZLine,function(){
-		            				step(1)
+		            				step2(1)
 		            			});
 		            		}
 		            		break;
@@ -286,39 +286,15 @@
 				var cube17 = getCubeByIndex(17);
 				var cube25 = getCubeByIndex(25);
 
-				if(getFaceColorByVector(cube3,ZLine)==bottomColor){//101、107
-					if(getFaceColorByVector(cube9,YLine)!=bottomColor){
-						normalize = ZLine;
-						rotateMove(cube3,YLine);
-					}else{
-						normalize = XLineAd;
-						rotateMove(cube9,ZLine);
-					}
-				}else if(getFaceColorByVector(cube21,XLineAd)==bottomColor){
-					if(getFaceColorByVector(cube19,YLine)!=bottomColor){
-						normalize = XLineAd;
-						rotateMove(cube21,YLine);
-					}else{
-						normalize = ZLineAd;
-						rotateMove(cube19,XLine);
-					}
-				}else if(getFaceColorByVector(cube23,ZLineAd)==bottomColor){
-					if(getFaceColorByVector(cube11,YLine)!=bottomColor){
-						normalize = ZLineAd;
-						rotateMove(cube23,YLine);
-					}else{
-						normalize = XLine;
-						rotateMove(cube11,ZLine);
-					}
-				}else if(getFaceColorByVector(cube5,XLine)==bottomColor){
-					if(getFaceColorByVector(cube1,YLine)!=bottomColor){
-						normalize = XLine;
-						rotateMove(cube5,YLine);
-					}else{
-						normalize = ZLine;
-						rotateMove(cube1,XLine);
-					}
-				}else if(getFaceColorByVector(cube5,ZLine)==bottomColor){//102、108
+				
+				step1Case1(0)
+				step1Case1(1)
+				step1Case1(2)
+				step1Case1(3)
+				
+				if(!isRotating){
+
+				if(getFaceColorByVector(cube5,ZLine)==bottomColor){//102、108
 					if(getFaceColorByVector(cube11,YLine)!=bottomColor){
 						normalize = ZLine;
 						rotateMove(cube5,YLine);
@@ -415,6 +391,8 @@
 						rotateMove(cube17,ZLineAd);
 					}
 				}
+
+				}
             }
             //判断是否完成第一步小白花
             function checkStep1(){
@@ -430,8 +408,73 @@
             	}
             	return step1;
             }
-            //根据索引获取方块
-            function getCubeByIndex(index){
+            //小白花第一种情况
+            function step1Case1(rotateNum){
+            	if(!isRotating){
+            		var cube3 = getCubeByIndex(3,rotateNum);
+	        		var cube9 = getCubeByIndex(9,rotateNum);
+	        		var zLine = rotateAxisByYLine(ZLine,rotateNum);
+	        		var yLine = rotateAxisByYLine(YLine,rotateNum);
+	        		var xLineAd = rotateAxisByYLine(XLineAd,rotateNum);
+
+	            	if(getFaceColorByVector(cube3,zLine)==bottomColor){//101、107
+						if(getFaceColorByVector(cube9,yLine)!=bottomColor){
+							normalize = zLine;
+							rotateMove(cube3,yLine);
+						}else{
+							normalize = xLineAd;
+							rotateMove(cube9,zLine);
+						}
+					}
+            	}
+            }
+            /**
+             * 根据索引获取方块
+             * @param  index     索引
+             * @param  rotateNum 旋转次数
+             */
+            function getCubeByIndex(index,rotateNum){
+            	var tempIndex = index;
+            	var tempRotateNum = rotateNum;
+            	while(rotateNum>0){
+            		if(parseInt(index/9)==0){
+        				if(index%3==0){
+        					index += 2;
+        				}else if(index%3==1){
+        					index += 10;
+        				}else if(index%3==2){
+        					index += 18;
+        				}
+        			}else if(index%3==2){
+        				if(parseInt(index/9)==0){
+        					index += 18;
+        				}else if(parseInt(index/9)==1){
+        					index += 8;
+        				}else if(parseInt(index/9)==2){
+        					index -= 2;
+        				}
+        			}else if(parseInt(index/9)==2){
+        				if(index%3==2){
+        					index -= 2;
+        				}else if(index%3==1){
+        					index -= 10;
+        				}else if(index%3==0){
+        					index -= 18;
+        				}
+        			}else if(index%3==0){
+        				if(parseInt(index/9)==2){
+        					index -= 18;
+        				}else if(parseInt(index/9)==1){
+        					index -= 8;
+        				}else if(parseInt(index/9)==0){
+        					index += 2;
+        				}
+        			}
+    				rotateNum --;
+            	}
+            	// if(tempIndex!=index){
+            	// 	console.log('num:'+tempRotateNum+' '+tempIndex+' >> '+index);
+            	// }
             	var cube; 
 				for(var i=0;i<cubes.length;i++){
 					if(cubes[i].cubeIndex == index+minCubeIndex){
@@ -439,6 +482,22 @@
 					}
 				}
 				return cube;
+            }
+            //根据Y轴旋转向量
+            function rotateAxisByYLine(vector,rotateNum){
+            	while(rotateNum>0){
+					if(vector.angleTo(XLine)==0){
+	            		vector = ZLineAd.clone();
+	            	}else if(vector.angleTo(ZLineAd)==0){
+	            		vector = XLineAd.clone();
+	            	}else if(vector.angleTo(XLineAd)==0){
+	            		vector = ZLine.clone();
+	            	}else if(vector.angleTo(ZLine)==0){
+	            		vector = XLine.clone();
+	            	}
+	            	rotateNum--
+            	}
+            	return vector;
             }
             //根据颜色序号获取初始化时其对面颜色序号
             function getOppositeColor(no){
