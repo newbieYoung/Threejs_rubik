@@ -287,112 +287,25 @@
 				var cube25 = getCubeByIndex(25);
 
 				
-				step1Case1(0)
-				step1Case1(1)
-				step1Case1(2)
-				step1Case1(3)
+				step1Case1(0);
+				step1Case1(1);
+				step1Case1(2);
+				step1Case1(3);
+
+				step1Case2(0);
+				step1Case2(1);
+				step1Case2(2);
+				step1Case2(3);
+
+				step1Case3(0);
+				step1Case3(1);
+				step1Case3(2);
+				step1Case3(3);
 				
-				if(!isRotating){
-
-				if(getFaceColorByVector(cube5,ZLine)==bottomColor){//102、108
-					if(getFaceColorByVector(cube11,YLine)!=bottomColor){
-						normalize = ZLine;
-						rotateMove(cube5,YLine);
-					}else{
-						normalize = XLine;
-						rotateMove(cube11,ZLine);
-					}
-				}else if(getFaceColorByVector(cube3,XLineAd)==bottomColor){
-					if(getFaceColorByVector(cube1,YLine)!=bottomColor){
-						normalize = XLineAd;
-						rotateMove(cube3,YLine);
-					}else{
-						normalize = ZLine;
-						rotateMove(cube1,XLine);
-					}
-				}else if(getFaceColorByVector(cube21,ZLineAd)==bottomColor){
-					if(getFaceColorByVector(cube9,YLine)!=bottomColor){
-						normalize = ZLineAd;
-						rotateMove(cube21,YLine);
-					}else{
-						normalize = XLineAd;
-						rotateMove(cube9,ZLine);
-					}
-				}else if(getFaceColorByVector(cube23,XLine)==bottomColor){
-					if(getFaceColorByVector(cube19,YLine)!=bottomColor){
-						normalize = XLine;
-						rotateMove(cube23,YLine);
-					}else{
-						normalize = ZLineAd;
-						rotateMove(cube19,XLine);
-					}
-				}else if(getFaceColorByVector(cube15,YLineAd)==bottomColor){//103、104
-					if(getFaceColorByVector(cube9,YLine)!=bottomColor){
-						normalize = YLineAd;
-						rotateMove(cube15,ZLine);
-					}else{
-						normalize = XLineAd;
-						rotateMove(cube9,ZLine);
-					}
-				}else if(getFaceColorByVector(cube7,YLineAd)==bottomColor){
-					if(getFaceColorByVector(cube1,YLine)!=bottomColor){
-						normalize = YLineAd;
-						rotateMove(cube7,XLine);
-					}else{
-						normalize = ZLine;
-						rotateMove(cube1,XLine);
-					}
-				}else if(getFaceColorByVector(cube17,YLineAd)==bottomColor){
-					if(getFaceColorByVector(cube11,YLine)!=bottomColor){
-						normalize = YLineAd;
-						rotateMove(cube17,ZLineAd);
-					}else{
-						normalize = XLine;
-						rotateMove(cube11,ZLine);
-					}
-				}else if(getFaceColorByVector(cube25,YLineAd)==bottomColor){
-					if(getFaceColorByVector(cube19,YLine)!=bottomColor){
-						normalize = YLineAd;
-						rotateMove(cube25,XLineAd);
-					}else{
-						normalize = ZLineAd;
-						rotateMove(cube19,XLine);
-					}
-				}else if(getFaceColorByVector(cube1,ZLine)==bottomColor||getFaceColorByVector(cube7,ZLine)==bottomColor){//105、106
-					if(getFaceColorByVector(cube1,YLine)!=bottomColor){
-						normalize = YLine;
-						rotateMove(cube1,XLine);
-					}else{
-						normalize = ZLine;
-						rotateMove(cube7,XLine);
-					}
-				}else if(getFaceColorByVector(cube9,XLineAd)==bottomColor||getFaceColorByVector(cube15,XLineAd)==bottomColor){
-					if(getFaceColorByVector(cube9,YLine)!=bottomColor){
-						normalize = YLine;
-						rotateMove(cube15,ZLine);
-					}else{
-						normalize = XLineAd;
-						rotateMove(cube15,ZLine);
-					}
-				}else if(getFaceColorByVector(cube19,ZLineAd)==bottomColor||getFaceColorByVector(cube25,ZLineAd)==bottomColor){
-					if(getFaceColorByVector(cube19,YLine)!=bottomColor){
-						normalize = YLine;
-						rotateMove(cube19,XLine);
-					}else{
-						normalize = ZLineAd;
-						rotateMove(cube25,XLineAd);
-					}
-				}else if(getFaceColorByVector(cube11,XLine)==bottomColor||getFaceColorByVector(cube17,XLine)==bottomColor){
-					if(getFaceColorByVector(cube11,YLine)!=bottomColor){
-						normalize = YLine;
-						rotateMove(cube11,ZLine);
-					}else{
-						normalize = XLine;
-						rotateMove(cube17,ZLineAd);
-					}
-				}
-
-				}
+				step1Case4(0);
+				step1Case4(1);
+				step1Case4(2);
+				step1Case4(3);				
             }
             //判断是否完成第一步小白花
             function checkStep1(){
@@ -424,6 +337,67 @@
 						}else{
 							normalize = xLineAd;
 							rotateMove(cube9,zLine);
+						}
+					}
+            	}
+            }
+            //小白花第二种情况
+            function step1Case2(rotateNum){
+            	if(!isRotating){
+            		var cube5 = getCubeByIndex(5,rotateNum);
+            		var cube11 = getCubeByIndex(11,rotateNum);
+            		var zLine = rotateAxisByYLine(ZLine,rotateNum);
+            		var yLine = rotateAxisByYLine(YLine,rotateNum);
+            		var xLine = rotateAxisByYLine(XLine,rotateNum);
+
+            		if(getFaceColorByVector(cube5,zLine)==bottomColor){
+						if(getFaceColorByVector(cube11,yLine)!=bottomColor){
+							normalize = zLine;
+							rotateMove(cube5,yLine);
+						}else{
+							normalize = xLine;
+							rotateMove(cube11,zLine);
+						}
+					}
+            	}
+            }
+            //小白花第三种情况
+            function step1Case3(rotateNum){
+            	if(!isRotating){
+            		var cube15 = getCubeByIndex(15,rotateNum);
+            		var cube9 = getCubeByIndex(9,rotateNum);
+            		var yLineAd = rotateAxisByYLine(YLineAd,rotateNum);
+            		var yLine = rotateAxisByYLine(YLine,rotateNum);
+            		var zLine = rotateAxisByYLine(ZLine,rotateNum);
+            		var xLineAd = rotateAxisByYLine(XLineAd,rotateNum);
+
+            		if(getFaceColorByVector(cube15,yLineAd)==bottomColor){//103、104
+						if(getFaceColorByVector(cube9,yLine)!=bottomColor){
+							normalize = yLineAd;
+							rotateMove(cube15,zLine);
+						}else{
+							normalize = xLineAd;
+							rotateMove(cube9,zLine);
+						}
+					}
+            	}
+            }
+            //小白花第四种情况
+            function step1Case4(rotateNum){
+            	if(!isRotating){
+            		var cube1 = getCubeByIndex(1,rotateNum);
+            		var cube7 = getCubeByIndex(7,rotateNum);
+            		var zLine = rotateAxisByYLine(ZLine,rotateNum);
+            		var yLine = rotateAxisByYLine(YLine,rotateNum);
+            		var xLine = rotateAxisByYLine(XLine,rotateNum);
+
+            		if(getFaceColorByVector(cube1,zLine)==bottomColor||getFaceColorByVector(cube7,zLine)==bottomColor){//105、106
+						if(getFaceColorByVector(cube1,yLine)!=bottomColor){
+							normalize = yLine;
+							rotateMove(cube1,xLine);
+						}else{
+							normalize = zLine;
+							rotateMove(cube7,xLine);
 						}
 					}
             	}
