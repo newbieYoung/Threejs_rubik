@@ -35,13 +35,13 @@
             var minCubeIndex;
             var initStatus = [];//魔方初始状态
             //魔方转动的六个方向
-            const xLine = new THREE.Vector3( 1, 0, 0 );//X轴正方向
-            const xLineAd = new THREE.Vector3( -1, 0, 0 );//X轴负方向
-            const yLine = new THREE.Vector3( 0, 1, 0 );//Y轴正方向
-            const yLineAd = new THREE.Vector3( 0, -1, 0 );//Y轴负方向
-            const zLine = new THREE.Vector3( 0, 0, 1 );//Z轴正方向
-            const zLineAd = new THREE.Vector3( 0, 0, -1 );//Z轴负方向
-            const cubeParams = {//魔方参数
+            const XLine = new THREE.Vector3( 1, 0, 0 );//X轴正方向
+            const XLineAd = new THREE.Vector3( -1, 0, 0 );//X轴负方向
+            const YLine = new THREE.Vector3( 0, 1, 0 );//Y轴正方向
+            const YLineAd = new THREE.Vector3( 0, -1, 0 );//Y轴负方向
+            const ZLine = new THREE.Vector3( 0, 0, 1 );//Z轴正方向
+            const ZLineAd = new THREE.Vector3( 0, 0, -1 );//Z轴负方向
+            const CubeParams = {//魔方参数
                 x:-75,
                 y:75,
                 z:75,
@@ -78,18 +78,18 @@
             	var cube18 = getCubeByIndex(18);
             	var cube20 = getCubeByIndex(20);
 
-            	// if(getFaceColorByVector(cube2,xLine)==bottomColor||
-            	//    getFaceColorByVector(cube0,zLine)==bottomColor||
-            	//    getFaceColorByVector(cube18,xLineAd)==bottomColor||
-            	//    getFaceColorByVector(cube20,zLineAd)==bottomColor){
+            	// if(getFaceColorByVector(cube2,XLine)==bottomColor||
+            	//    getFaceColorByVector(cube0,ZLine)==bottomColor||
+            	//    getFaceColorByVector(cube18,XLineAd)==bottomColor||
+            	//    getFaceColorByVector(cube20,ZLineAd)==bottomColor){
 
             	// }
             	
             	var cube2 = getCubeByIndex(2);
             	var cube4 = getCubeByIndex(4);
             	var cube14 = getCubeByIndex(14);
-            	if(getFaceColorByVector(cube2,xLine)==bottomColor){
-            		if(getFaceColorByVector(cube4,zLine)!=getFaceColorByVector(cube2,zLine)){
+            	if(getFaceColorByVector(cube2,XLine)==bottomColor){
+            		if(getFaceColorByVector(cube4,ZLine)!=getFaceColorByVector(cube2,ZLine)){
 
             		}else{
 
@@ -113,31 +113,31 @@
             	var cube15 = getCubeByIndex(15);
             	var cube24 = getCubeByIndex(24);
 
-            	var zColor = getFaceColorByVector(cube4,zLine);
-            	if(getFaceColorByVector(cube6,zLine)!=zColor||
-            	   getFaceColorByVector(cube7,zLine)!=zColor||
-            	   getFaceColorByVector(cube8,zLine)!=zColor){
+            	var zColor = getFaceColorByVector(cube4,ZLine);
+            	if(getFaceColorByVector(cube6,ZLine)!=zColor||
+            	   getFaceColorByVector(cube7,ZLine)!=zColor||
+            	   getFaceColorByVector(cube8,ZLine)!=zColor){
             		return false;
             	}
 
-            	var xColor = getFaceColorByVector(cube14,xLine);
-            	if(getFaceColorByVector(cube8,xLine)!=xColor||
-            	   getFaceColorByVector(cube17,xLine)!=xColor||
-            	   getFaceColorByVector(cube26,xLine)!=xColor){
+            	var xColor = getFaceColorByVector(cube14,XLine);
+            	if(getFaceColorByVector(cube8,XLine)!=xColor||
+            	   getFaceColorByVector(cube17,XLine)!=xColor||
+            	   getFaceColorByVector(cube26,XLine)!=xColor){
             		return false;
             	}
 
-            	var zAdColor = getFaceColorByVector(cube22,zLineAd);
-            	if(getFaceColorByVector(cube24,zLineAd)!=zAdColor||
-            	   getFaceColorByVector(cube25,zLineAd)!=zAdColor||
-            	   getFaceColorByVector(cube26,zLineAd)!=zAdColor){
+            	var zAdColor = getFaceColorByVector(cube22,ZLineAd);
+            	if(getFaceColorByVector(cube24,ZLineAd)!=zAdColor||
+            	   getFaceColorByVector(cube25,ZLineAd)!=zAdColor||
+            	   getFaceColorByVector(cube26,ZLineAd)!=zAdColor){
             		return false;
             	}
 
-            	var xAdColor = getFaceColorByVector(cube12,xLineAd);
-            	if(getFaceColorByVector(cube6,xLineAd)!=xAdColor||
-            	   getFaceColorByVector(cube15,xLineAd)!=xAdColor||
-            	   getFaceColorByVector(cube24,xLineAd)!=xAdColor){
+            	var xAdColor = getFaceColorByVector(cube12,XLineAd);
+            	if(getFaceColorByVector(cube6,XLineAd)!=xAdColor||
+            	   getFaceColorByVector(cube15,XLineAd)!=xAdColor||
+            	   getFaceColorByVector(cube24,XLineAd)!=xAdColor){
             		return false;
             	}
 
@@ -164,64 +164,64 @@
             	switch(indexNo){
             		default:
             		case 1:
-            			if(getFaceColorByVector(cube1,yLine)==bottomColor){
-		            		if(getFaceColorByVector(cube1,zLine)==getFaceColorByVector(cube4,zLine)){
-		            			normalize = yLine;
-								rotateMove(cube1,xLine,function(){
-									normalize = xLine;
-									rotateMove(cube1,yLineAd);
+            			if(getFaceColorByVector(cube1,YLine)==bottomColor){
+		            		if(getFaceColorByVector(cube1,ZLine)==getFaceColorByVector(cube4,ZLine)){
+		            			normalize = YLine;
+								rotateMove(cube1,XLine,function(){
+									normalize = XLine;
+									rotateMove(cube1,YLineAd);
 								});
 		            		}else{
-		            			normalize = zLine;
-		            			rotateMove(cube1,xLine,function(){
+		            			normalize = ZLine;
+		            			rotateMove(cube1,XLine,function(){
 		            				step2(11);
 		            			});
 		            		}
 		            		break;
 		            	}
 		            case 11:
-		            	if(getFaceColorByVector(cube11,yLine)==bottomColor){
-		            		if(getFaceColorByVector(cube11,xLine)==getFaceColorByVector(cube14,xLine)){
-		            			normalize = yLine;
-		            			rotateMove(cube11,zLineAd,function(){
-		            				normalize = zLineAd;
-		            				rotateMove(cube11,yLineAd);
+		            	if(getFaceColorByVector(cube11,YLine)==bottomColor){
+		            		if(getFaceColorByVector(cube11,XLine)==getFaceColorByVector(cube14,XLine)){
+		            			normalize = YLine;
+		            			rotateMove(cube11,ZLineAd,function(){
+		            				normalize = ZLineAd;
+		            				rotateMove(cube11,YLineAd);
 		            			});
 		            		}else{
-		            			normalize = xLine;
-		            			rotateMove(cube11,zLineAd,function(){
+		            			normalize = XLine;
+		            			rotateMove(cube11,ZLineAd,function(){
 		            				step2(19);
 		            			});
 		            		}
 		            		break;
 		            	}
 		            case 19:
-		            	if(getFaceColorByVector(cube19,yLine)==bottomColor){
-		            		if(getFaceColorByVector(cube19,zLineAd)==getFaceColorByVector(cube22,zLineAd)){
-		            			normalize = yLine;
-		            			rotateMove(cube19,xLineAd,function(){
-		            				normalize = xLineAd;
-		            				rotateMove(cube19,yLineAd);
+		            	if(getFaceColorByVector(cube19,YLine)==bottomColor){
+		            		if(getFaceColorByVector(cube19,ZLineAd)==getFaceColorByVector(cube22,ZLineAd)){
+		            			normalize = YLine;
+		            			rotateMove(cube19,XLineAd,function(){
+		            				normalize = XLineAd;
+		            				rotateMove(cube19,YLineAd);
 		            			});
 		            		}else{
-		            			normalize = zLineAd;
-		            			rotateMove(cube19,xLineAd,function(){
+		            			normalize = ZLineAd;
+		            			rotateMove(cube19,XLineAd,function(){
 		            				step2(9)
 		            			});
 		            		}
 		            		break;
 		            	}
 		            case 9:
-			            if(getFaceColorByVector(cube9,yLine)==bottomColor){
-		            		if(getFaceColorByVector(cube9,xLineAd)==getFaceColorByVector(cube12,xLineAd)){
-		            			normalize = yLine;
-		            			rotateMove(cube9,zLine,function(){
-		            				normalize = zLine;
-		            				rotateMove(cube9,yLineAd);
+			            if(getFaceColorByVector(cube9,YLine)==bottomColor){
+		            		if(getFaceColorByVector(cube9,XLineAd)==getFaceColorByVector(cube12,XLineAd)){
+		            			normalize = YLine;
+		            			rotateMove(cube9,ZLine,function(){
+		            				normalize = ZLine;
+		            				rotateMove(cube9,YLineAd);
 		            			});
 		            		}else{
-		            			normalize = xLineAd;
-		            			rotateMove(cube9,zLine,function(){
+		            			normalize = XLineAd;
+		            			rotateMove(cube9,ZLine,function(){
 		            				step(1)
 		            			});
 		            		}
@@ -233,25 +233,25 @@
             function checkStep2(){
             	var cube4 = getCubeByIndex(4);
             	var cube7 = getCubeByIndex(7);
-            	if(getFaceColorByVector(cube4,zLine)!=getFaceColorByVector(cube7,zLine)){
+            	if(getFaceColorByVector(cube4,ZLine)!=getFaceColorByVector(cube7,ZLine)){
             		return false;
             	}
 
             	var cube14 = getCubeByIndex(14);
             	var cube17 = getCubeByIndex(17);
-            	if(getFaceColorByVector(cube14,xLine)!=getFaceColorByVector(cube17,xLine)){
+            	if(getFaceColorByVector(cube14,XLine)!=getFaceColorByVector(cube17,XLine)){
             		return false;
             	}
 
             	var cube22 = getCubeByIndex(22);
             	var cube25 = getCubeByIndex(25);
-            	if(getFaceColorByVector(cube22,zLineAd)!=getFaceColorByVector(cube25,zLineAd)){
+            	if(getFaceColorByVector(cube22,ZLineAd)!=getFaceColorByVector(cube25,ZLineAd)){
             		return false;
             	}
 
             	var cube12 = getCubeByIndex(12);
             	var cube15 = getCubeByIndex(15);
-            	if(getFaceColorByVector(cube12,xLineAd)!=getFaceColorByVector(cube15,xLineAd)){
+            	if(getFaceColorByVector(cube12,XLineAd)!=getFaceColorByVector(cube15,XLineAd)){
             		return false;
             	}
             	return true;
@@ -264,7 +264,7 @@
             	 * 直接找当前上表面中心面的颜色和其对应的下表面颜色，省去旋转调整的过程。
             	 */
             	var topCenter = getCubeByIndex(10);
-				var topColor = getFaceColorByVector(topCenter,yLine);//获取上表面颜色
+				var topColor = getFaceColorByVector(topCenter,YLine);//获取上表面颜色
 				bottomColor = getOppositeColor(topColor);
 
             	if(checkStep1(bottomColor)){
@@ -286,133 +286,133 @@
 				var cube17 = getCubeByIndex(17);
 				var cube25 = getCubeByIndex(25);
 
-				if(getFaceColorByVector(cube3,zLine)==bottomColor){//101、107
-					if(getFaceColorByVector(cube9,yLine)!=bottomColor){
-						normalize = zLine;
-						rotateMove(cube3,yLine);
+				if(getFaceColorByVector(cube3,ZLine)==bottomColor){//101、107
+					if(getFaceColorByVector(cube9,YLine)!=bottomColor){
+						normalize = ZLine;
+						rotateMove(cube3,YLine);
 					}else{
-						normalize = xLineAd;
-						rotateMove(cube9,zLine);
+						normalize = XLineAd;
+						rotateMove(cube9,ZLine);
 					}
-				}else if(getFaceColorByVector(cube21,xLineAd)==bottomColor){
-					if(getFaceColorByVector(cube19,yLine)!=bottomColor){
-						normalize = xLineAd;
-						rotateMove(cube21,yLine);
+				}else if(getFaceColorByVector(cube21,XLineAd)==bottomColor){
+					if(getFaceColorByVector(cube19,YLine)!=bottomColor){
+						normalize = XLineAd;
+						rotateMove(cube21,YLine);
 					}else{
-						normalize = zLineAd;
-						rotateMove(cube19,xLine);
+						normalize = ZLineAd;
+						rotateMove(cube19,XLine);
 					}
-				}else if(getFaceColorByVector(cube23,zLineAd)==bottomColor){
-					if(getFaceColorByVector(cube11,yLine)!=bottomColor){
-						normalize = zLineAd;
-						rotateMove(cube23,yLine);
+				}else if(getFaceColorByVector(cube23,ZLineAd)==bottomColor){
+					if(getFaceColorByVector(cube11,YLine)!=bottomColor){
+						normalize = ZLineAd;
+						rotateMove(cube23,YLine);
 					}else{
-						normalize = xLine;
-						rotateMove(cube11,zLine);
+						normalize = XLine;
+						rotateMove(cube11,ZLine);
 					}
-				}else if(getFaceColorByVector(cube5,xLine)==bottomColor){
-					if(getFaceColorByVector(cube1,yLine)!=bottomColor){
-						normalize = xLine;
-						rotateMove(cube5,yLine);
+				}else if(getFaceColorByVector(cube5,XLine)==bottomColor){
+					if(getFaceColorByVector(cube1,YLine)!=bottomColor){
+						normalize = XLine;
+						rotateMove(cube5,YLine);
 					}else{
-						normalize = zLine;
-						rotateMove(cube1,xLine);
+						normalize = ZLine;
+						rotateMove(cube1,XLine);
 					}
-				}else if(getFaceColorByVector(cube5,zLine)==bottomColor){//102、108
-					if(getFaceColorByVector(cube11,yLine)!=bottomColor){
-						normalize = zLine;
-						rotateMove(cube5,yLine);
+				}else if(getFaceColorByVector(cube5,ZLine)==bottomColor){//102、108
+					if(getFaceColorByVector(cube11,YLine)!=bottomColor){
+						normalize = ZLine;
+						rotateMove(cube5,YLine);
 					}else{
-						normalize = xLine;
-						rotateMove(cube11,zLine);
+						normalize = XLine;
+						rotateMove(cube11,ZLine);
 					}
-				}else if(getFaceColorByVector(cube3,xLineAd)==bottomColor){
-					if(getFaceColorByVector(cube1,yLine)!=bottomColor){
-						normalize = xLineAd;
-						rotateMove(cube3,yLine);
+				}else if(getFaceColorByVector(cube3,XLineAd)==bottomColor){
+					if(getFaceColorByVector(cube1,YLine)!=bottomColor){
+						normalize = XLineAd;
+						rotateMove(cube3,YLine);
 					}else{
-						normalize = zLine;
-						rotateMove(cube1,xLine);
+						normalize = ZLine;
+						rotateMove(cube1,XLine);
 					}
-				}else if(getFaceColorByVector(cube21,zLineAd)==bottomColor){
-					if(getFaceColorByVector(cube9,yLine)!=bottomColor){
-						normalize = zLineAd;
-						rotateMove(cube21,yLine);
+				}else if(getFaceColorByVector(cube21,ZLineAd)==bottomColor){
+					if(getFaceColorByVector(cube9,YLine)!=bottomColor){
+						normalize = ZLineAd;
+						rotateMove(cube21,YLine);
 					}else{
-						normalize = xLineAd;
-						rotateMove(cube9,zLine);
+						normalize = XLineAd;
+						rotateMove(cube9,ZLine);
 					}
-				}else if(getFaceColorByVector(cube23,xLine)==bottomColor){
-					if(getFaceColorByVector(cube19,yLine)!=bottomColor){
-						normalize = xLine;
-						rotateMove(cube23,yLine);
+				}else if(getFaceColorByVector(cube23,XLine)==bottomColor){
+					if(getFaceColorByVector(cube19,YLine)!=bottomColor){
+						normalize = XLine;
+						rotateMove(cube23,YLine);
 					}else{
-						normalize = zLineAd;
-						rotateMove(cube19,xLine);
+						normalize = ZLineAd;
+						rotateMove(cube19,XLine);
 					}
-				}else if(getFaceColorByVector(cube15,yLineAd)==bottomColor){//103、104
-					if(getFaceColorByVector(cube9,yLine)!=bottomColor){
-						normalize = yLineAd;
-						rotateMove(cube15,zLine);
+				}else if(getFaceColorByVector(cube15,YLineAd)==bottomColor){//103、104
+					if(getFaceColorByVector(cube9,YLine)!=bottomColor){
+						normalize = YLineAd;
+						rotateMove(cube15,ZLine);
 					}else{
-						normalize = xLineAd;
-						rotateMove(cube9,zLine);
+						normalize = XLineAd;
+						rotateMove(cube9,ZLine);
 					}
-				}else if(getFaceColorByVector(cube7,yLineAd)==bottomColor){
-					if(getFaceColorByVector(cube1,yLine)!=bottomColor){
-						normalize = yLineAd;
-						rotateMove(cube7,xLine);
+				}else if(getFaceColorByVector(cube7,YLineAd)==bottomColor){
+					if(getFaceColorByVector(cube1,YLine)!=bottomColor){
+						normalize = YLineAd;
+						rotateMove(cube7,XLine);
 					}else{
-						normalize = zLine;
-						rotateMove(cube1,xLine);
+						normalize = ZLine;
+						rotateMove(cube1,XLine);
 					}
-				}else if(getFaceColorByVector(cube17,yLineAd)==bottomColor){
-					if(getFaceColorByVector(cube11,yLine)!=bottomColor){
-						normalize = yLineAd;
-						rotateMove(cube17,zLineAd);
+				}else if(getFaceColorByVector(cube17,YLineAd)==bottomColor){
+					if(getFaceColorByVector(cube11,YLine)!=bottomColor){
+						normalize = YLineAd;
+						rotateMove(cube17,ZLineAd);
 					}else{
-						normalize = xLine;
-						rotateMove(cube11,zLine);
+						normalize = XLine;
+						rotateMove(cube11,ZLine);
 					}
-				}else if(getFaceColorByVector(cube25,yLineAd)==bottomColor){
-					if(getFaceColorByVector(cube19,yLine)!=bottomColor){
-						normalize = yLineAd;
-						rotateMove(cube25,xLineAd);
+				}else if(getFaceColorByVector(cube25,YLineAd)==bottomColor){
+					if(getFaceColorByVector(cube19,YLine)!=bottomColor){
+						normalize = YLineAd;
+						rotateMove(cube25,XLineAd);
 					}else{
-						normalize = zLineAd;
-						rotateMove(cube19,xLine);
+						normalize = ZLineAd;
+						rotateMove(cube19,XLine);
 					}
-				}else if(getFaceColorByVector(cube1,zLine)==bottomColor||getFaceColorByVector(cube7,zLine)==bottomColor){//105、106
-					if(getFaceColorByVector(cube1,yLine)!=bottomColor){
-						normalize = yLine;
-						rotateMove(cube1,xLine);
+				}else if(getFaceColorByVector(cube1,ZLine)==bottomColor||getFaceColorByVector(cube7,ZLine)==bottomColor){//105、106
+					if(getFaceColorByVector(cube1,YLine)!=bottomColor){
+						normalize = YLine;
+						rotateMove(cube1,XLine);
 					}else{
-						normalize = zLine;
-						rotateMove(cube7,xLine);
+						normalize = ZLine;
+						rotateMove(cube7,XLine);
 					}
-				}else if(getFaceColorByVector(cube9,xLineAd)==bottomColor||getFaceColorByVector(cube15,xLineAd)==bottomColor){
-					if(getFaceColorByVector(cube9,yLine)!=bottomColor){
-						normalize = yLine;
-						rotateMove(cube15,zLine);
+				}else if(getFaceColorByVector(cube9,XLineAd)==bottomColor||getFaceColorByVector(cube15,XLineAd)==bottomColor){
+					if(getFaceColorByVector(cube9,YLine)!=bottomColor){
+						normalize = YLine;
+						rotateMove(cube15,ZLine);
 					}else{
-						normalize = xLineAd;
-						rotateMove(cube15,zLine);
+						normalize = XLineAd;
+						rotateMove(cube15,ZLine);
 					}
-				}else if(getFaceColorByVector(cube19,zLineAd)==bottomColor||getFaceColorByVector(cube25,zLineAd)==bottomColor){
-					if(getFaceColorByVector(cube19,yLine)!=bottomColor){
-						normalize = yLine;
-						rotateMove(cube19,xLine);
+				}else if(getFaceColorByVector(cube19,ZLineAd)==bottomColor||getFaceColorByVector(cube25,ZLineAd)==bottomColor){
+					if(getFaceColorByVector(cube19,YLine)!=bottomColor){
+						normalize = YLine;
+						rotateMove(cube19,XLine);
 					}else{
-						normalize = zLineAd;
-						rotateMove(cube25,xLineAd);
+						normalize = ZLineAd;
+						rotateMove(cube25,XLineAd);
 					}
-				}else if(getFaceColorByVector(cube11,xLine)==bottomColor||getFaceColorByVector(cube17,xLine)==bottomColor){
-					if(getFaceColorByVector(cube11,yLine)!=bottomColor){
-						normalize = yLine;
-						rotateMove(cube11,zLine);
+				}else if(getFaceColorByVector(cube11,XLine)==bottomColor||getFaceColorByVector(cube17,XLine)==bottomColor){
+					if(getFaceColorByVector(cube11,YLine)!=bottomColor){
+						normalize = YLine;
+						rotateMove(cube11,ZLine);
 					}else{
-						normalize = xLine;
-						rotateMove(cube17,zLineAd);
+						normalize = XLine;
+						rotateMove(cube17,ZLineAd);
 					}
 				}
             }
@@ -422,7 +422,7 @@
             	var step1 = true;
             	for(var i=0;i<indexs.length;i++){
             		var item = getCubeByIndex(indexs[i]);
-            		var color = getFaceColorByVector(item,yLine);//获取上表面颜色
+            		var color = getFaceColorByVector(item,YLine);//获取上表面颜色
             		if(color!=bottomColor){
             			step1 = false;
             			break;
@@ -602,7 +602,7 @@
             var cubes
             function initObject() {
             	//生成魔方小正方体
-            	cubes = SimpleCube(cubeParams.x,cubeParams.y,cubeParams.z,cubeParams.num,cubeParams.len,cubeParams.colors);
+            	cubes = SimpleCube(CubeParams.x,CubeParams.y,CubeParams.z,CubeParams.num,CubeParams.len,CubeParams.colors);
             	var ids = [];   
             	for(var i=0;i<cubes.length;i++){
             		var item = cubes[i];
@@ -853,9 +853,9 @@
                     var temp1 = elements[i];
                     for(var j=0;j<initStatus.length;j++){
                         var temp2 = initStatus[j];
-                        if( Math.abs(temp1.position.x - temp2.x)<=cubeParams.len/2 && 
-                            Math.abs(temp1.position.y - temp2.y)<=cubeParams.len/2 && 
-                            Math.abs(temp1.position.z - temp2.z)<=cubeParams.len/2 ){
+                        if( Math.abs(temp1.position.x - temp2.x)<=CubeParams.len/2 && 
+                            Math.abs(temp1.position.y - temp2.y)<=CubeParams.len/2 && 
+                            Math.abs(temp1.position.z - temp2.z)<=CubeParams.len/2 ){
                             temp1.cubeIndex = temp2.cubeIndex;
                             break;
                         }
@@ -944,22 +944,22 @@
             function getDirection(vector3){
                 var direction;
                 //判断差向量和x、y、z轴的夹角
-                var xAngle = vector3.angleTo(xLine);
-                var xAngleAd = vector3.angleTo(xLineAd);
-                var yAngle = vector3.angleTo(yLine);
-                var yAngleAd = vector3.angleTo(yLineAd);
-                var zAngle = vector3.angleTo(zLine);
-                var zAngleAd = vector3.angleTo(zLineAd);
+                var xAngle = vector3.angleTo(XLine);
+                var xAngleAd = vector3.angleTo(XLineAd);
+                var yAngle = vector3.angleTo(YLine);
+                var yAngleAd = vector3.angleTo(YLineAd);
+                var zAngle = vector3.angleTo(ZLine);
+                var zAngleAd = vector3.angleTo(ZLineAd);
                 var minAngle = min([xAngle,xAngleAd,yAngle,yAngleAd,zAngle,zAngleAd]).value;//最小夹角
 
                 switch(minAngle){
                     case xAngle:
                         direction = 0;//向x轴正方向旋转90度（还要区分是绕z轴还是绕y轴）
-                        if(normalize.equals(yLine)){
+                        if(normalize.equals(YLine)){
                             direction = direction+0.1;//绕z轴顺时针
-                        }else if(normalize.equals(yLineAd)){
+                        }else if(normalize.equals(YLineAd)){
                             direction = direction+0.2;//绕z轴逆时针
-                        }else if(normalize.equals(zLine)){
+                        }else if(normalize.equals(ZLine)){
                             direction = direction+0.3;//绕y轴逆时针
                         }else{
                             direction = direction+0.4;//绕y轴顺时针
@@ -967,11 +967,11 @@
                         break;
                     case xAngleAd:
                         direction = 1;//向x轴反方向旋转90度
-                        if(normalize.equals(yLine)){
+                        if(normalize.equals(YLine)){
                             direction = direction+0.1;//绕z轴逆时针
-                        }else if(normalize.equals(yLineAd)){
+                        }else if(normalize.equals(YLineAd)){
                             direction = direction+0.2;//绕z轴顺时针
-                        }else if(normalize.equals(zLine)){
+                        }else if(normalize.equals(ZLine)){
                             direction = direction+0.3;//绕y轴顺时针
                         }else{
                             direction = direction+0.4;//绕y轴逆时针
@@ -979,11 +979,11 @@
                         break;
                     case yAngle:
                         direction = 2;//向y轴正方向旋转90度
-                        if(normalize.equals(zLine)){
+                        if(normalize.equals(ZLine)){
                             direction = direction+0.1;//绕x轴逆时针
-                        }else if(normalize.equals(zLineAd)){
+                        }else if(normalize.equals(ZLineAd)){
                             direction = direction+0.2;//绕x轴顺时针
-                        }else if(normalize.equals(xLine)){
+                        }else if(normalize.equals(XLine)){
                             direction = direction+0.3;//绕z轴逆时针
                         }else{
                             direction = direction+0.4;//绕z轴顺时针
@@ -991,11 +991,11 @@
                         break;
                     case yAngleAd:
                         direction = 3;//向y轴反方向旋转90度
-                        if(normalize.equals(zLine)){
+                        if(normalize.equals(ZLine)){
                             direction = direction+0.1;//绕x轴顺时针
-                        }else if(normalize.equals(zLineAd)){
+                        }else if(normalize.equals(ZLineAd)){
                             direction = direction+0.2;//绕x轴逆时针
-                        }else if(normalize.equals(xLine)){
+                        }else if(normalize.equals(XLine)){
                             direction = direction+0.3;//绕z轴顺时针
                         }else{
                             direction = direction+0.4;//绕z轴逆时针
@@ -1003,11 +1003,11 @@
                         break;
                     case zAngle:
                         direction = 4;//向z轴正方向旋转90度
-                        if(normalize.equals(yLine)){
+                        if(normalize.equals(YLine)){
                             direction = direction+0.1;//绕x轴顺时针
-                        }else if(normalize.equals(yLineAd)){
+                        }else if(normalize.equals(YLineAd)){
                             direction = direction+0.2;//绕x轴逆时针
-                        }else if(normalize.equals(xLine)){
+                        }else if(normalize.equals(XLine)){
                             direction = direction+0.3;//绕y轴顺时针
                         }else{
                             direction = direction+0.4;//绕y轴逆时针
@@ -1015,11 +1015,11 @@
                         break;
                     case zAngleAd:
                         direction = 5;//向z轴反方向旋转90度
-                        if(normalize.equals(yLine)){
+                        if(normalize.equals(YLine)){
                             direction = direction+0.1;//绕x轴逆时针
-                        }else if(normalize.equals(yLineAd)){
+                        }else if(normalize.equals(YLineAd)){
                             direction = direction+0.2;//绕x轴顺时针
-                        }else if(normalize.equals(xLine)){
+                        }else if(normalize.equals(XLine)){
                             direction = direction+0.3;//绕y轴逆时针
                         }else{
                             direction = direction+0.4;//绕y轴顺时针
