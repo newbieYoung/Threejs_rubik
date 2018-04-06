@@ -364,14 +364,11 @@
 
             		if(getFaceColorByVector(cube1,yLine)==bottomColor){
 	            		if(getFaceColorByVector(cube1,zLine)==getFaceColorByVector(cube4,zLine)){
-	            			normalize = yLine;
-							rotateMove(cube1,xLine,function(){
-								normalize = xLine;
-								rotateMove(cube1,yLineAd);
-							});
+	            			F(rotateNum,function(){
+	            				F(rotateNum);
+	            			});
 	            		}else{
-	            			normalize = zLine;
-	            			rotateMove(cube1,xLine,function(){
+	            			u(rotateNum,function(){
 	            				if(rotateNum+1>3){
 	            					step2Case1(0);
 	            				}else{
@@ -421,10 +418,9 @@
 				bottomColor = getOppositeColor(topColor);
 
             	if(checkStep1(bottomColor)){
-            		isAutoReset = false;
-					//currentStep = 2;
-					//step2();
-					//return;
+					currentStep = 2;
+					step2();
+					return;
 				}
 				
 				step1Case1(0);
