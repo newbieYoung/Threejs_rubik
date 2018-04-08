@@ -57,7 +57,7 @@
             var bottomColor;
             function autoResetV1(cubes){
             	if(!getCubeStatus()){
-	                isAutoReset = true;
+	               isAutoReset = true;
 					currentStep = 1;
 					step1();
             	}
@@ -109,18 +109,23 @@
             	if(!isRotating){
             		var cube2 = getCubeByIndex(2,rotateNum);
 	            	var cube4 = getCubeByIndex(4,rotateNum);
-	            	var cube20 = getCubeByIndex(20,rotateNum);
+	            	var cube7 = getCubeByIndex(7,rotateNum);
 	            	var cube14 = getCubeByIndex(14,rotateNum);
+	            	var cube17 = getCubeByIndex(17,rotateNum);
 	            	var xLine = rotateAxisByYLine(XLine,rotateNum);
 	            	var zLine = rotateAxisByYLine(ZLine,rotateNum);
 	            	var yLine = rotateAxisByYLine(YLine,rotateNum);
 	            	var zLineAd = rotateAxisByYLine(ZLineAd,rotateNum);
 	            	var xLineAd = rotateAxisByYLine(XLineAd,rotateNum);
 	            	var yLineAd = rotateAxisByYLine(YLineAd,rotateNum);
+	            	var zLine2Color = getFaceColorByVector(cube2,zLine);
+	            	var yLine2Color = getFaceColorByVector(cube2,yLine);
 
 	            	if(getFaceColorByVector(cube2,xLine)==bottomColor){
-	            		if(getFaceColorByVector(cube4,zLine)==getFaceColorByVector(cube2,zLine)&&
-	            		   getFaceColorByVector(cube14,xLine)==getFaceColorByVector(cube2,yLine)){
+	            		if(getFaceColorByVector(cube4,zLine)==zLine2Color&&
+	            		   getFaceColorByVector(cube7,zLine)==zLine2Color&&	
+	            		   getFaceColorByVector(cube14,xLine)==yLine2Color&&
+	            		   getFaceColorByVector(cube17,xLine)==yLine2Color){
 	            			R(rotateNum,function(){
 	            				U(rotateNum,function(){
 	            					r(rotateNum)
@@ -148,15 +153,18 @@
 	            	var xLineAd = rotateAxisByYLine(XLineAd,rotateNum);
 	            	var yLineAd = rotateAxisByYLine(YLineAd,rotateNum);
 	            	var cube2 = getCubeByIndex(2,rotateNum);
-	            	var cube2 = getCubeByIndex(2,rotateNum);
 	            	var cube4 = getCubeByIndex(4,rotateNum);
-	            	var cube20 = getCubeByIndex(20,rotateNum);
+	            	var cube7 = getCubeByIndex(7,rotateNum);
 	            	var cube14 = getCubeByIndex(14,rotateNum);
+	            	var cube17 = getCubeByIndex(17,rotateNum);
+	            	var yLine2Color = getFaceColorByVector(cube2,yLine);
+	            	var xLine2Color = getFaceColorByVector(cube2,xLine);
 
 	            	if(getFaceColorByVector(cube2,zLine)==bottomColor){
-	            		if(getFaceColorByVector(cube2,yLine)==getFaceColorByVector(cube4,zLine)&&
-	            			getFaceColorByVector(cube2,xLine)==getFaceColorByVector(cube14,xLine)){
-	            			//fuF
+	            		if(getFaceColorByVector(cube4,zLine)==yLine2Color&&
+	            		   getFaceColorByVector(cube7,zLine)==yLine2Color&&
+	            		   getFaceColorByVector(cube14,xLine)==xLine2Color&&
+	            		   getFaceColorByVector(cube17,xLine)==xLine2Color){
 	            			f(rotateNum,function(){
 	            				u(rotateNum,function(){
 	            					F(rotateNum)
@@ -186,11 +194,17 @@
             		var cube2 = getCubeByIndex(2,rotateNum);
             		var cube14 = getCubeByIndex(14,rotateNum);
             		var cube4 = getCubeByIndex(4,rotateNum);
+            		var cube7 = getCubeByIndex(7,rotateNum);
+            		var cube17 = getCubeByIndex(17,rotateNum);
+            		var zLine2Color = getFaceColorByVector(cube2,zLine);
+            		var xLine2Color = getFaceColorByVector(cube2,xLine);
 
             		if(getFaceColorByVector(cube2,yLine)==bottomColor){
-            			if(getFaceColorByVector(cube2,zLine)==getFaceColorByVector(cube14,xLine)&&
-            			   getFaceColorByVector(cube2,xLine)==getFaceColorByVector(cube4,zLine)){
-            			   	//fUFRUUr
+            			if(getFaceColorByVector(cube14,xLine)==zLine2Color&&
+            			   getFaceColorByVector(cube17,xLine)==zLine2Color&&
+            			   getFaceColorByVector(cube4,zLine)==xLine2Color&&
+            			   getFaceColorByVector(cube7,zLine)==xLine2Color){
+
             			   	f(rotateNum,function(){
             			   		U(rotateNum,function(){
             			   			F(rotateNum,function(){
@@ -205,7 +219,7 @@
             			   		})
             			   	})
             			}else{
-            				u(rotateNum,function(){
+        					u(rotateNum,function(){
 	            				if(rotateNum+1>=4){
 	            					step3Case3(0);
 	            				}else{
@@ -227,9 +241,10 @@
 	            	var yLineAd = rotateAxisByYLine(YLineAd,rotateNum);
 	            	var cube8 = getCubeByIndex(8,rotateNum);
 	            	var cube17 = getCubeByIndex(17,rotateNum);
-	            	var cube2 = getCubeByIndex(2,rotateNum);
+	            	var cube14 = getCubeByIndex(14,rotateNum);
+	            	var zLine8Color = getFaceColorByVector(cube8,zLine);
 
-	            	if(getFaceColorByVector(cube8,xLine)==bottomColor&&getFaceColorByVector(cube8,zLine)==getFaceColorByVector(cube17,xLine)){
+	            	if(getFaceColorByVector(cube8,xLine)==bottomColor&&getFaceColorByVector(cube17,xLine)==zLine8Color&&getFaceColorByVector(cube14,xLine)){
 	            		//fUFRUr
 	            		f(rotateNum,function(){
 	            			U(rotateNum,function(){
@@ -256,9 +271,12 @@
 	            	var yLineAd = rotateAxisByYLine(YLineAd,rotateNum);
 	            	var cube8 = getCubeByIndex(8,rotateNum);
 	            	var cube7 = getCubeByIndex(7,rotateNum);
+	            	var cube4 = getCubeByIndex(4,rotateNum);
+	            	var xLine8Color = getFaceColorByVector(cube8,xLine);
 
 	            	if(getFaceColorByVector(cube8,zLine)==bottomColor&&
-	            	   getFaceColorByVector(cube8,xLine)==getFaceColorByVector(cube7,zLine)){
+	            	   getFaceColorByVector(cube7,zLine)==xLine8Color&&
+	            	   getFaceColorByVector(cube4,zLine)==xLine8Color){
 	            	   	//RurfuF
 	            		R(rotateNum,function(){
 	            			u(rotateNum,function(){
@@ -275,7 +293,9 @@
 
             	}
             }
-            //底角归位第六种情况
+            /**
+             * 某些情况下不能连续两次执行第六步否则会导致出现更简单的情况，从而超出层先法的预设情况
+             */
             function step3Case6(rotateNum){
             	if(!isRotating){
             		var xLine = rotateAxisByYLine(XLine,rotateNum);
@@ -284,10 +304,27 @@
 	            	var zLineAd = rotateAxisByYLine(ZLineAd,rotateNum);
 	            	var xLineAd = rotateAxisByYLine(XLineAd,rotateNum);
 	            	var yLineAd = rotateAxisByYLine(YLineAd,rotateNum);
+	            	var cube6 = getCubeByIndex(6,rotateNum);
 	            	var cube8 = getCubeByIndex(8,rotateNum);
 
-	            	if(getFaceColorByVector(cube8,yLineAd)==bottomColor){
-	            		F(rotateNum)
+	            	if(getFaceColorByVector(cube6,yLineAd)==bottomColor){
+	            		l(rotateNum,function(){
+	            			l(rotateNum,function(){
+	            				step3Case3(0);
+	            				step3Case3(1);
+	            				step3Case3(2);
+	            				step3Case3(3);
+	            			})
+	            		})
+	            	}else if(getFaceColorByVector(cube8,yLineAd)==bottomColor){
+	            		R(rotateNum,function(){
+	            			R(rotateNum,function(){
+	            				step3Case3(0);
+	            				step3Case3(1);
+	            				step3Case3(2);
+	            				step3Case3(3);
+	            			})
+	            		})
 	            	}
             	}
             }
@@ -341,10 +378,9 @@
             //第二步底棱归位
             function step2(indexNo){
             	if(checkStep2()){
-            		//isAutoReset = false;
-            		//currentStep = 3;
-					//step3();
-					//return;
+            		currentStep = 3;
+					step3();
+					return;
             	}
 
             	step2Case1(0);
@@ -598,8 +634,8 @@
             }
             function r(rotateNum,next){
             	var cube2 = getCubeByIndex(2,rotateNum);
-            	var zLine = rotateAxisByYLine(ZLine);
-            	var yLineAd = rotateAxisByYLine(YLineAd);
+            	var zLine = rotateAxisByYLine(ZLine,rotateNum);
+            	var yLineAd = rotateAxisByYLine(YLineAd,rotateNum);
             	normalize = zLine;
             	rotateMove(cube2,yLineAd,next);
             }
