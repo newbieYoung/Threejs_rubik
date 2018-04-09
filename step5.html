@@ -63,9 +63,144 @@
 					step1();
             	}
             }
-            //第五步
+            //第六步
+            function step6(){
+            	console.log('step6');
+            	isAutoReset = false;
+            }
+            //第五步 顶棱面位
             function step5(){
-            	console.log('step5');
+            	if(checkStep5()){
+            		currentStep = 6;
+            		step6();
+            		return;
+            	}
+
+            	step5Case1(0);
+            	step5Case1(1);
+            	step5Case1(2);
+            	step5Case1(3);
+
+            	step5Case2(0);
+            	step5Case2(1);
+            	step5Case2(2);
+            	step5Case2(3);
+
+            	step5Case3(0);
+            	step5Case3(1);
+            	step5Case3(2);
+            	step5Case3(3);
+            }
+            function rotate501(rotateNum,next){
+            	r(rotateNum,function(){
+            		u(rotateNum,function(){
+            			f(rotateNum,function(){
+            				U(rotateNum,function(){
+            					F(rotateNum,function(){
+            						if(next){
+            							R(rotateNum,next);
+            						}else{
+            							R(rotateNum);
+            						}
+            					})
+            				})
+            			})
+            		})
+            	})
+            }
+            function rotate502(rotateNum,next){
+            	r(rotateNum,function(){
+            		f(rotateNum,function(){
+            			u(rotateNum,function(){
+            				F(rotateNum,function(){
+            					U(rotateNum,function(){
+            						if(next){
+            							R(rotateNum,next);
+            						}else{
+            							R(rotateNum);
+            						}
+            					})
+            				})
+            			})
+            		})
+            	})
+            }
+            //顶棱面位 第一种情况
+            function step5Case1(rotateNum){
+            	if(!isRotating){
+            		var cube1 = getCubeByIndex(1,rotateNum);
+	            	var cube11 = getCubeByIndex(11,rotateNum);
+	            	var cube9 = getCubeByIndex(9,rotateNum);
+	            	var cube19 = getCubeByIndex(19,rotateNum);
+	            	var cube10 = getCubeByIndex(10,rotateNum);
+	            	var yLine = rotateAxisByYLine(YLine,rotateNum);
+	            	var zLine = rotateAxisByYLine(ZLine,rotateNum);
+	            	var xLine = rotateAxisByYLine(XLine,rotateNum);
+	            	if(getFaceColorByVector(cube10,yLine)==topColor&&
+	            		getFaceColorByVector(cube9,yLine)==topColor&&
+	            		getFaceColorByVector(cube19,yLine)==topColor&&
+	            		getFaceColorByVector(cube1,zLine)==topColor&&
+	            		getFaceColorByVector(cube11,xLine)==topColor){
+	            		rotate501(rotateNum);
+	            	}
+            	}
+            }
+            //顶棱面位 第二种情况
+            function step5Case2(rotateNum){
+            	if(!isRotating){
+            		var cube1 = getCubeByIndex(1,rotateNum);
+	            	var cube11 = getCubeByIndex(11,rotateNum);
+	            	var cube19 = getCubeByIndex(19,rotateNum);
+	            	var cube10 = getCubeByIndex(10,rotateNum);
+	            	var yLine = rotateAxisByYLine(YLine,rotateNum);
+	            	var xLine = rotateAxisByYLine(XLine,rotateNum);
+	            	if(getFaceColorByVector(cube10,yLine)==topColor&&
+	            		getFaceColorByVector(cube1,yLine)==topColor&&
+	            		getFaceColorByVector(cube19,yLine)==topColor&&
+	            		getFaceColorByVector(cube11,xLine)==topColor){
+	            		rotate501(rotateNum);
+	            	}
+            	}
+            }
+            //顶棱面位 第三种情况
+            function step5Case3(rotateNum){
+            	if(!isRotating){
+            		var cube1 = getCubeByIndex(1,rotateNum);
+	            	var cube11 = getCubeByIndex(11,rotateNum);
+	            	var cube10 = getCubeByIndex(10,rotateNum);
+	            	var yLine = rotateAxisByYLine(YLine,rotateNum);
+	            	var zLine = rotateAxisByYLine(ZLine,rotateNum);
+	            	var xLine = rotateAxisByYLine(XLine,rotateNum);
+	            	if(getFaceColorByVector(cube10,yLine)==topColor&&
+	            		getFaceColorByVector(cube1,zLine)==topColor&&
+	            		getFaceColorByVector(cube11,xLine)==topColor){
+	            		rotate501(rotateNum,function(){
+	            			U(rotateNum,function(){
+	            				rotate502(rotateNum);
+	            			})
+	            		});
+	            	}
+            	}
+            }
+            //判断是否完成第五步 顶棱面位
+            function checkStep5(){
+            	if(!checkStep4()){
+            		return false;
+            	}
+            	var cube1 = getCubeByIndex(1);
+            	var cube11 = getCubeByIndex(11);
+            	var cube9 = getCubeByIndex(9);
+            	var cube19 = getCubeByIndex(19);
+            	var cube10 = getCubeByIndex(10);
+            	if(getFaceColorByVector(cube10,YLine)!=topColor||
+            		getFaceColorByVector(cube1,YLine)!=topColor||
+            		getFaceColorByVector(cube11,YLine)!=topColor||
+            		getFaceColorByVector(cube9,YLine)!=topColor||
+            		getFaceColorByVector(cube19,YLine)!=topColor){
+            		return false;
+            	}
+
+            	return true;
             }
             //第四步 中棱归位
             function step4(){
@@ -168,12 +303,7 @@
                                 }
                             })
                         }
-                    }else{
-                        u(rotateNum,function(){
-                            step4Case1And2(rotateNum);
-                        })
                     }
-                    
             	}
             }
             //中棱归位第三种情况
@@ -1320,6 +1450,9 @@
 	                				break;
                                 case 5:
                                     step5();
+                                    break;
+                                case 6:
+                                    step6();
                                     break;
 	                			default:
 	                				break;
