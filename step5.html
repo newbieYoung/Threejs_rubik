@@ -374,12 +374,9 @@
             }
             //第三步底角归位
             function step3(){
-            	console.log(checkStep3());
-
             	if(checkStep3()){
             		currentStep = 3;
-            		isAutoReset = false;
-            		//step4();
+            		step4();
             		return;
             	}
 
@@ -430,14 +427,12 @@
 	            		   getFaceColorByVector(cube7,zLine)==zLine2Color&&	
 	            		   getFaceColorByVector(cube14,xLine)==yLine2Color&&
 	            		   getFaceColorByVector(cube17,xLine)==yLine2Color){
-	            		   	console.log('step3Case1-1');
 	            			R(rotateNum,function(){
 	            				U(rotateNum,function(){
 	            					r(rotateNum)
 	            				})
 	            			})
 	            		}else{
-	            			console.log('step3Case1-2');
 	            			u(rotateNum,function(){
 	            				if(rotateNum+1>=4){
 	            					step3Case1(0);
@@ -471,14 +466,12 @@
 	            		   getFaceColorByVector(cube7,zLine)==yLine2Color&&
 	            		   getFaceColorByVector(cube14,xLine)==xLine2Color&&
 	            		   getFaceColorByVector(cube17,xLine)==xLine2Color){
-	            		   	console.log('step3Case2-1');
 	            			f(rotateNum,function(){
 	            				u(rotateNum,function(){
 	            					F(rotateNum)
 	            				})
 	            			})
 	            		}else{
-	            			console.log('step3Case2-2');
 	            			u(rotateNum,function(){
 	            				if(rotateNum+1>=4){
 	            					step3Case2(0);
@@ -512,7 +505,6 @@
             			   getFaceColorByVector(cube17,xLine)==zLine2Color&&
             			   getFaceColorByVector(cube4,zLine)==xLine2Color&&
             			   getFaceColorByVector(cube7,zLine)==xLine2Color){
-            				console.log('step3Case3-1');
             			   	f(rotateNum,function(){
             			   		U(rotateNum,function(){
             			   			F(rotateNum,function(){
@@ -527,7 +519,6 @@
             			   		})
             			   	})
             			}else{
-            				console.log('step3Case3-2');
         					u(rotateNum,function(){
 	            				if(rotateNum+1>=4){
 	            					step3Case3(0);
@@ -581,6 +572,9 @@
 		        			f(rotateNum,function(){
 		        				f(rotateNum)
 		        			})
+		        		}else{
+		        			console.log('step3Case4-4');
+		        			u(rotateNum);
 		        		}
 	            	}
             	}
@@ -627,6 +621,9 @@
 		        			f(rotateNum,function(){
 		        				f(rotateNum)
 		        			})
+		        		}else{
+		        			console.log('step3Case5-4');
+		        			u(rotateNum);
 		        		}
             		}
             		
