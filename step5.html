@@ -60,6 +60,7 @@
             	if(!getCubeStatus()){
 	                isAutoReset = true;
 					currentStep = 1;
+					console.log('start step1');
 					step1();
             	}
             }
@@ -72,6 +73,7 @@
             function step6(){
             	if(checkStep6()){
             		currentStep = 7;
+            		console.log('start step7');
             		step7();
             		return;
             	}
@@ -173,6 +175,7 @@
             function step5(){
             	if(checkStep5()){
             		currentStep = 6;
+            		console.log('start step6');
             		step6();
             		return;
             	}
@@ -308,6 +311,7 @@
             function step4(){
             	if(checkStep4()){
             		currentStep = 5;
+            		console.log('start step5');
             		step5();
             		return;
             	}
@@ -470,6 +474,7 @@
             function step3(){
             	if(checkStep3()){
             		currentStep = 3;
+            		console.log('start step4');
             		step4();
             		return;
             	}
@@ -769,6 +774,7 @@
             function step2(indexNo){
             	if(checkStep2()){
             		currentStep = 3;
+            		console.log('start step3');
 					step3();
 					return;
             	}
@@ -878,6 +884,7 @@
 
             	if(checkStep1(bottomColor)){
 					currentStep = 2;
+					console.log('start step2');
 					step2();
 					return;
 				}
