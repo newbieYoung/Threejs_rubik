@@ -2,24 +2,41 @@
 <html>
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no,viewport-fit=cover">
         <title>第五步：自动还原魔方</title>
         <script type="text/javascript" src="./lib/three.js"></script>
         <script type="text/javascript" src="./lib/three-orbit-controls.js"></script>
         <style type="text/css">
+        	body{
+        		margin:0;
+        		padding:0;
+        	}
             div#canvas-frame {
                 cursor: pointer;
                 width:100%;
                 height:100%;
                 background-color: #EEEEEE;
             }
-            button#autoResetV1{
-            	position: fixed;
-            	z-index:100;
+            .btn-list{
+				list-style-type:none;
+				margin:0;
+				padding:0;
+				position: fixed;
+				top:0;
+				left:0;
+            }
+            button{
+            	margin:5px 0 0 5px;
+            	border:1px solid #d1d1d1;
+            	background-color:#fff;
             }
         </style>
     </head>
     <body onload="threeStart();">
-    	<button id="autoResetV1">自动还原一</button>
+    	<ul class="btn-list">
+    		<li><button id="autoResetV1">自动还原</button></li>
+    		<li><button id="randomRotate">随机旋转</button></li>
+    	</ul>
         <div id="canvas-frame"></div>
         <script>
             var renderer;//渲染器
@@ -51,6 +68,38 @@
                 colors:['yellow','red','blue','green','white','pink']
             };
 
+            //随机旋转，用于打乱魔方
+            function randomRotate(){
+            	if(!isRotating&&!isAutoReset){
+            		var stepNum = 10;
+	            	var funcArr = [R,U,F,B,L,D,r,u,f,b,l,d];
+	            	var stepArr = [];
+	            	for(var i=0;i<stepNum;i++){
+	            		var num = parseInt(Math.random()*funcArr.length);
+	            		stepArr.push(funcArr[num]);
+	            	}
+	            	stepArr[0](0,function(){
+	            		stepArr[1](0,function(){
+	            			stepArr[2](0,function(){
+	            				stepArr[3](0,function(){
+	            					stepArr[4](0,function(){
+	            						stepArr[5](0,function(){
+	            							stepArr[6](0,function(){
+	            								stepArr[7](0,function(){
+	            									stepArr[8](0,function(){
+	            										stepArr[9](0)
+	            									})
+	            								})
+	            							})	
+	            						})
+	            					})
+	            				})
+	            			})
+	            		})
+	            	})
+            	}
+            }
+
             //自动还原第一版
             var isAutoReset = false;
             var currentStep = 1;
@@ -61,7 +110,6 @@
             	if(!checkStep8()){
 	                isAutoReset = true;
 					currentStep = 1;
-					console.log('start step1');
 					step1();
             	}
             }
@@ -232,6 +280,14 @@
                 step7Case2(1);
                 step7Case2(2);
                 step7Case2(3);
+
+                /**
+                 * 1、有两个对应的面顶棱完成，另外两个对应的面顶棱没有；
+                 */
+                if(!isRotating&&!checkStep7()){
+                    console.log('step7-others');
+                    u(0);
+                }
             }
             //顶棱归位 第一种情况
             function step7Case1(rotateNum){
@@ -741,9 +797,10 @@
             //第三步底角归位
             function step3(){
             	if(checkStep3()){
-            		currentStep = 4;
-            		console.log('start step4');
-                    step4();
+            		isAutoReset = false;
+            		//currentStep = 4;
+            		//console.log('start step4');
+                    //step4();
             		return;
             	}
 
@@ -1002,7 +1059,6 @@
             function step2(indexNo){
             	if(checkStep2()){
             		currentStep = 3;
-            		console.log('start step3');
 					step3();
 					return;
             	}
@@ -1112,7 +1168,6 @@
 
             	if(checkStep1(bottomColor)){
 					currentStep = 2;
-					console.log('start step2');
 					step2();
 					return;
 				}
@@ -1611,6 +1666,12 @@
                 $autoResetV1.addEventListener('click',function(){
                 	autoResetV1(cubes)
                 },false);
+
+                //随机旋转
+                var $randomRotate = document.querySelector('#randomRotate');
+                $randomRotate.addEventListener('click',function(){
+                	randomRotate();
+                },false);
             }
 
             //魔方操作结束
@@ -1760,15 +1821,15 @@
                         rotateAnimation(elements,direction,timestamp,startstamp,currentstamp,next);
                     });
                 }else{
-                	if(isAutoReset){
-                		if(next){
-                			next();
-                		}else{
-                			switch(currentStep){
+                	if(next){
+            			next();
+            		}else{
+            			if(isAutoReset){
+	            			switch(currentStep){
 	                			case 1:
 	                				step1();
 	                				break;
-                				case 2:
+	            				case 2:
 	                				step2();
 	                				break;
 	                			case 3:
@@ -1777,23 +1838,23 @@
 	                			case 4:
 	                				step4();
 	                				break;
-                                case 5:
-                                    step5();
-                                    break;
-                                case 6:
-                                    step6();
-                                    break;
-                                case 7:
-                                    step7();
-                                    break;
-                                case 8:
-                                    step8();
-                                    break;
+	                            case 5:
+	                                step5();
+	                                break;
+	                            case 6:
+	                                step6();
+	                                break;
+	                            case 7:
+	                                step7();
+	                                break;
+	                            case 8:
+	                                step8();
+	                                break;
 	                			default:
 	                				break;
 	                		}
-                		}
-                	}
+	                	}
+            		}
                 }
             }
 
