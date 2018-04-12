@@ -804,17 +804,6 @@
             		return;
             	}
 
-                //变数少的情况先执行
-                step3Case4(0);
-                step3Case4(1);
-                step3Case4(2);
-                step3Case4(3);
-
-                step3Case5(0);
-                step3Case5(1);
-                step3Case5(2);
-                step3Case5(3);
-
                 step3Case1(0);
                 step3Case1(1);
                 step3Case1(2);
@@ -829,6 +818,25 @@
             	step3Case3(1);
             	step3Case3(2);
             	step3Case3(3);
+
+            	step3Case4(0);
+                step3Case4(1);
+                step3Case4(2);
+                step3Case4(3);
+
+                step3Case5(0);
+                step3Case5(1);
+                step3Case5(2);
+                step3Case5(3);
+
+                step3Case6(0);
+                step3Case6(1);
+                step3Case6(2);
+                step3Case6(3);
+
+            	if(!isRotating){
+            		isAutoReset = false;//出现异常手动修正
+            	}
             }
             //底角归位第一种情况
             function step3Case1(rotateNum){
@@ -964,53 +972,112 @@
             		var cube8 = getCubeByIndex(8,rotateNum);
 	            	var cube17 = getCubeByIndex(17,rotateNum);
 	            	var cube14 = getCubeByIndex(14,rotateNum);
+	            	var cube11 = getCubeByIndex(11,rotateNum);
+	            	var cube1 = getCubeByIndex(1,rotateNum);
+	            	var cube4 = getCubeByIndex(4,rotateNum);
+	            	var cube7 = getCubeByIndex(7,rotateNum);
 	            	var xLine = rotateAxisByYLine(XLine,rotateNum);
 	            	var zLine = rotateAxisByYLine(ZLine,rotateNum);
 	            	var zLine8Color = getFaceColorByVector(cube8,zLine);
+	            	var xLine11Color = getFaceColorByVector(cube11,xLine);
+	            	var zLine4Color = getFaceColorByVector(cube4,zLine);
 
-            		if(getFaceColorByVector(cube8,xLine)==bottomColor&&
-                        getFaceColorByVector(cube17,xLine)==zLine8Color&&
-	        			getFaceColorByVector(cube14,xLine)==zLine8Color){
-            			console.log('step3Case4');
-	        			f(rotateNum,function(){
-	            			U(rotateNum,function(){
-	            				F(rotateNum,function(){
-	            					R(rotateNum,function(){
-	            						U(rotateNum,function(){
-	            							r(rotateNum);
-	            						})
-	            					})
-	            				})
-	            			})
-	            		})
-                    }
+	            	if(getFaceColorByVector(cube8,xLine)==bottomColor){
+	            		if(getFaceColorByVector(cube17,xLine)==zLine8Color&&
+		        			getFaceColorByVector(cube14,xLine)==zLine8Color){
+	            			console.log('step3Case4');
+		        			f(rotateNum,function(){
+		            			U(rotateNum,function(){
+		            				F(rotateNum,function(){
+		            					R(rotateNum,function(){
+		            						U(rotateNum,function(){
+		            							r(rotateNum);
+		            						})
+		            					})
+		            				})
+		            			})
+		            		})
+	                    }else if(getFaceColorByVector(cube17,xLine)==xLine11Color&&
+		        				getFaceColorByVector(cube14,xLine)==xLine11Color){
+	                    	R(rotateNum,function(){
+	                    		R(rotateNum);
+	                    	})
+	                    }else if(getFaceColorByVector(cube1,zLine)==zLine4Color&&
+	                    	getFaceColorByVector(cube7,zLine)==zLine4Color){
+	                    	f(rotateNum,function(){
+	                    		f(rotateNum)
+	                    	})
+	                    }else{
+	                    	u(rotateNum);
+	                    }
+	            	}
             	}
             }
             //底角归位第五种情况
             function step3Case5(rotateNum){
             	if(!isRotating){
             		var cube8 = getCubeByIndex(8,rotateNum);
+	            	var cube17 = getCubeByIndex(17,rotateNum);
+	            	var cube14 = getCubeByIndex(14,rotateNum);
+	            	var cube11 = getCubeByIndex(11,rotateNum);
+	            	var cube1 = getCubeByIndex(1,rotateNum);
 	            	var cube4 = getCubeByIndex(4,rotateNum);
 	            	var cube7 = getCubeByIndex(7,rotateNum);
 	            	var xLine = rotateAxisByYLine(XLine,rotateNum);
 	            	var zLine = rotateAxisByYLine(ZLine,rotateNum);
             		var xLine8Color = getFaceColorByVector(cube8,xLine);
-        			if(getFaceColorByVector(cube8,zLine)==bottomColor&&
-                        getFaceColorByVector(cube7,zLine)==xLine8Color&&
-            			getFaceColorByVector(cube4,zLine)==xLine8Color){
-        				console.log('step3Case5');
-            			R(rotateNum,function(){
-	            			u(rotateNum,function(){
-	            				r(rotateNum,function(){
-	            					f(rotateNum,function(){
-	            						u(rotateNum,function(){
-	            							F(rotateNum);
-	            						})
-	            					})
-	            				})
-	            			})
-	            		})
-                    }
+            		var xLine11Color = getFaceColorByVector(cube11,xLine);
+	            	var zLine4Color = getFaceColorByVector(cube4,zLine);
+            		if(getFaceColorByVector(cube8,zLine)==bottomColor){
+            			if(getFaceColorByVector(cube7,zLine)==xLine8Color&&
+	            			getFaceColorByVector(cube4,zLine)==xLine8Color){
+	        				console.log('step3Case5');
+	            			R(rotateNum,function(){
+		            			u(rotateNum,function(){
+		            				r(rotateNum,function(){
+		            					f(rotateNum,function(){
+		            						u(rotateNum,function(){
+		            							F(rotateNum);
+		            						})
+		            					})
+		            				})
+		            			})
+		            		})
+	                    }else if(getFaceColorByVector(cube17,xLine)==xLine11Color&&
+		        				getFaceColorByVector(cube14,xLine)==xLine11Color){
+	                    	R(rotateNum,function(){
+	                    		R(rotateNum);
+	                    	})
+	                    }else if(getFaceColorByVector(cube1,zLine)==zLine4Color&&
+	                    	getFaceColorByVector(cube7,zLine)==zLine4Color){
+	                    	f(rotateNum,function(){
+	                    		f(rotateNum)
+	                    	})
+	                    }else{
+	                    	u(rotateNum);
+	                    }
+            		}
+            	}
+            }
+            //底角归位第六种情况
+            function step3Case6(rotateNum){
+            	if(!isRotating){
+            		var cube1 = getCubeByIndex(1,rotateNum);
+            		var cube4 = getCubeByIndex(4,rotateNum);
+            		var cube7 = getCubeByIndex(7,rotateNum);
+            		var yLine = rotateAxisByYLine(YLine,rotateNum);
+            		var zLine = rotateAxisByYLine(ZLine,rotateNum);
+            		var zLine1Color = getFaceColorByVector(cube1,zLine);
+            		if(getFaceColorByVector(cube1,yLine)==bottomColor&&
+            			getFaceColorByVector(cube4,zLine)==getFaceColorByVector(cube7,zLine)){
+            			if(getFaceColorByVector(cube4,zLine)!=zLine1Color){
+            				u(rotateNum);
+            			}else{
+            				f(rotateNum,function(){
+            					f(rotateNum);
+            				})
+            			}
+            		}
             	}
             }
             //判断是否完成第三步底角归位
