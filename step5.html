@@ -57,7 +57,8 @@
             var bottomColor;
             var topColor;
             function autoResetV1(cubes){
-            	if(!getCubeStatus()){
+                console.log('start autoResetV1');
+            	if(!checkStep8()){
 	                isAutoReset = true;
 					currentStep = 1;
 					console.log('start step1');
@@ -1759,10 +1760,6 @@
                         rotateAnimation(elements,direction,timestamp,startstamp,currentstamp,next);
                     });
                 }else{
-                	//转动结束
-                	if(getCubeStatus()){
-                		isAutoReset = false;
-                	}
                 	if(isAutoReset){
                 		if(next){
                 			next();
@@ -1814,20 +1811,6 @@
                         }
                     }
                 }
-            }
-
-            /**
-             * 获取魔方状态
-             * 假设初始化时按固定位置给魔方编号，还原之后位置和编号不变
-             */
-            function getCubeStatus(){
-                for(var i=0;i<cubes.length;i++){
-                    var item = cubes[i];
-                    if(item.id!=item.cubeIndex){
-                        return false;
-                    }
-                }
-                return true;
             }
 
             //根据方向获得运动元素
