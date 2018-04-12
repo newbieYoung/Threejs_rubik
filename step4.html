@@ -305,8 +305,6 @@
                     isRotating = false;
                     startPoint = null;
                     updateCubeIndex(elements);
-                    //转动之后需要更新魔方此时所处的状态
-                    updateCubeStatus();
                 }
                 switch(direction){
                     //绕z轴顺时针
@@ -387,20 +385,6 @@
                         }
                     }
                 }
-            }
-
-            /**
-             * 更新魔方状态
-             * 假设初始化时按固定位置给魔方编号，还原之后位置和编号不变
-             */
-            function updateCubeStatus(){
-                for(var i=0;i<cubes.length;i++){
-                    var item = cubes[i];
-                    if(item.id!==item.cubeIndex){
-                        return false;
-                    }
-                }
-                return true;
             }
 
             //根据方向获得运动元素
