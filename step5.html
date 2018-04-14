@@ -826,10 +826,6 @@
                 step3Case6(1);
                 step3Case6(2);
                 step3Case6(3);
-
-            	if(!isRotating){
-            		isAutoReset = false;//出现异常手动修正
-            	}
             }
             //底角归位第一种情况
             function step3Case1(rotateNum){
@@ -1078,7 +1074,9 @@
         				})
         			}else{
         				console.log('step3Case6-1');
-        				u(rotateNum);
+        				u(rotateNum,function(){
+        					step3Case6(rotateNum);
+        				});
         			}
             	}
             }
