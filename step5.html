@@ -1068,7 +1068,7 @@
 
             //判断是否完成第三步底角归位
             function checkStep3(){
-            	if(!checkStep2()){
+            	if(!checkStep2(false)){
             		return false;
             	}
 
@@ -1110,7 +1110,7 @@
             }
             //第二步底棱归位
             function step2(){
-            	if(checkStep2()){
+            	if(checkStep2(true)){
                     currentStep = 3;
                     step3();
 					return;
@@ -1192,8 +1192,11 @@
                 	}
                 }
             }
-            //判断是否完成第二部底棱归位
-            function checkStep2(){
+            /**
+             * 判断是否完成第二部底棱归位
+             * isStrict为true表示严格底十字模式
+             */
+            function checkStep2(isStrict){
             	var cube4 = getCubeByIndex(4);
             	var cube7 = getCubeByIndex(7);
             	var zLine4Color = getFaceColorByVector(cube4,ZLine);
@@ -1253,12 +1256,14 @@
             		getFaceColorByVector(cube15,YLineAd)!=bottomColor){
             		return false;
             	}
-                if(getFaceColorByVector(cube6,YLineAd)==bottomColor||
-                    getFaceColorByVector(cube8,YLineAd)==bottomColor||
-                    getFaceColorByVector(cube26,YLineAd)==bottomColor||
-                    getFaceColorByVector(cube24,YLineAd)==bottomColor){
-                    return false;
-                }
+            	if(isStrict){
+            		if(getFaceColorByVector(cube6,YLineAd)==bottomColor||
+	                    getFaceColorByVector(cube8,YLineAd)==bottomColor||
+	                    getFaceColorByVector(cube26,YLineAd)==bottomColor||
+	                    getFaceColorByVector(cube24,YLineAd)==bottomColor){
+	                    return false;
+	                }
+            	}
 
             	return true;
             }
