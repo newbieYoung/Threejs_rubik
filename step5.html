@@ -657,6 +657,10 @@
             	step4Case3(1);
             	step4Case3(2);
             	step4Case3(3);
+
+                if(!isRotating){
+                    isAutoReset = false;
+                }
             }
             function rotate401(rotateNum,next){
                 u(rotateNum,function(){
@@ -754,8 +758,8 @@
             		var cube14 = getCubeByIndex(14,rotateNum);
             		var xLine = rotateAxisByYLine(XLine,rotateNum);
             		var zLine = rotateAxisByYLine(ZLine,rotateNum);
-                    if(getFaceColorByVector(cube4,zLine)!=getFaceColorByVector(cube5,zLine)&&
-                        getFaceColorByVector(cube5,xLine)!=getFaceColorByVector(cube14,xLine)){
+                    if(getFaceColorByVector(cube4,zLine)==getFaceColorByVector(cube5,xLine)&&
+                        getFaceColorByVector(cube5,zLine)==getFaceColorByVector(cube14,xLine)){
                         rotate401(rotateNum,function(){
                             U(rotateNum,function(){
                                 U(rotateNum,function(){
