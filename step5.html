@@ -141,10 +141,6 @@
                 step8Case2(1);
                 step8Case2(2);
                 step8Case2(3);
-
-                if(!isRotating&&!checkStep8()){
-                    rotate801(0);
-                }
             }
             //判断顶角归位 是否完成
             function checkStep8(){
@@ -642,9 +638,8 @@
             function step4(){
             	if(checkStep4()){
                     console.log('start step5');
-                    isAutoReset = false;
-            		//currentStep = 5;
-            		//step5();
+            		currentStep = 5;
+            		step5();
             		return;
             	}
 
@@ -667,6 +662,10 @@
                 step4Case5(1);
                 step4Case5(2);
                 step4Case5(3);
+
+                if(!isRotating){
+                    isAutoReset = false;
+                }
             }
             function rotate401(rotateNum,next){
                 u(rotateNum,function(){
@@ -788,7 +787,7 @@
                     var yLine = rotateAxisByYLine(YLine,rotateNum);
                     var zLine4Color = getFaceColorByVector(cube4,zLine);
 
-                    if(getFaceColorByVector(cube3,zLine)==zLine4Color&&getFaceColorByVector(cube5,zLine)!=zLine4Color&&getFaceColorByVector(cube5,xLine)!=getFaceColorByVector(cube14,xLine)){
+                    if(getFaceColorByVector(cube3,zLine)==zLine4Color&&getFaceColorByVector(cube5,zLine)!=zLine4Color){
                         if(getFaceColorByVector(cube1,zLine)==zLine4Color){
                             console.log('step4Case4-1');
                             rotate402(rotateNum);
@@ -816,7 +815,7 @@
                     var yLine = rotateAxisByYLine(YLine,rotateNum);
                     var xLine14Color = getFaceColorByVector(cube14,xLine);
 
-                    if(xLine14Color==getFaceColorByVector(cube23,xLine)&&xLine14Color!=getFaceColorByVector(cube5,xLine)&&getFaceColorByVector(cube4,zLine)!=getFaceColorByVector(cube5,zLine)){
+                    if(xLine14Color==getFaceColorByVector(cube23,xLine)&&xLine14Color!=getFaceColorByVector(cube5,xLine)){
                         if(getFaceColorByVector(cube1,yLine)==xLine14Color){
                             console.log('step4Case5-1');
                             rotate402(rotateNum);
