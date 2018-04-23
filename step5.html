@@ -135,6 +135,7 @@
                     stepCount = 0;
 	                isAutoReset = true;
 					currentStep = 1;
+                    console.log('start step1');
 					step1();
             	}
             }
@@ -159,6 +160,10 @@
                 step8Case2(1);
                 step8Case2(2);
                 step8Case2(3);
+
+                if(!isRotating){
+                    console.log('something wrong in step8');
+                }
             }
             //判断顶角归位 是否完成
             function checkStep8(){
@@ -309,6 +314,10 @@
                 if(!isRotating&&!checkStep7()){
                     u(0);
                 }
+
+                if(!isRotating){
+                    console.log('something wrong in step7');
+                }
             }
             //顶棱归位 第一种情况
             function step7Case1(rotateNum){
@@ -427,6 +436,10 @@
             	step6Case1(1);
             	step6Case1(2);
             	step6Case1(3);
+
+                if(!isRotating){
+                    console.log('something wrong in step6');
+                }
             }
             function rotate601(rotateNum){
             	r(rotateNum,function(){
@@ -539,6 +552,10 @@
             	step5Case3(1);
             	step5Case3(2);
             	step5Case3(3);
+
+                if(!isRotating){
+                    console.log('something wrong in step5');
+                }
             }
             function rotate501(rotateNum,next){
             	r(rotateNum,function(){
@@ -682,7 +699,7 @@
                 step4Case5(3);
 
                 if(!isRotating){
-                    isAutoReset = false;
+                    console.log('something wrong in step4');
                 }
             }
             function rotate401(rotateNum,next){
@@ -919,6 +936,10 @@
                 step3Case5(1);
                 step3Case5(2);
                 step3Case5(3);
+
+                if(!isRotating){
+                    console.log('something wrong in step3');
+                }
             }
             //底角归位第一种情况
             function step3Case1(rotateNum,startNum){
@@ -1221,6 +1242,10 @@
             	step2Case3(1);
             	step2Case3(2);
             	step2Case3(3);
+
+                if(!isRotating){
+                    console.log('something wrong in step2');
+                }
             }
             //底棱归位第一种情况
             function step2Case1(rotateNum){
@@ -1416,7 +1441,11 @@
 				step1Case4(0);
 				step1Case4(1);
 				step1Case4(2);
-				step1Case4(3);				
+				step1Case4(3);
+
+                if(!isRotating){
+                    console.log('something wrong in step1');
+                }
             }
             //判断是否完成第一步小白花
             function checkStep1(){
