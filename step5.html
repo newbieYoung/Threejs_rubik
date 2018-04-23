@@ -141,6 +141,8 @@
             }
             //第八步 顶角归位
             function step8(){
+                console.log('run step8');
+
                 if(checkStep8()){
                     isAutoReset = false;
                     endTime = window.performance.now();
@@ -291,6 +293,8 @@
             }
             //第七步 顶棱归位
             function step7(){
+                console.log('run step7');
+
             	if(checkStep7()){
                     console.log('start step8');
                     currentStep = 8;
@@ -425,6 +429,8 @@
             }
             //第六步 顶角面位
             function step6(){
+                console.log('run step6');
+
             	if(checkStep6()){
                     console.log('start step7');
             		currentStep = 7;
@@ -531,6 +537,8 @@
             }
             //第五步 顶棱面位
             function step5(){
+                console.log('run step5');
+
             	if(checkStep5()){
                     console.log('start step6');
             		currentStep = 6;
@@ -671,6 +679,8 @@
             }
             //第四步 中棱归位
             function step4(){
+                console.log('run step4');
+
             	if(checkStep4()){
                     console.log('start step5');
             		currentStep = 5;
@@ -906,6 +916,8 @@
             }
             //第三步底角归位
             function step3(){
+                console.log('run step3');
+
             	if(checkStep3()){
                     console.log('start step4');
                     currentStep = 4;
@@ -1221,6 +1233,8 @@
             }
             //第二步底棱归位
             function step2(){
+                console.log('run step2');
+
             	if(checkStep2(true)){
                     console.log('start step3');
                     currentStep = 3;
@@ -1407,6 +1421,7 @@
             }
             //第一步小白花
             function step1(){
+                console.log('run step1');
             	/**
             	 * 找到初始化时上表面颜色在中心的面，调整魔方让该表面依然为上表面；
             	 * 然后对照初始化时下表面颜色的位置，按既定规律转动魔方；
