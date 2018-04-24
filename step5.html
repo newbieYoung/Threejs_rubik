@@ -2016,6 +2016,7 @@
             	var direction = getDirection(vector);//获得方向
             	var elements = getBoxs(target,direction);
             	var startTime = new Date().getTime();
+            	console.log('rotateAnimation');
                 window.requestAnimFrame(function(timestamp){
                     rotateAnimation(elements,direction,timestamp,0,null,next);
                 });
