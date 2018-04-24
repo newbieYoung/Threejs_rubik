@@ -1689,17 +1689,17 @@
         					index += 2;
         				}
         			}
-    				rotateNum --;
+    				rotateNum--;
             	}
-            	// if(tempIndex!=index){
-            	// 	console.log('num:'+tempRotateNum+' '+tempIndex+' >> '+index);
-            	// }
             	var cube; 
 				for(var i=0;i<cubes.length;i++){
 					if(cubes[i].cubeIndex == index+minCubeIndex){
 						cube = cubes[i];
 					}
 				}
+				if(tempIndex!=index&&!cube){
+            		console.log('num:'+tempRotateNum+' '+tempIndex+' >> '+index);
+            	}
 				return cube;
             }
             //根据Y轴旋转向量
@@ -2015,7 +2015,7 @@
 
             //某方块在某个方向转动
             function rotateMove(target,vector,next){
-            	isRotating = true;//转动标识置为true
+        		isRotating = true;//转动标识置为true
             	var direction = getDirection(vector);//获得方向
             	var elements = getBoxs(target,direction);
             	var startTime = new Date().getTime();
