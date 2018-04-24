@@ -11,19 +11,20 @@ const iPhone6 = devices['iPhone 6'];
     });
     const page = await browser.newPage();
     await page.emulate(iPhone6);
-    await page.goto('https://newbieyoung.github.io/Threejs_rubik/step5.html');
+    //await page.goto('https://newbieyoung.github.io/Threejs_rubik/step5.html');
+    await page.goto('http://localhost:9000/step5.html');
 
     page.on('console', msg => {
     	console.log('PAGE LOG:', msg.text())
     });
 
     let rotateTime = 200;
-    let randomNum = 10;
+    let randomNum = 20;
 
     let $randomRotate = await page.$('#randomRotate');
     $randomRotate.click();
 
-    await sleep(rotateTime*randomNum*2);
+    await sleep(rotateTime*randomNum*3);
 
     let $autoResetV1 = await page.$('#autoResetV1');
     $autoResetV1.click();
