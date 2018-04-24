@@ -1540,8 +1540,8 @@
              * 魔方基本公式 U、F、L、D、R、u、f、l、d
              */
             function U(rotateNum,next){
+            	console.log('U');
                 stepCount++;
-                //console.log('U');
             	var cube2 = getCubeByIndex(2,rotateNum);
             	var zLine = rotateAxisByYLine(ZLine,rotateNum);
             	var xLineAd = rotateAxisByYLine(XLineAd,rotateNum);
@@ -1549,8 +1549,8 @@
             	rotateMove(cube2,xLineAd,next);
             }
             function u(rotateNum,next){
+            	console.log('u');
                 stepCount++;
-                //console.log('u');
             	var cube2 = getCubeByIndex(2,rotateNum);
             	var xLine = rotateAxisByYLine(XLine,rotateNum);
             	var zLineAd = rotateAxisByYLine(ZLineAd,rotateNum);
@@ -1558,7 +1558,7 @@
             	rotateMove(cube2,zLineAd,next);
             }
             function F(rotateNum,next){
-            	//console.log('F');
+            	console.log('F');
                 stepCount++;
             	var cube2 = getCubeByIndex(2,rotateNum);
             	var xLine = rotateAxisByYLine(XLine,rotateNum);
@@ -1567,7 +1567,7 @@
             	rotateMove(cube2,yLineAd,next);
             }
             function f(rotateNum,next){
-            	//console.log('f');
+            	console.log('f');
                 stepCount++;
             	var cube2 = getCubeByIndex(2,rotateNum);
             	var yLine = rotateAxisByYLine(YLine,rotateNum);
@@ -1576,7 +1576,7 @@
             	rotateMove(cube2,xLineAd,next)
             }
             function L(rotateNum,next){
-            	//console.log('L');
+            	console.log('L');
                 stepCount++;
             	var cube0 = getCubeByIndex(0,rotateNum);
             	var zLine = rotateAxisByYLine(ZLine,rotateNum);
@@ -1585,7 +1585,7 @@
             	rotateMove(cube0,yLineAd,next);
             }
             function l(rotateNum,next){
-            	//console.log('l');
+            	console.log('l');
                 stepCount++;
             	var cube0 = getCubeByIndex(0,rotateNum);
             	var yLine = rotateAxisByYLine(YLine,rotateNum);
@@ -1594,7 +1594,7 @@
             	rotateMove(cube0,zLineAd,next);
             }
             function D(rotateNum,next){
-            	//console.log('D');
+            	console.log('D');
                 stepCount++;
             	var cube8 = getCubeByIndex(8,rotateNum);
             	var xLine = rotateAxisByYLine(XLine,rotateNum);
@@ -1603,7 +1603,7 @@
             	rotateMove(cube8,zLineAd,next);
             }
             function d(rotateNum,next){
-            	//console.log('d');
+            	console.log('d');
                 stepCount++;
             	var cube8 = getCubeByIndex(8,rotateNum);
             	var zLine = rotateAxisByYLine(ZLine,rotateNum);
@@ -1612,7 +1612,7 @@
             	rotateMove(cube8,xLineAd,next);
             }
             function R(rotateNum,next){
-            	//console.log('R');
+            	console.log('R');
                 stepCount++;
             	var cube2 = getCubeByIndex(2,rotateNum);
             	var yLine = rotateAxisByYLine(YLine,rotateNum);
@@ -1621,7 +1621,7 @@
             	rotateMove(cube2,zLineAd,next);
             }
             function r(rotateNum,next){
-            	//console.log('r');
+            	console.log('r');
                 stepCount++;
             	var cube2 = getCubeByIndex(2,rotateNum);
             	var zLine = rotateAxisByYLine(ZLine,rotateNum);
@@ -1630,7 +1630,7 @@
             	rotateMove(cube2,yLineAd,next);
             }
             function B(rotateNum,next){
-            	//console.log('B');
+            	console.log('B');
                 stepCount++;
                 var cube20 = getCubeByIndex(20,rotateNum);
                 var xLine = rotateAxisByYLine(XLine,rotateNum);
@@ -1639,7 +1639,7 @@
                 rotateMove(cube20,yLine,next);
             }
             function b(rotateNum,next){
-            	//console.log('b');
+            	console.log('b');
                 stepCount++;
                 var cube20 = getCubeByIndex(20,rotateNum);
                 var xLine = rotateAxisByYLine(XLine,rotateNum);
@@ -1697,9 +1697,6 @@
 						cube = cubes[i];
 					}
 				}
-				if(tempIndex!=index&&!cube){
-            		console.log('num:'+tempRotateNum+' '+tempIndex+' >> '+index);
-            	}
 				return cube;
             }
             //根据Y轴旋转向量
