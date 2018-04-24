@@ -138,7 +138,7 @@
             var endTime = 0;
             var stepCount = 0;
             function autoResetV1(cubes){
-            	if(!checkStep8()){
+            	if(!checkStep8()&&!isRotating){
                     console.log('start autoResetV1');
                     startTime = window.performance.now();
                     console.log('start at:'+startTime);
@@ -177,39 +177,76 @@
             }
             //判断顶角归位 是否完成
             function checkStep8(){
-                if(!checkStep7()){
-                    return false;
-                }
                 var cube0 = getCubeByIndex(0);
                 var cube1 = getCubeByIndex(1);
                 var cube2 = getCubeByIndex(2);
+                var cube3 = getCubeByIndex(3);
+                var cube4 = getCubeByIndex(4);
+                var cube5 = getCubeByIndex(5);
+                var cube6 = getCubeByIndex(6);
+                var cube7 = getCubeByIndex(7);
+                var cube8 = getCubeByIndex(8);
                 var ZLine1Color = getFaceColorByVector(cube1,ZLine);
 
                 if(getFaceColorByVector(cube0,ZLine)!=ZLine1Color||
-                    getFaceColorByVector(cube2,ZLine)!=ZLine1Color){
+                    getFaceColorByVector(cube2,ZLine)!=ZLine1Color||
+                    getFaceColorByVector(cube3,ZLine)!=ZLine1Color||
+                    getFaceColorByVector(cube4,ZLine)!=ZLine1Color||
+                    getFaceColorByVector(cube5,ZLine)!=ZLine1Color||
+                    getFaceColorByVector(cube6,ZLine)!=ZLine1Color||
+                    getFaceColorByVector(cube7,ZLine)!=ZLine1Color||
+                    getFaceColorByVector(cube8,ZLine)!=ZLine1Color){
                     return false;
                 }
 
-                var cube20 = getCubeByIndex(20);
                 var cube11 = getCubeByIndex(11);
+                var cube14 = getCubeByIndex(14);
+                var cube17 = getCubeByIndex(17);
+                var cube20 = getCubeByIndex(20);
+                var cube23 = getCubeByIndex(23);
+                var cube26 = getCubeByIndex(26);
                 var XLine11Color = getFaceColorByVector(cube11,XLine);
                 if(getFaceColorByVector(cube2,XLine)!=XLine11Color||
-                    getFaceColorByVector(cube20,XLine)!=XLine11Color){
+                	getFaceColorByVector(cube5,XLine)!=XLine11Color||
+                	getFaceColorByVector(cube8,XLine)!=XLine11Color||
+                    getFaceColorByVector(cube14,XLine)!=XLine11Color||
+                    getFaceColorByVector(cube17,XLine)!=XLine11Color||
+                    getFaceColorByVector(cube20,XLine)!=XLine11Color||
+                    getFaceColorByVector(cube23,XLine)!=XLine11Color||
+                    getFaceColorByVector(cube26,XLine)!=XLine11Color){
                     return false;
                 }
 
                 var cube18 = getCubeByIndex(18);
                 var cube19 = getCubeByIndex(19);
+                var cube21 = getCubeByIndex(21);
+                var cube22 = getCubeByIndex(22);
+                var cube24 = getCubeByIndex(24);
+                var cube25 = getCubeByIndex(25);
                 var ZLineAd19Color = getFaceColorByVector(cube19,ZLineAd);
                 if(getFaceColorByVector(cube18,ZLineAd)!=ZLineAd19Color||
-                    getFaceColorByVector(cube20,ZLineAd)!=ZLineAd19Color){
+                    getFaceColorByVector(cube20,ZLineAd)!=ZLineAd19Color||
+                    getFaceColorByVector(cube21,ZLineAd)!=ZLineAd19Color||
+                    getFaceColorByVector(cube22,ZLineAd)!=ZLineAd19Color||
+                    getFaceColorByVector(cube23,ZLineAd)!=ZLineAd19Color||
+                    getFaceColorByVector(cube24,ZLineAd)!=ZLineAd19Color||
+                    getFaceColorByVector(cube25,ZLineAd)!=ZLineAd19Color||
+                    getFaceColorByVector(cube26,ZLineAd)!=ZLineAd19Color){
                     return false;
                 }
 
                 var cube9 = getCubeByIndex(9);
+                var cube12 = getCubeByIndex(12);
+                var cube15 = getCubeByIndex(15);
                 var XLineAd9Color = getFaceColorByVector(cube9,XLineAd);
                 if(getFaceColorByVector(cube0,XLineAd)!=XLineAd9Color||
-                    getFaceColorByVector(cube18,XLineAd)!=XLineAd9Color){
+                	getFaceColorByVector(cube3,XLineAd)!=XLineAd9Color||
+                	getFaceColorByVector(cube6,XLineAd)!=XLineAd9Color||
+                	getFaceColorByVector(cube12,XLineAd)!=XLineAd9Color||
+                	getFaceColorByVector(cube15,XLineAd)!=XLineAd9Color||
+                    getFaceColorByVector(cube18,XLineAd)!=XLineAd9Color||
+                    getFaceColorByVector(cube21,XLineAd)!=XLineAd9Color||
+                    getFaceColorByVector(cube24,XLineAd)!=XLineAd9Color){
                     return false;
                 }
 
