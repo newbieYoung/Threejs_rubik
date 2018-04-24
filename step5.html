@@ -139,13 +139,13 @@
             var stepCount = 0;
             function autoResetV1(cubes){
             	if(!checkStep8()){
-                    //console.log('start autoResetV1');
+                    console.log('start autoResetV1');
                     startTime = window.performance.now();
-                    //console.log('start at:'+startTime);
+                    console.log('start at:'+startTime);
                     stepCount = 0;
 	                isAutoReset = true;
 					currentStep = 1;
-                    //console.log('start step1');
+                    console.log('start step1');
 					step1();
             	}
             }
@@ -154,10 +154,10 @@
                 if(checkStep8()){
                     isAutoReset = false;
                     endTime = window.performance.now();
-                    //console.log('end at:'+endTime);
-                    //console.log('end autoResetV1');
-                    //console.log('total times:'+(endTime-startTime));
-                    //console.log('total steps:'+stepCount);
+                    console.log('end at:'+endTime);
+                    console.log('end autoResetV1');
+                    console.log('total times:'+(endTime-startTime));
+                    console.log('total steps:'+stepCount);
                     return;
                 }
 
@@ -172,7 +172,7 @@
                 step8Case2(3);
 
                 if(!isRotating){
-                    //console.log('something wrong in step8');
+                    console.log('something wrong in step8');
                 }
             }
             //判断顶角归位 是否完成
@@ -302,7 +302,7 @@
             //第七步 顶棱归位
             function step7(){
             	if(checkStep7()){
-                    //console.log('start step8');
+                    console.log('start step8');
                     currentStep = 8;
                     step8();
                     return;
@@ -326,7 +326,7 @@
                 }
 
                 if(!isRotating){
-                    //console.log('something wrong in step7');
+                    console.log('something wrong in step7');
                 }
             }
             //顶棱归位 第一种情况
@@ -434,7 +434,7 @@
             //第六步 顶角面位
             function step6(){
             	if(checkStep6()){
-                    //console.log('start step7');
+                    console.log('start step7');
             		currentStep = 7;
             		step7();
             		return;
@@ -446,7 +446,7 @@
             	step6Case1(3);
 
                 if(!isRotating){
-                    //console.log('something wrong in step6');
+                    console.log('something wrong in step6');
                 }
             }
             function rotate601(rotateNum){
@@ -540,7 +540,7 @@
             //第五步 顶棱面位
             function step5(){
             	if(checkStep5()){
-                    //console.log('start step6');
+                    console.log('start step6');
             		currentStep = 6;
             		step6();
             		return;
@@ -562,7 +562,7 @@
             	step5Case3(3);
 
                 if(!isRotating){
-                    //console.log('something wrong in step5');
+                    console.log('something wrong in step5');
                 }
             }
             function rotate501(rotateNum,next){
@@ -680,7 +680,7 @@
             //第四步 中棱归位
             function step4(){
             	if(checkStep4()){
-                    //console.log('start step5');
+                    console.log('start step5');
             		currentStep = 5;
             		step5();
             		return;
@@ -707,7 +707,7 @@
                 step4Case5(3);
 
                 if(!isRotating){
-                    //console.log('something wrong in step4');
+                    console.log('something wrong in step4');
                 }
             }
             function rotate401(rotateNum,next){
@@ -909,7 +909,7 @@
             //第三步底角归位
             function step3(){
             	if(checkStep3()){
-                    //console.log('start step4');
+                    console.log('start step4');
                     currentStep = 4;
                     step4();
             		return;
@@ -940,7 +940,7 @@
                 step3Case5(3);
 
                 if(!isRotating){
-                    //console.log('something wrong in step3');
+                    console.log('something wrong in step3');
                 }
             }
             //底角归位第一种情况
@@ -1224,7 +1224,7 @@
             //第二步底棱归位
             function step2(){
             	if(checkStep2(true)){
-                    //console.log('start step3');
+                    console.log('start step3');
                     currentStep = 3;
                     step3();
 					return;
@@ -1246,7 +1246,7 @@
             	step2Case3(3);
 
                 if(!isRotating){
-                    //console.log('something wrong in step2');
+                    console.log('something wrong in step2');
                 }
             }
             //底棱归位第一种情况
@@ -1419,7 +1419,7 @@
 				bottomColor = getOppositeColor(topColor);
 
             	if(checkStep1(bottomColor)){
-                    //console.log('start step2');
+                    console.log('start step2');
 					currentStep = 2;
 					step2();
 					return;
@@ -1446,7 +1446,7 @@
 				step1Case4(3);
 
                 if(!isRotating){
-                    //console.log('something wrong in step1');
+                    console.log('something wrong in step1');
                 }
             }
             //判断是否完成第一步小白花
@@ -1540,7 +1540,6 @@
              * 魔方基本公式 U、F、L、D、R、u、f、l、d
              */
             function U(rotateNum,next){
-            	console.log('U '+isRotating);
                 stepCount++;
             	var cube2 = getCubeByIndex(2,rotateNum);
             	var zLine = rotateAxisByYLine(ZLine,rotateNum);
@@ -1549,7 +1548,6 @@
             	rotateMove(cube2,xLineAd,next);
             }
             function u(rotateNum,next){
-            	console.log('u '+isRotating);
                 stepCount++;
             	var cube2 = getCubeByIndex(2,rotateNum);
             	var xLine = rotateAxisByYLine(XLine,rotateNum);
@@ -1558,7 +1556,6 @@
             	rotateMove(cube2,zLineAd,next);
             }
             function F(rotateNum,next){
-            	console.log('F '+isRotating);
                 stepCount++;
             	var cube2 = getCubeByIndex(2,rotateNum);
             	var xLine = rotateAxisByYLine(XLine,rotateNum);
@@ -1567,7 +1564,6 @@
             	rotateMove(cube2,yLineAd,next);
             }
             function f(rotateNum,next){
-            	console.log('f '+isRotating);
                 stepCount++;
             	var cube2 = getCubeByIndex(2,rotateNum);
             	var yLine = rotateAxisByYLine(YLine,rotateNum);
@@ -1576,7 +1572,6 @@
             	rotateMove(cube2,xLineAd,next)
             }
             function L(rotateNum,next){
-            	console.log('L '+isRotating);
                 stepCount++;
             	var cube0 = getCubeByIndex(0,rotateNum);
             	var zLine = rotateAxisByYLine(ZLine,rotateNum);
@@ -1585,7 +1580,6 @@
             	rotateMove(cube0,yLineAd,next);
             }
             function l(rotateNum,next){
-            	console.log('l '+isRotating);
                 stepCount++;
             	var cube0 = getCubeByIndex(0,rotateNum);
             	var yLine = rotateAxisByYLine(YLine,rotateNum);
@@ -1594,7 +1588,6 @@
             	rotateMove(cube0,zLineAd,next);
             }
             function D(rotateNum,next){
-            	console.log('D '+isRotating);
                 stepCount++;
             	var cube8 = getCubeByIndex(8,rotateNum);
             	var xLine = rotateAxisByYLine(XLine,rotateNum);
@@ -1603,7 +1596,6 @@
             	rotateMove(cube8,zLineAd,next);
             }
             function d(rotateNum,next){
-            	console.log('d '+isRotating);
                 stepCount++;
             	var cube8 = getCubeByIndex(8,rotateNum);
             	var zLine = rotateAxisByYLine(ZLine,rotateNum);
@@ -1612,7 +1604,6 @@
             	rotateMove(cube8,xLineAd,next);
             }
             function R(rotateNum,next){
-            	console.log('R '+isRotating);
                 stepCount++;
             	var cube2 = getCubeByIndex(2,rotateNum);
             	var yLine = rotateAxisByYLine(YLine,rotateNum);
@@ -1621,7 +1612,6 @@
             	rotateMove(cube2,zLineAd,next);
             }
             function r(rotateNum,next){
-            	console.log('r '+isRotating);
                 stepCount++;
             	var cube2 = getCubeByIndex(2,rotateNum);
             	var zLine = rotateAxisByYLine(ZLine,rotateNum);
@@ -1630,7 +1620,6 @@
             	rotateMove(cube2,yLineAd,next);
             }
             function B(rotateNum,next){
-            	console.log('B '+isRotating);
                 stepCount++;
                 var cube20 = getCubeByIndex(20,rotateNum);
                 var xLine = rotateAxisByYLine(XLine,rotateNum);
@@ -1639,7 +1628,6 @@
                 rotateMove(cube20,yLine,next);
             }
             function b(rotateNum,next){
-            	console.log('b '+isRotating);
                 stepCount++;
                 var cube20 = getCubeByIndex(20,rotateNum);
                 var xLine = rotateAxisByYLine(XLine,rotateNum);
@@ -2016,7 +2004,6 @@
             	var direction = getDirection(vector);//获得方向
             	var elements = getBoxs(target,direction);
             	var startTime = new Date().getTime();
-            	console.log('rotateAnimation');
                 window.requestAnimFrame(function(timestamp){
                     rotateAnimation(elements,direction,timestamp,0,null,next);
                 });
