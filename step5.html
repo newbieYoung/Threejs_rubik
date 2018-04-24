@@ -1540,7 +1540,7 @@
              * 魔方基本公式 U、F、L、D、R、u、f、l、d
              */
             function U(rotateNum,next){
-            	console.log('U');
+            	console.log('U '+isRotating);
                 stepCount++;
             	var cube2 = getCubeByIndex(2,rotateNum);
             	var zLine = rotateAxisByYLine(ZLine,rotateNum);
@@ -1549,7 +1549,7 @@
             	rotateMove(cube2,xLineAd,next);
             }
             function u(rotateNum,next){
-            	console.log('u');
+            	console.log('u '+isRotating);
                 stepCount++;
             	var cube2 = getCubeByIndex(2,rotateNum);
             	var xLine = rotateAxisByYLine(XLine,rotateNum);
@@ -1558,7 +1558,7 @@
             	rotateMove(cube2,zLineAd,next);
             }
             function F(rotateNum,next){
-            	console.log('F');
+            	console.log('F '+isRotating);
                 stepCount++;
             	var cube2 = getCubeByIndex(2,rotateNum);
             	var xLine = rotateAxisByYLine(XLine,rotateNum);
@@ -1567,7 +1567,7 @@
             	rotateMove(cube2,yLineAd,next);
             }
             function f(rotateNum,next){
-            	console.log('f');
+            	console.log('f '+isRotating);
                 stepCount++;
             	var cube2 = getCubeByIndex(2,rotateNum);
             	var yLine = rotateAxisByYLine(YLine,rotateNum);
@@ -1576,7 +1576,7 @@
             	rotateMove(cube2,xLineAd,next)
             }
             function L(rotateNum,next){
-            	console.log('L');
+            	console.log('L '+isRotating);
                 stepCount++;
             	var cube0 = getCubeByIndex(0,rotateNum);
             	var zLine = rotateAxisByYLine(ZLine,rotateNum);
@@ -1585,7 +1585,7 @@
             	rotateMove(cube0,yLineAd,next);
             }
             function l(rotateNum,next){
-            	console.log('l');
+            	console.log('l '+isRotating);
                 stepCount++;
             	var cube0 = getCubeByIndex(0,rotateNum);
             	var yLine = rotateAxisByYLine(YLine,rotateNum);
@@ -1594,7 +1594,7 @@
             	rotateMove(cube0,zLineAd,next);
             }
             function D(rotateNum,next){
-            	console.log('D');
+            	console.log('D '+isRotating);
                 stepCount++;
             	var cube8 = getCubeByIndex(8,rotateNum);
             	var xLine = rotateAxisByYLine(XLine,rotateNum);
@@ -1603,7 +1603,7 @@
             	rotateMove(cube8,zLineAd,next);
             }
             function d(rotateNum,next){
-            	console.log('d');
+            	console.log('d '+isRotating);
                 stepCount++;
             	var cube8 = getCubeByIndex(8,rotateNum);
             	var zLine = rotateAxisByYLine(ZLine,rotateNum);
@@ -1612,7 +1612,7 @@
             	rotateMove(cube8,xLineAd,next);
             }
             function R(rotateNum,next){
-            	console.log('R');
+            	console.log('R '+isRotating);
                 stepCount++;
             	var cube2 = getCubeByIndex(2,rotateNum);
             	var yLine = rotateAxisByYLine(YLine,rotateNum);
@@ -1621,7 +1621,7 @@
             	rotateMove(cube2,zLineAd,next);
             }
             function r(rotateNum,next){
-            	console.log('r');
+            	console.log('r '+isRotating);
                 stepCount++;
             	var cube2 = getCubeByIndex(2,rotateNum);
             	var zLine = rotateAxisByYLine(ZLine,rotateNum);
@@ -1630,7 +1630,7 @@
             	rotateMove(cube2,yLineAd,next);
             }
             function B(rotateNum,next){
-            	console.log('B');
+            	console.log('B '+isRotating);
                 stepCount++;
                 var cube20 = getCubeByIndex(20,rotateNum);
                 var xLine = rotateAxisByYLine(XLine,rotateNum);
@@ -1639,7 +1639,7 @@
                 rotateMove(cube20,yLine,next);
             }
             function b(rotateNum,next){
-            	console.log('b');
+            	console.log('b '+isRotating);
                 stepCount++;
                 var cube20 = getCubeByIndex(20,rotateNum);
                 var xLine = rotateAxisByYLine(XLine,rotateNum);
@@ -2027,15 +2027,14 @@
              */
             function rotateAnimation(elements,direction,currentstamp,startstamp,laststamp,next){
                 var totalTime = 200;//转动的总运动时间
+                var isLastRotate = false;//是否是某次转动最后一次动画
                 if(startstamp===0){
                     startstamp = currentstamp;
                     laststamp = currentstamp;
                 }
                 if(currentstamp-startstamp>=totalTime){
                     currentstamp = startstamp+totalTime;
-                    isRotating = false;
-                    startPoint = null;
-                    updateCubeIndex(elements);
+                    isLastRotate = true;
                 }
                 switch(direction){
                     //绕z轴顺时针
@@ -2095,11 +2094,14 @@
                     default:
                         break;
                 }
-                if(currentstamp-startstamp<totalTime){
+                if(!isLastRotate){
                 	window.requestAnimFrame(function(timestamp){
                         rotateAnimation(elements,direction,timestamp,startstamp,currentstamp,next);
                     });
                 }else{
+                	isRotating = false;
+                    startPoint = null;
+                    updateCubeIndex(elements);
                 	if(next){
             			next();
             		}else{
