@@ -3,19 +3,34 @@
 const puppeteer = require('puppeteer');
 const devices = require('puppeteer/DeviceDescriptors');
 const iPhone6 = devices['iPhone 6'];
+const fs = require('fs');
 
-(async () => {
-
-	const browser = await puppeteer.launch({
+(async ()=>{
+    const browser = await puppeteer.launch({
         headless:false
     });
-    const page = await browser.newPage();
+    step(browser);
+})();
+
+async function step(browser){
+
+    let logs = '';
+    let page = await browser.newPage();
     await page.emulate(iPhone6);
     //await page.goto('https://newbieyoung.github.io/Threejs_rubik/step5.html');
     await page.goto('http://localhost:9000/step5.html');
 
     page.on('console', msg => {
-    	console.log('PAGE LOG:', msg.text())
+        (async ()=>{
+            var log = msg.text();
+            console.log('PAGE LOG:', log);
+            logs += log+'\n';
+            if(log == 'end autoResetV1'){
+                fs.appendFileSync('step5-log.txt',logs);
+                await page.close();
+                step(browser);
+            }
+        })()
     });
 
     let rotateTime = 200;
@@ -28,8 +43,7 @@ const iPhone6 = devices['iPhone 6'];
 
     let $autoResetV1 = await page.$('#autoResetV1');
     $autoResetV1.click();
-
-})();
+}
 
 function sleep(ms){
 	return new Promise(resolve => setTimeout(resolve,ms));

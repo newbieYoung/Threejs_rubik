@@ -155,9 +155,9 @@
                     isAutoReset = false;
                     endTime = window.performance.now();
                     console.log('end at:'+endTime);
-                    console.log('end autoResetV1');
                     console.log('total times:'+(endTime-startTime));
                     console.log('total steps:'+stepCount);
+                    console.log('end autoResetV1');
                     return;
                 }
 
@@ -355,12 +355,7 @@
                 step7Case2(2);
                 step7Case2(3);
 
-                /**
-                 * 1、有两个对应的面顶棱完成，另外两个对应的面顶棱没有；
-                 */
-                if(!isRotating&&!checkStep7()){
-                    u(0);
-                }
+                step7Case3();
 
                 if(!isRotating){
                     console.log('something wrong in step7');
@@ -442,6 +437,12 @@
                             })
                         })
                     }
+                }
+            }
+            //顶棱归位 第三种情况（有两个对应的面顶棱完成，另外两个对应的面顶棱没有）
+            function step7Case3(){
+                if(!isRotating&&!checkStep7()){
+                    u(0);
                 }
             }
             //判断是否完成第七步 顶棱归位
