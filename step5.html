@@ -44,19 +44,8 @@
             <li><p class="error"></p></li>
     	</ul>
         <div id="canvas-frame"></div>
-        <script>
-            /**
-             * @param {String}  errorMessage   错误信息
-             * @param {String}  scriptURI      出错的文件
-             * @param {Long}    lineNumber     出错代码的行号
-             * @param {Long}    columnNumber   出错代码的列号
-             * @param {Object}  errorObj       错误的详细信息，Anything
-             */
-            window.onerror = function(errorMessage, scriptURI, lineNumber,columnNumber,errorObj) { 
-                var $error = document.querySelector('#error');
-                $error.innerText = errorMessage;
-            }
-        </script>
+        <script src="node_modules/eruda/eruda.min.js"></script>
+		<script>eruda.init();</script>
         <script>
             var renderer;//渲染器
             var width;//页面宽度
