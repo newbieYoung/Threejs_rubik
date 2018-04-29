@@ -20,6 +20,7 @@ let rl = readline.createInterface({
 });
 
 rl.on('line', function(line) {
+
 	if(line == 'end autoResetV1'){
 		totalCaseNum++;
 		return;
