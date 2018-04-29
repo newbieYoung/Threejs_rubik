@@ -1,0 +1,3 @@
+totalCaseNum : 215
+averageStep : 197.83255813953488
+averageTime : 76.67823720930555
