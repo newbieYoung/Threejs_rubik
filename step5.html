@@ -171,7 +171,10 @@
                 step8Case2(2);
                 step8Case2(3);
 
+                step8Case3();
+
                 if(!isRotating){
+                    isAutoReset = false;
                     console.log('something wrong in step8');
                 }
             }
@@ -336,6 +339,21 @@
                     }
                 }
             }
+            //顶角归位 第三种情况
+            function step8Case3(){
+                if(!isRotating){
+                    var cube0 = getCubeByIndex(0);
+                    var cube2 = getCubeByIndex(2);
+                    var cube20 = getCubeByIndex(20);
+                    var cube18 = getCubeByIndex(18);
+                    if(getFaceColorByVector(cube0,ZLine)!=getFaceColorByVector(cube2,ZLine)&&
+                        getFaceColorByVector(cube2,XLine)!=getFaceColorByVector(cube20,XLine)&&
+                        getFaceColorByVector(cube20,ZLineAd)!=getFaceColorByVector(cube18,ZLineAd)&&
+                        getFaceColorByVector(cube18,XLineAd)!=getFaceColorByVector(cube0,XLineAd)){
+                        rotate801(0);
+                    }
+                }
+            }
             //第七步 顶棱归位
             function step7(){
             	if(checkStep7()){
@@ -358,6 +376,7 @@
                 step7Case3();
 
                 if(!isRotating){
+                    isAutoReset = false;
                     console.log('something wrong in step7');
                 }
             }
@@ -484,6 +503,7 @@
             	step6Case1(3);
 
                 if(!isRotating){
+                    isAutoReset = false;
                     console.log('something wrong in step6');
                 }
             }
@@ -600,6 +620,7 @@
             	step5Case3(3);
 
                 if(!isRotating){
+                    isAutoReset = false;
                     console.log('something wrong in step5');
                 }
             }
@@ -745,6 +766,7 @@
                 step4Case5(3);
 
                 if(!isRotating){
+                    isAutoReset = false;
                     console.log('something wrong in step4');
                 }
             }
@@ -978,6 +1000,7 @@
                 step3Case5(3);
 
                 if(!isRotating){
+                    isAutoReset = false;
                     console.log('something wrong in step3');
                 }
             }
@@ -1284,6 +1307,7 @@
             	step2Case3(3);
 
                 if(!isRotating){
+                    isAutoReset = false;
                     console.log('something wrong in step2');
                 }
             }
@@ -1484,6 +1508,7 @@
 				step1Case4(3);
 
                 if(!isRotating){
+                    isAutoReset = false;
                     console.log('something wrong in step1');
                 }
             }
