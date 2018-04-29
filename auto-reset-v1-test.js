@@ -17,8 +17,8 @@ async function step(browser){
     let logs = '';
     let page = await browser.newPage();
     await page.emulate(iPhone6);
-    //await page.goto('https://newbieyoung.github.io/Threejs_rubik/step5.html');
-    await page.goto('http://localhost:9000/step5.html');
+    await page.goto('https://newbieyoung.github.io/Threejs_rubik/step5.html');
+    //await page.goto('http://localhost:9000/step5.html');
 
     page.on('console', msg => {
         (async ()=>{
