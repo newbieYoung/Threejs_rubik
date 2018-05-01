@@ -1471,14 +1471,9 @@
             }
             //第一步小白花
             function step1(){
-            	/**
-            	 * 找到初始化时上表面颜色在中心的面，调整魔方让该表面依然为上表面；
-            	 * 然后对照初始化时下表面颜色的位置，按既定规律转动魔方；
-            	 * 直接找当前上表面中心面的颜色和其对应的下表面颜色，省去旋转调整的过程。
-            	 */
-            	var topCenter = getCubeByIndex(10);
+            	var topCenter = getCubeByIndex(10);//获取上表面中心小方块
 				topColor = getFaceColorByVector(topCenter,YLine);//获取上表面颜色
-				bottomColor = getOppositeColor(topColor);
+				bottomColor = getOppositeColor(topColor);//获取上表面颜色对应色
 
             	if(checkStep1(bottomColor)){
                     console.log('start step2');
