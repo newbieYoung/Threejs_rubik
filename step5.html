@@ -86,47 +86,16 @@
 	            		var num = parseInt(Math.random()*funcArr.length);
 	            		stepArr.push(funcArr[num]);
 	            	}
-	            	stepArr[0](0,function(){
-	            		stepArr[1](0,function(){
-	            			stepArr[2](0,function(){
-	            				stepArr[3](0,function(){
-	            					stepArr[4](0,function(){
-	            						stepArr[5](0,function(){
-	            							stepArr[6](0,function(){
-	            								stepArr[7](0,function(){
-	            									stepArr[8](0,function(){
-	            										stepArr[9](0,function(){
-	            											stepArr[10](0,function(){
-											            		stepArr[11](0,function(){
-											            			stepArr[12](0,function(){
-											            				stepArr[13](0,function(){
-											            					stepArr[14](0,function(){
-											            						stepArr[15](0,function(){
-											            							stepArr[16](0,function(){
-											            								stepArr[17](0,function(){
-											            									stepArr[18](0,function(){
-											            										stepArr[19](0)
-											            									})
-											            								})
-											            							})	
-											            						})
-											            					})
-											            				})
-											            			})
-											            		})
-											            	})
-	            										})
-	            									})
-	            								})
-	            							})	
-	            						})
-	            					})
-	            				})
-	            			})
-	            		})
-	            	})
-	            	
+                    runMethodAtNo(stepArr,0);
             	}
+            }
+            function runMethodAtNo(arr,no){
+                arr[no](0,function(){
+                    if(no<arr.length-1){
+                        no++
+                        runMethodAtNo(arr,no);
+                    }
+                })
             }
 
             //自动还原第一版
