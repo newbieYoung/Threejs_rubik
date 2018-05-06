@@ -113,9 +113,44 @@
                     console.log('start at:'+startTime);
                     stepCount = 0;
 	                isAutoReset = true;
-					currentStep = 1;
-                    console.log('start step1');
-					step1();
+
+                    var topCenter = getCubeByIndex(10);//获取上表面中心小方块
+                    topColor = getFaceColorByVector(topCenter,YLine);//获取上表面颜色
+                    bottomColor = getOppositeColor(topColor);//获取上表面颜色对应色
+
+                    if(checkStep7()){
+                        currentStep = 8;
+                        console.log('start step8');
+                        step8();
+                    }else if(checkStep6()){
+                        currentStep = 7;
+                        console.log('start step7');
+                        step7();
+                    }else if(checkStep5()){
+                        currentStep = 6;
+                        console.log('start step6');
+                        step6();
+                    }else if(checkStep4()){
+                        currentStep = 5;
+                        console.log('start step5');
+                        step5();
+                    }else if(checkStep3()){
+                        currentStep = 4;
+                        console.log('start step4');
+                        step4();
+                    }else if(checkStep2()){
+                        currentStep = 3;
+                        console.log('start step3');
+                        step3();
+                    }else if(checkStep1()){
+                        currentStep = 2;
+                        console.log('start step2');
+                        step2();
+                    }else{
+                        currentStep = 1;
+                        console.log('start step1');
+                        step1();
+                    }
             	}
             }
             //第八步 顶角归位
@@ -1366,9 +1401,7 @@
             }
             //第一步小白花
             function step1(){
-            	var topCenter = getCubeByIndex(10);//获取上表面中心小方块
-				topColor = getFaceColorByVector(topCenter,YLine);//获取上表面颜色
-				bottomColor = getOppositeColor(topColor);//获取上表面颜色对应色
+            	
 
             	if(checkStep1()){
                     console.log('start step2');
