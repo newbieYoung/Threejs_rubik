@@ -1368,7 +1368,7 @@
                 var lines = [ZLine,XLine,ZLineAd,XLineAd];
                 var arr = getCubeByIndexs(indexs);
                 for(var i=0;i<arr.length;i++){
-                    var no = i/2;
+                    var no = parseInt(i/2);
                     var color1 = getFaceColorByVector(arr[i],lines[no]);
                     if(color1==topColor||color1==bottomColor){//不能为顶色和底色
                         return false;
