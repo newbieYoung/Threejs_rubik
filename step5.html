@@ -86,17 +86,10 @@
 	            		var num = parseInt(Math.random()*funcArr.length);
 	            		stepArr.push(funcArr[num]);
 	            	}
-                    runMethodAtNo(stepArr,0);
+                    runMethodAtNo(stepArr,0,0);
             	}
             }
-            function runMethodAtNo(arr,no){
-                arr[no](0,function(){
-                    if(no<arr.length-1){
-                        no++
-                        runMethodAtNo(arr,no);
-                    }
-                })
-            }
+            
 
             //自动还原第一版
             var isAutoReset = false;
@@ -225,55 +218,13 @@
             }
             function rotate801(rotateNum){
                 //RRBBRFrBBRfR
-                R(rotateNum,function(){
-                    R(rotateNum,function(){
-                        B(rotateNum,function(){
-                            B(rotateNum,function(){
-                                R(rotateNum,function(){
-                                    F(rotateNum,function(){
-                                        r(rotateNum,function(){
-                                            B(rotateNum,function(){
-                                                B(rotateNum,function(){
-                                                    R(rotateNum,function(){
-                                                        f(rotateNum,function(){
-                                                            R(rotateNum);
-                                                        })
-                                                    })
-                                                })
-                                            })
-                                        })
-                                    })
-                                })
-                            })
-                        })
-                    })
-                })
+                var arr = [R,R,B,B,R,F,r,B,B,R,f,R];
+                runMethodAtNo(arr,0,rotateNum);
             }
             function rotate802(rotateNum){
                 //LLBBlfLBBlFl
-                L(rotateNum,function(){
-                    L(rotateNum,function(){
-                        B(rotateNum,function(){
-                            B(rotateNum,function(){
-                                l(rotateNum,function(){
-                                    f(rotateNum,function(){
-                                        L(rotateNum,function(){
-                                            B(rotateNum,function(){
-                                                B(rotateNum,function(){
-                                                    l(rotateNum,function(){
-                                                        F(rotateNum,function(){
-                                                            l(rotateNum);
-                                                        })
-                                                    })
-                                                })
-                                            })
-                                        })
-                                    })
-                                })
-                            })
-                        })
-                    })
-                })
+                var arr = [L,L,B,B,l,f,L,B,B,l,F,l];
+                runMethodAtNo(arr,0,rotateNum);
             }
             //顶角归位 第一种情况
             function step8Case1(rotateNum){
@@ -476,55 +427,19 @@
                 }
             }
             function rotate601(rotateNum){
-            	r(rotateNum,function(){
-            		U(rotateNum,function(){
-            			L(rotateNum,function(){
-            				u(rotateNum,function(){
-            					R(rotateNum,function(){
-            						U(rotateNum,function(){
-            							l(rotateNum,function(){
-            								u(rotateNum)
-            							})
-            						})
-            					})
-            				})
-            			})
-            		})
-            	})
+                //rULuRUlu
+                var arr = [r,U,L,u,R,U,l,u];
+                runMethodAtNo(arr,0,rotateNum);
             }
             function rotate602(rotateNum){
-            	U(rotateNum,function(){
-            		L(rotateNum,function(){
-            			u(rotateNum,function(){
-            				r(rotateNum,function(){
-            					U(rotateNum,function(){
-            						l(rotateNum,function(){
-            							u(rotateNum,function(){
-            								R(rotateNum)
-            							})
-            						})
-            					})
-            				})
-            			})
-            		})
-            	})
+                //ULurUluR
+                var arr = [U,L,u,r,U,l,u,R];
+                runMethodAtNo(arr,0,rotateNum);
             }
             function rotate603(rotateNum){
-            	R(rotateNum,function(){
-            		U(rotateNum,function(){
-            			r(rotateNum,function(){
-            				U(rotateNum,function(){
-            					R(rotateNum,function(){
-            						U(rotateNum,function(){
-            							U(rotateNum,function(){
-            								r(rotateNum)
-            							})
-            						})
-            					})
-            				})
-            			})
-            		})
-            	})
+                //RUrURUUr
+                var arr = [R,U,r,U,R,U,U,r];
+                runMethodAtNo(arr,0,rotateNum);
             }
             //顶角面位 第一种、第二种和第三种情况
             function step6Case1(rotateNum){
@@ -593,38 +508,14 @@
                 }
             }
             function rotate501(rotateNum,next){
-            	r(rotateNum,function(){
-            		u(rotateNum,function(){
-            			f(rotateNum,function(){
-            				U(rotateNum,function(){
-            					F(rotateNum,function(){
-            						if(next){
-            							R(rotateNum,next);
-            						}else{
-            							R(rotateNum);
-            						}
-            					})
-            				})
-            			})
-            		})
-            	})
+                //rufUFR
+                var arr = [r,u,f,U,F,R];
+                runMethodAtNo(arr,0,rotateNum,next);
             }
             function rotate502(rotateNum,next){
-            	r(rotateNum,function(){
-            		f(rotateNum,function(){
-            			u(rotateNum,function(){
-            				F(rotateNum,function(){
-            					U(rotateNum,function(){
-            						if(next){
-            							R(rotateNum,next);
-            						}else{
-            							R(rotateNum);
-            						}
-            					})
-            				})
-            			})
-            		})
-            	})
+                //rfuFUR
+                var arr = [r,f,u,F,U,R];
+                runMethodAtNo(arr,0,rotateNum,next);
             }
             //顶棱面位 第一种情况
             function step5Case1(rotateNum){
@@ -736,46 +627,14 @@
                 }
             }
             function rotate401(rotateNum,next){
-                u(rotateNum,function(){
-                    f(rotateNum,function(){
-                        U(rotateNum,function(){
-                            F(rotateNum,function(){
-                                U(rotateNum,function(){
-                                    R(rotateNum,function(){
-                                        u(rotateNum,function(){
-                                            if(next){
-                                                r(rotateNum,next);
-                                            }else{
-                                                r(rotateNum);
-                                            }
-                                        })
-                                    })
-                                })
-                            })
-                        })
-                    })
-                })
+                //ufUFURuf
+                var arr = [u,f,U,F,U,R,u,r];
+                runMethodAtNo(arr,0,rotateNum,next);
             }
             function rotate402(rotateNum,next){
-            	U(rotateNum,function(){
-                    R(rotateNum,function(){
-                        u(rotateNum,function(){
-                            r(rotateNum,function(){
-                                u(rotateNum,function(){
-                                    f(rotateNum,function(){
-                                        U(rotateNum,function(){
-                                            if(next){
-                                                F(rotateNum,next);
-                                            }else{
-                                                F(rotateNum);
-                                            }
-                                        })
-                                    })
-                                })
-                            })
-                        })
-                    })
-                })
+                //URurufUF
+                var arr = [U,R,u,r,u,f,U,F];
+                runMethodAtNo(arr,0,rotateNum,next);
             }
             //中棱归位第一种情况和第二种情况
             function step4Case1And2(rotateNum){
@@ -1516,6 +1375,23 @@
 						}
 					}
             	}
+            }
+            //按顺序执行数组里边的方法
+            function runMethodAtNo(arr,no,rotateNum,next){
+                if(no>=arr.length-1){
+                    if(next){
+                        arr[no](rotateNum,next);
+                    }else{
+                        arr[no](rotateNum);
+                    }
+                }else{
+                    arr[no](rotateNum,function(){
+                        if(no<arr.length-1){
+                            no++
+                            runMethodAtNo(arr,no,rotateNum,next);
+                        }
+                    })
+                }
             }
             /**
              * 魔方基本公式 U、F、L、D、R、u、f、l、d
