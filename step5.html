@@ -606,23 +606,11 @@
             		return;
             	}
 
-                step4Face(0);
-                step4Face(1);
-                step4Face(2);
-                step4Face(3);
+                step4Face(startFaceNo);
 
                 if(!isRotating){
-                    //某个面出现极端情况，以该面为起始面重新还原
-                    console.log('step4 - restart');
-                    startFaceNo++;
-                    endFaceNo++;
-                    if(startFaceNo>3){
-                        startFaceNo = 0;
-                    }
-                    if(endFaceNo>3){
-                        endFaceNo = 0;
-                    }
-                    step4();
+                    isAutoReset = false;
+                    console.log('something wrong in step4');
                 }
             }
             function rotate401(rotateNum,next){
@@ -660,6 +648,9 @@
             //中棱归位优先还原一个面
             function step4Face(rotateNum){
                 if(!isRotating){
+                    if(rotateNum>3){
+                        rotateNum = rotateNum - 4;
+                    }
                     var cube3 = getCubeByIndex(3,rotateNum);
                     var cube4 = getCubeByIndex(4,rotateNum);
                     var cube5 = getCubeByIndex(5,rotateNum);
@@ -682,17 +673,16 @@
                     var xLine14Color = getFaceColorByVector(cube14,xLine);
 
                     if(getFaceColorByVector(cube3,zLine)!=zLine4Color){
-                        console.log('step4 '+rotateNum+'-0');
                         if(getFaceColorByVector(cube9,YLine)==zLine4Color&&
                             (getFaceColorByVector(cube9,xLineAd)==xLineAd6Color||rotateNum==startFaceNo)){
                             rotate402(rotateNum-1);
-                            console.log('---1');
+                            return;
                         }else if(getFaceColorByVector(cube9,xLineAd)==zLine4Color&&
                             (getFaceColorByVector(cube9,YLine)==xLineAd6Color||rotateNum==startFaceNo)){
-                            console.log('---2');
                             u(0,function(){
                                 rotate401(rotateNum-1);
-                            })
+                            });
+                            return;
                         }else if((getFaceColorByVector(cube19,YLine)==zLine4Color&&
                             (getFaceColorByVector(cube19,zLineAd)==xLineAd6Color||rotateNum==startFaceNo))||
                             (getFaceColorByVector(cube19,zLineAd)==zLine4Color&&
@@ -705,52 +695,50 @@
                             (getFaceColorByVector(cube1,zLine)==xLineAd6Color||rotateNum==startFaceNo))||
                             (getFaceColorByVector(cube1,zLine)==zLine4Color&&
                             (getFaceColorByVector(cube1,YLine)==xLineAd6Color||rotateNum==startFaceNo))){
-                            console.log('---3');
                             U(0);
+                            return;
                         }else if(getFaceColorByVector(cube5,zLine)==zLine4Color&&
                             (getFaceColorByVector(cube5,xLine)==xLineAd6Color||rotateNum==startFaceNo)){
-                            console.log('---4');
                             rotate401Opposite(rotateNum);
+                            return;
                         }else if(getFaceColorByVector(cube3,xLineAd)==zLine4Color&&
                             (getFaceColorByVector(cube3,zLine)==xLineAd6Color||rotateNum==startFaceNo)){
-                            console.log('---5');
                             var tempNum = rotateNum-1;
                             rotate402(tempNum,function(){
                                 U(tempNum,function(){
                                     rotate401(tempNum);
-                                })
-                            })
+                                });
+                            });
+                            return;
                         }else if(getFaceColorByVector(cube23,xLine)==zLine4Color&&
                             (getFaceColorByVector(cube23,zLineAd)==xLineAd6Color||rotateNum==startFaceNo)){
-                            console.log('---6');
                             rotate402Opposite(rotateNum-3);
+                            return;
                         }else if(getFaceColorByVector(cube23,zLineAd)==zLine4Color&&
                             (getFaceColorByVector(cube23,xLine)==xLineAd6Color||rotateNum==startFaceNo)){
-                            console.log('---7');
                             rotate402Opposite(rotateNum-3);
+                            return;
                         }else if(getFaceColorByVector(cube5,xLine)==zLine4Color&&
                             (getFaceColorByVector(cube5,zLine)==xLineAd6Color||rotateNum==startFaceNo)){
-                            console.log('---8');
                             rotate402Opposite(rotateNum);
+                            return;
                         }else if((getFaceColorByVector(cube21,xLineAd)==zLine4Color||getFaceColorByVector(cube21,zLineAd)==zLine4Color)&&rotateNum<=0){
                             //除非是刚开始否则不能影响已经还原好的面
-                            console.log('---9');
                             rotate402Opposite(rotateNum-2);
-                        }else{
-                            console.log('---10');
+                            return;
                         }
-                    }else if(getFaceColorByVector(cube5,zLine)!=zLine4Color){
-                        console.log('step4 '+rotateNum+'-1');
+                    }
+                    if(getFaceColorByVector(cube5,zLine)!=zLine4Color){
                         if(getFaceColorByVector(cube11,YLine)==zLine4Color&&
                             (getFaceColorByVector(cube11,xLine)==xLine14Color||rotateNum!=endFaceNo)){
-                            console.log('---11');
                             rotate401(rotateNum);
+                            return;
                         }else if(getFaceColorByVector(cube11,xLine)==zLine4Color&&
                             (getFaceColorByVector(cube11,YLine)==xLine14Color||rotateNum!=endFaceNo)){
-                            console.log('---12');
                             U(0,function(){
                                 rotate402(rotateNum);
-                            })
+                            });
+                            return;
                         }else if((getFaceColorByVector(cube1,YLine)==zLine4Color&&
                             (getFaceColorByVector(cube1,zLine)==xLine14Color||rotateNum!=endFaceNo))||
                             (getFaceColorByVector(cube1,zLine)==zLine4Color&&
@@ -763,24 +751,39 @@
                             (getFaceColorByVector(cube19,zLineAd)==xLine14Color||rotateNum!=endFaceNo))||
                             (getFaceColorByVector(cube19,zLineAd)==zLine4Color&&
                             (getFaceColorByVector(cube19,YLine)==xLine14Color||rotateNum!=endFaceNo))){
-                            console.log('---13');
                             u(0);
+                            return;
                         }else if(getFaceColorByVector(cube5,xLine)==zLine4Color&&
                             (getFaceColorByVector(cube5,zLine)==xLine14Color||rotateNum!=endFaceNo)){
-                            console.log('---14');
                             rotate402Opposite(rotateNum);
+                            return;
                         }else if((getFaceColorByVector(cube21,xLineAd)==zLine4Color||getFaceColorByVector(cube21,zLineAd)==zLine4Color)&&rotateNum<=0){
                             //除非是刚开始否则不能影响已经还原好的面
-                            console.log('---15');
                             rotate402Opposite(rotateNum-2);
+                            return;
                         }else if(getFaceColorByVector(cube23,zLineAd)==zLine4Color&&rotateNum==startFaceNo){
-                            console.log('---16');
                             rotate402Opposite(rotateNum-3);
+                            return;
                         }else if(getFaceColorByVector(cube23,xLine)==zLine4Color&&
                             (getFaceColorByVector(cube23,zLineAd)==xLine14Color||rotateNum!=endFaceNo)){
-                            console.log('---17');
                             rotate402Opposite(rotateNum-3);
+                            return;
                         }
+                    }
+
+                    if(getFaceColorByVector(cube3,zLine)!=zLine4Color||getFaceColorByVector(cube5,zLine)!=zLine4Color){
+                        //某个面出现极端情况，以该面为起始面重新还原
+                        startFaceNo++;
+                        endFaceNo++;
+                        if(startFaceNo>3){
+                            startFaceNo = 0;
+                        }
+                        if(endFaceNo>3){
+                            endFaceNo = 0;
+                        }
+                        step4();
+                    }else{
+                        step4Face(rotateNum+1);
                     }
                 }
             }
