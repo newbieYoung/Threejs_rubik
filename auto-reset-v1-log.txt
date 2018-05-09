@@ -5150,3 +5150,54 @@ end at:66126.50000001304
 total times:50713.40000000782
 total steps:234
 end autoResetV1
+random rotate 2
+start autoResetV1
+start at:13304.099999950267
+start step1
+start step2
+start step3
+start step4
+start step5
+start step6
+start step7
+start step8
+end at:49958.800000022165
+total times:36654.7000000719
+total steps:162
+end autoResetV1
+random rotate 12
+start autoResetV1
+start at:12988.100000075065
+start step1
+start step2
+start step3
+start step4
+start step5
+start step6
+start step7
+start step8
+end at:66303.79999999423
+total times:53315.69999991916
+total steps:246
+end autoResetV1
+random rotate 9
+start autoResetV1
+start at:12716.300000087358
+start step1
+start step2
+start step3
+start step4
+start step5
+start step6
+start step7
+start step8
+end at:51142.700000084005
+total times:38426.39999999665
+total steps:177
+end autoResetV1
+random rotate 0
+already reset
+random rotate 0
+already reset
+random rotate 0
+already reset

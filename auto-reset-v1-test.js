@@ -25,7 +25,7 @@ async function step(browser){
             var log = msg.text();
             console.log('PAGE LOG:', log);
             logs += log+'\n';
-            if(log == 'end autoResetV1'){
+            if(log == 'end autoResetV1'||log == 'already reset'){
                 fs.appendFileSync('auto-reset-v1-log.txt',logs);
                 await page.close();
                 step(browser);

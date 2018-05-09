@@ -81,7 +81,8 @@
             //随机旋转，用于打乱魔方
             function randomRotate(){
             	if(!isRotating&&!isAutoReset){
-            		var stepNum = parseInt(20*Math.random());
+            		var stepNum = parseInt(20*Math.random())+1;//保证至少转动一步
+                    //var stepNum = 0;
                     console.log('random rotate '+stepNum);
 	            	var funcArr = [R,U,F,B,L,D,r,u,f,b,l,d];
 	            	var stepArr = [];
@@ -149,7 +150,9 @@
                         console.log('start step1');
                         step1();
                     }
-            	}
+            	}else{
+                    console.log('already reset');
+                }
             }
             //第八步 顶角归位
             function step8(){
