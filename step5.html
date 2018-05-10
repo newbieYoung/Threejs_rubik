@@ -60,6 +60,7 @@
             var minCubeIndex;
             var initStatus = [];//魔方初始状态
             var startFaceNo = 0;
+            var currentFaceNo = 0;
             var endFaceNo = 3;
             //魔方转动的六个方向
             const XLine = new THREE.Vector3( 1, 0, 0 );//X轴正方向
@@ -134,6 +135,7 @@
                     }else if(checkStep3()){
                         currentStep = 4;
                         startFaceNo = 0;
+                        currentFaceNo = 0;
                         endFaceNo = 3;
                         console.log('start step4');
                         step4();
@@ -608,8 +610,8 @@
             		step5();
             		return;
             	}
-
-                step4Face(startFaceNo);
+                
+                step4Face(currentFaceNo);
 
                 if(!isRotating){
                     isAutoReset = false;
@@ -654,6 +656,7 @@
                     if(rotateNum>3){
                         rotateNum = rotateNum - 4;
                     }
+                    currentFaceNo = rotateNum;
                     var cube3 = getCubeByIndex(3,rotateNum);
                     var cube4 = getCubeByIndex(4,rotateNum);
                     var cube5 = getCubeByIndex(5,rotateNum);
@@ -776,18 +779,19 @@
 
                     if(getFaceColorByVector(cube3,zLine)!=zLine4Color||getFaceColorByVector(cube5,zLine)!=zLine4Color){
                         //某个面出现极端情况，以该面为起始面重新还原
-                        startFaceNo++;
-                        endFaceNo++;
-                        if(startFaceNo>3){
-                            startFaceNo = 0;
+                        startFaceNo = currentFaceNo;
+                        if(startFaceNo>0){
+                            endFaceNo = startFaceNo-1;
+                        }else{
+                            endFaceNo = 3;
                         }
-                        if(endFaceNo>3){
-                            endFaceNo = 0;
-                        }
-                        step4();
                     }else{
-                        step4Face(rotateNum+1);
+                        currentFaceNo++;
+                        if(currentFaceNo>3){
+                            currentFaceNo = 0;
+                        }
                     }
+                    step4();
                 }
             }
             //判断是否完成第四步 中棱归位
