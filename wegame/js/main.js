@@ -1,6 +1,6 @@
 import * as THREE from 'libs/three.js'
 require('libs/three-orbit-controls.js')
-import Rubik from 'objects/rubik.js'
+import BasicRubik from 'objects/BasicRubik.js'
 
 let context   = canvas.getContext('webgl');
 
@@ -25,31 +25,75 @@ export default class Main {
     this.zLine = new THREE.Vector3(0, 0, 1);//Z轴正方向
     this.zLineAd = new THREE.Vector3(0, 0, -1);//Z轴负方向
 
-    this.cubeParams = {//魔方参数
-      x: -75,
-      y: 75,
-      z: 75,
-      num: 3,
-      len: 50,
-      colors: ['rgba(255,193,37,1)', 'rgba(0,191,255,1)',
-        'rgba(50,205,50,1)', 'rgba(178,34,34,1)',
-        'rgba(255,255,0,1)', 'rgba(255,255,255,1)']
-    };
-
     this.initThree();
     this.initCamera();
     this.initScene();
     this.initLight();
     this.initObject();
     this.render();
-
-    wx.onTouchStart(this.startCube.bind(this))
-    wx.onTouchMove(this.moveCube.bind(this))
-    wx.onTouchEnd(this.stopCube.bind(this));
+    this.initEvent();
 
     //视角控制
     this.controller = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+    this.controller.enableZoom = false;
     this.controller.target = new THREE.Vector3(0, 0, 0);//设置控制点
+  }
+
+  //初始化渲染器
+  initThree() {
+    this.context = context;
+    this.width = window.innerWidth;
+    this.height = window.innerHeight;
+    this.renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      context: this.context
+    });
+    this.renderer.setSize(this.width, this.height);
+    this.renderer.setClearColor(0xFFFFFF, 1.0);
+
+    this.devicePixelRatio = window.devicePixelRatio;
+    canvas.width = this.width * this.devicePixelRatio;
+    canvas.height = this.height * this.devicePixelRatio;
+    this.renderer.setPixelRatio(this.devicePixelRatio);
+  }
+
+  //初始化事件
+  initEvent(){
+    wx.onTouchStart(this.startCube.bind(this))
+    wx.onTouchMove(this.moveCube.bind(this))
+    wx.onTouchEnd(this.stopCube.bind(this));
+  }
+
+  //初始化相机
+  initCamera() {
+    this.camera = new THREE.PerspectiveCamera(45, this.width / this.height, 1, 1000);
+    this.camera.position.set(450,300,450);
+    this.camera.up.set(0, 1, 0);//正方向
+    this.camera.lookAt({x: 0,y: 0,z: 0});
+  }
+
+  //初始化场景
+  initScene() {
+    this.scene = new THREE.Scene();
+  }
+
+  //初始化光线
+  initLight() {
+    this.light = new THREE.AmbientLight(0xfefefe);
+    this.scene.add(this.light);
+  }
+
+  //初始化物体
+  initObject() {
+    this.rubik = new BasicRubik(this);
+    this.rubik.model();
+  }
+
+  //渲染
+  render() {
+    this.renderer.clear();
+    this.renderer.render(this.scene, this.camera);
+    requestAnimationFrame(this.render.bind(this), canvas);
   }
 
   //魔方操作结束
@@ -411,24 +455,6 @@ export default class Main {
     }
   }
 
-  //初始化渲染器
-  initThree(){
-    this.context = context;
-    this.width = window.innerWidth ;
-    this.height = window.innerHeight ;
-    this.renderer = new THREE.WebGLRenderer({
-      antialias: true,
-      context: this.context
-    });
-    this.renderer.setSize(this.width, this.height);
-    this.renderer.setClearColor(0xFFFFFF, 1.0);
-
-    this.devicePixelRatio = window.devicePixelRatio;
-    canvas.width = this.width * this.devicePixelRatio;
-    canvas.height = this.height * this.devicePixelRatio;
-    this.renderer.setPixelRatio(this.devicePixelRatio);
-  }
-
   //获取操作焦点以及该焦点所在平面的法向量
   getIntersects(event) {
     //触摸事件和鼠标事件获得坐标的方式有点区别
@@ -459,72 +485,5 @@ export default class Main {
     } 
   }
 
-  //初始化相机
-  initCamera(){
-    this.camera = new THREE.PerspectiveCamera(45, this.width / this.height, 1, 1000);
-    this.camera.position.x = 0;
-    this.camera.position.y = 0;
-    this.camera.position.z = 600;
-    this.camera.up.x = 0;//正方向
-    this.camera.up.y = 1;
-    this.camera.up.z = 0;
-    this.camera.lookAt({
-      x: 0,
-      y: 0,
-      z: 0
-    });
-  }
-
-  //初始化场景
-  initScene(){
-    this.scene = new THREE.Scene();
-  }
-
-  //初始化光线
-  initLight() {
-    this.light = new THREE.AmbientLight(0xfefefe);
-    this.scene.add(this.light);
-  }
-
-  //初始化物体
-  initObject() {
-    //生成魔方小正方体
-    this.cubes = new Rubik(this.cubeParams.x, this.cubeParams.y, this.cubeParams.z, this.cubeParams.num, this.cubeParams.len, this.cubeParams.colors);
-    for (var i = 0; i < this.cubes.length; i++) {
-      var item = this.cubes[i];
-      /**
-       * 由于筛选运动元素时是根据物体的id规律来的，但是滚动之后位置发生了变化；
-       * 再根据初始规律筛选会出问题，而且id是只读变量；
-       * 所以这里给每个物体设置一个额外变量cubeIndex，每次滚动之后更新根据初始状态更新该cubeIndex；
-       * 让该变量一直保持初始规律即可。
-       */
-      this.initStatus.push({
-        x: item.position.x,
-        y: item.position.y,
-        z: item.position.z,
-        cubeIndex: item.id
-      });
-      item.cubeIndex = item.id;
-      this.scene.add(this.cubes[i]);//并依次加入到场景中
-    }
-
-    //透明正方体
-    var cubegeo = new THREE.BoxGeometry(150, 150, 150);
-    var hex = 0x000000;
-    for (var i = 0; i < cubegeo.faces.length; i += 2) {
-      cubegeo.faces[i].color.setHex(hex);
-      cubegeo.faces[i + 1].color.setHex(hex);
-    }
-    var cubemat = new THREE.MeshBasicMaterial({ vertexColors: THREE.FaceColors, opacity: 0, transparent: true });
-    var cube = new THREE.Mesh(cubegeo, cubemat);
-    cube.cubeType = 'coverCube';
-    this.scene.add(cube);
-  }
-
-  //渲染
-  render() {
-    this.renderer.clear();
-    this.renderer.render(this.scene, this.camera);
-    requestAnimationFrame(this.render.bind(this),canvas);
-  }
+  
 }
