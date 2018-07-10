@@ -81,35 +81,25 @@ THREE.OrbitControls = function ( object, domElement ) {
   this.position0 = this.object.position.clone();
   this.zoom0 = this.object.zoom;
 
-  this.isFixedDirection = false;//是否固定方向
-  this.fixedDirection = 'horizontal';//固定方向 vertical
-
   //
   // public methods
   //
 
   this.getPolarAngle = function () {
-
     return spherical.phi;
-
   };
 
   this.getAzimuthalAngle = function () {
-
     return spherical.theta;
-
   };
 
   this.saveState = function () {
-
     scope.target0.copy( scope.target );
     scope.position0.copy( scope.object.position );
     scope.zoom0 = scope.object.zoom;
-
   };
 
   this.reset = function () {
-
     scope.target.copy( scope.target0 );
     scope.object.position.copy( scope.position0 );
     scope.object.zoom = scope.zoom0;
@@ -118,14 +108,11 @@ THREE.OrbitControls = function ( object, domElement ) {
     scope.dispatchEvent( changeEvent );
 
     scope.update();
-
     state = STATE.NONE;
-
   };
 
   // this method is exposed, but perhaps it would be better if we can make it private...
   this.update = function () {
-
     var offset = new THREE.Vector3();
 
     // so camera.up is the orbit axis
@@ -136,9 +123,7 @@ THREE.OrbitControls = function ( object, domElement ) {
     var lastQuaternion = new THREE.Quaternion();
 
     return function update() {
-
       var position = scope.object.position;
-
       offset.copy( position ).sub( scope.target );
 
       // rotate offset to "y-axis-is-up" space
@@ -148,9 +133,7 @@ THREE.OrbitControls = function ( object, domElement ) {
       spherical.setFromVector3( offset );
 
       if ( scope.autoRotate && state === STATE.NONE ) {
-
         rotateLeft( getAutoRotationAngle() );
-
       }
 
       spherical.theta += sphericalDelta.theta;
@@ -163,8 +146,6 @@ THREE.OrbitControls = function ( object, domElement ) {
       spherical.phi = Math.max( scope.minPolarAngle, Math.min( scope.maxPolarAngle, spherical.phi ) );
 
       spherical.makeSafe();
-
-
       spherical.radius *= scale;
 
       // restrict radius to be between desired limits
@@ -183,14 +164,10 @@ THREE.OrbitControls = function ( object, domElement ) {
       scope.object.lookAt( scope.target );
 
       if ( scope.enableDamping === true ) {
-
         sphericalDelta.theta *= ( 1 - scope.dampingFactor );
         sphericalDelta.phi *= ( 1 - scope.dampingFactor );
-
       } else {
-
         sphericalDelta.set( 0, 0, 0 );
-
       }
 
       scale = 1;
@@ -211,13 +188,10 @@ THREE.OrbitControls = function ( object, domElement ) {
         zoomChanged = false;
 
         return true;
-
       }
 
       return false;
-
     };
-
   }();
 
   //
