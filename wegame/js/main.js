@@ -16,6 +16,7 @@ export default class Main {
     this.normalize;//触发平面法向量
     this.startPoint;//触发点
     this.movePoint;
+    this.totalTime = 300;//转动动画时长
     //魔方转动的六个方向
     this.xLine = new THREE.Vector3(1, 0, 0);//X轴正方向
     this.xLineAd = new THREE.Vector3(-1, 0, 0);//X轴负方向
@@ -35,6 +36,7 @@ export default class Main {
     //视角控制
     this.controller = new THREE.OrbitControls(this.camera, this.renderer.domElement);
     this.controller.enableZoom = false;
+    this.controller.rotateSpeed = 2;
     this.controller.target = new THREE.Vector3(0, 0, 0);//设置控制点
   }
 
@@ -195,13 +197,12 @@ export default class Main {
    */
   rotateAnimation(elements, direction, currentstamp, startstamp, laststamp) {
     var self = this;
-    var totalTime = 500;//转动的总运动时间
     if (startstamp === 0) {
       startstamp = currentstamp;
       laststamp = currentstamp;
     }
-    if (currentstamp - startstamp >= totalTime) {
-      currentstamp = startstamp + totalTime;
+    if (currentstamp - startstamp >= this.totalTime) {
+      currentstamp = startstamp + this.totalTime;
       this.isRotating = false;
       this.startPoint = null;
       this.rubik.updateCubeIndex(elements);
@@ -213,7 +214,7 @@ export default class Main {
       case 2.4:
       case 3.3:
         for (var i = 0; i < elements.length; i++) {
-          this.rotateAroundWorldZ(elements[i], -90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
+          this.rotateAroundWorldZ(elements[i], -90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
         }
         break;
       //绕z轴逆时针
@@ -222,7 +223,7 @@ export default class Main {
       case 2.3:
       case 3.4:
         for (var i = 0; i < elements.length; i++) {
-          this.rotateAroundWorldZ(elements[i], 90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
+          this.rotateAroundWorldZ(elements[i], 90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
         }
         break;
       //绕y轴顺时针
@@ -231,7 +232,7 @@ export default class Main {
       case 4.3:
       case 5.4:
         for (var i = 0; i < elements.length; i++) {
-          this.rotateAroundWorldY(elements[i], -90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
+          this.rotateAroundWorldY(elements[i], -90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
         }
         break;
       //绕y轴逆时针
@@ -240,7 +241,7 @@ export default class Main {
       case 4.4:
       case 5.3:
         for (var i = 0; i < elements.length; i++) {
-          this.rotateAroundWorldY(elements[i], 90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
+          this.rotateAroundWorldY(elements[i], 90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
         }
         break;
       //绕x轴顺时针
@@ -249,7 +250,7 @@ export default class Main {
       case 4.1:
       case 5.2:
         for (var i = 0; i < elements.length; i++) {
-          this.rotateAroundWorldX(elements[i], 90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
+          this.rotateAroundWorldX(elements[i], 90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
         }
         break;
       //绕x轴逆时针
@@ -258,13 +259,13 @@ export default class Main {
       case 4.2:
       case 5.1:
         for (var i = 0; i < elements.length; i++) {
-          this.rotateAroundWorldX(elements[i], -90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
+          this.rotateAroundWorldX(elements[i], -90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
         }
         break;
       default:
         break;
     }
-    if (currentstamp - startstamp < totalTime) {
+    if (currentstamp - startstamp < this.totalTime) {
       requestAnimationFrame(function (timestamp) {
         self.rotateAnimation(elements, direction, timestamp, startstamp, currentstamp);
       });
