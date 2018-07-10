@@ -16,7 +16,6 @@ export default class Main {
     this.normalize;//触发平面法向量
     this.startPoint;//触发点
     this.movePoint;
-    this.initStatus = [];//魔方初始状态
     //魔方转动的六个方向
     this.xLine = new THREE.Vector3(1, 0, 0);//X轴正方向
     this.xLineAd = new THREE.Vector3(-1, 0, 0);//X轴负方向
@@ -39,7 +38,9 @@ export default class Main {
     this.controller.target = new THREE.Vector3(0, 0, 0);//设置控制点
   }
 
-  //初始化渲染器
+  /**
+   * 初始化渲染器
+   */
   initThree() {
     this.context = context;
     this.width = window.innerWidth;
@@ -57,14 +58,9 @@ export default class Main {
     this.renderer.setPixelRatio(this.devicePixelRatio);
   }
 
-  //初始化事件
-  initEvent(){
-    wx.onTouchStart(this.startCube.bind(this))
-    wx.onTouchMove(this.moveCube.bind(this))
-    wx.onTouchEnd(this.stopCube.bind(this));
-  }
-
-  //初始化相机
+  /**
+   * 初始化相机
+   */
   initCamera() {
     this.camera = new THREE.PerspectiveCamera(45, this.width / this.height, 1, 1000);
     this.camera.position.set(450,300,450);
@@ -72,37 +68,95 @@ export default class Main {
     this.camera.lookAt({x: 0,y: 0,z: 0});
   }
 
-  //初始化场景
+  /**
+   * 初始化光线
+   */
   initScene() {
     this.scene = new THREE.Scene();
   }
 
-  //初始化光线
+  /**
+   * 初始化光线
+   */
   initLight() {
     this.light = new THREE.AmbientLight(0xfefefe);
     this.scene.add(this.light);
   }
 
-  //初始化物体
+  /**
+   * 初始化物体
+   */
   initObject() {
     this.rubik = new BasicRubik(this);
     this.rubik.model();
   }
 
-  //渲染
+  /**
+   * 渲染
+   */
   render() {
     this.renderer.clear();
     this.renderer.render(this.scene, this.camera);
     requestAnimationFrame(this.render.bind(this), canvas);
   }
 
-  //魔方操作结束
+  /**
+   * 初始化事件
+   */
+  initEvent() {
+    wx.onTouchStart(this.startCube.bind(this))
+    wx.onTouchMove(this.moveCube.bind(this))
+    wx.onTouchEnd(this.stopCube.bind(this));
+  }
+
+  /**
+   * 触摸结束
+   */
   stopCube() {
     this.intersect = null;
     this.startPoint = null
   }
 
-  //绕着世界坐标系的某个轴旋转
+  /**
+   * 触摸魔方
+   */
+  startCube(event) {
+    this.getIntersects(event);
+    //魔方没有处于转动过程中且存在碰撞物体
+    if (!this.isRotating && this.intersect) {
+      this.controller.enabled = false;//焦点在魔方上时禁止视角变换
+      this.startPoint = this.intersect.point;//开始转动，设置起始点
+    } else {
+      this.controller.enabled = true;
+    }
+  }
+
+  /**
+   * 滑动魔方
+   */
+  moveCube(event) {
+    var self = this;
+    this.getIntersects(event);
+    if (this.intersect) {
+      if (!this.isRotating && this.startPoint) {//魔方没有进行转动且满足进行转动的条件
+        this.movePoint = this.intersect.point;
+        if (!this.movePoint.equals(this.startPoint)) {//和起始点不一样则意味着可以得到转动向量了
+          this.isRotating = true;//转动标识置为true
+          var sub = this.movePoint.sub(this.startPoint);//计算转动向量
+          var direction = this.getDirection(sub);//获得方向
+          var elements = this.rubik.getBoxs(this.intersect, direction);
+          var startTime = new Date().getTime();
+          requestAnimationFrame(function (timestamp) {
+            self.rotateAnimation(elements, direction, timestamp, 0);
+          });
+        }
+      }
+    }
+  }
+
+  /**
+   * 绕着世界坐标系的某个轴旋转
+   */
   rotateAroundWorldY(obj, rad) {
     var x0 = obj.position.x;
     var z0 = obj.position.z;
@@ -114,7 +168,6 @@ export default class Main {
     var q = new THREE.Quaternion();
     q.setFromAxisAngle(new THREE.Vector3(0, 1, 0), rad);
     obj.quaternion.premultiply(q);
-    //obj.rotateY(rad);
     obj.position.x = Math.cos(rad) * x0 + Math.sin(rad) * z0;
     obj.position.z = Math.cos(rad) * z0 - Math.sin(rad) * x0;
   }
@@ -124,7 +177,6 @@ export default class Main {
     var q = new THREE.Quaternion();
     q.setFromAxisAngle(new THREE.Vector3(0, 0, 1), rad);
     obj.quaternion.premultiply(q);
-    //obj.rotateZ(rad);
     obj.position.x = Math.cos(rad) * x0 - Math.sin(rad) * y0;
     obj.position.y = Math.cos(rad) * y0 + Math.sin(rad) * x0;
   }
@@ -134,30 +186,8 @@ export default class Main {
     var q = new THREE.Quaternion();
     q.setFromAxisAngle(new THREE.Vector3(1, 0, 0), rad);
     obj.quaternion.premultiply(q);
-    //obj.rotateX(rad);
     obj.position.y = Math.cos(rad) * y0 - Math.sin(rad) * z0;
     obj.position.z = Math.cos(rad) * z0 + Math.sin(rad) * y0;
-  }
-
-  //滑动操作魔方
-  moveCube(event) {
-    var self = this;
-    this.getIntersects(event);
-    if (this.intersect) {
-      if (!this.isRotating && this.startPoint) {//魔方没有进行转动且满足进行转动的条件
-        this.movePoint = this.intersect.point;
-        if (!this.movePoint.equals(this.startPoint)) {//和起始点不一样则意味着可以得到转动向量了
-          this.isRotating = true;//转动标识置为true
-          var sub = this.movePoint.sub(this.startPoint);//计算转动向量
-          var direction = this.getDirection(sub);//获得方向
-          var elements = this.getBoxs(this.intersect, direction);
-          var startTime = new Date().getTime();
-          requestAnimationFrame(function (timestamp) {
-            self.rotateAnimation(elements, direction, timestamp, 0);
-          });
-        }
-      }
-    }
   }
 
   /**
@@ -174,9 +204,7 @@ export default class Main {
       currentstamp = startstamp + totalTime;
       this.isRotating = false;
       this.startPoint = null;
-      this.updateCubeIndex(elements);
-      //转动之后需要更新魔方此时所处的状态
-      this.updateCubeStatus();
+      this.rubik.updateCubeIndex(elements);
     }
     switch (direction) {
       //绕z轴顺时针
@@ -243,105 +271,9 @@ export default class Main {
     }
   }
 
-  //更新位置索引
-  updateCubeIndex(elements) {
-    for (var i = 0; i < elements.length; i++) {
-      var temp1 = elements[i];
-      for (var j = 0; j < this.initStatus.length; j++) {
-        var temp2 = this.initStatus[j];
-        if (Math.abs(temp1.position.x - temp2.x) <= this.cubeParams.len / 2 &&
-          Math.abs(temp1.position.y - temp2.y) <= this.cubeParams.len / 2 &&
-          Math.abs(temp1.position.z - temp2.z) <= this.cubeParams.len / 2) {
-          temp1.cubeIndex = temp2.cubeIndex;
-          break;
-        }
-      }
-    }
-  }
-
   /**
-   * 更新魔方状态
-   * 假设初始化时按固定位置给魔方编号，还原之后位置和编号不变
+   * 获得旋转方向
    */
-  updateCubeStatus() {
-    for (var i = 0; i < this.cubes.length; i++) {
-      var item = this.cubes[i];
-      if (item.id !== item.cubeIndex) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  //根据方向获得运动元素
-  getBoxs(target, direction) {
-    var targetId = target.object.cubeIndex;
-    var ids = [];
-    for (var i = 0; i < this.cubes.length; i++) {
-      ids.push(this.cubes[i].cubeIndex);
-    }
-    var minId = this.min(ids);
-    targetId = targetId - minId;
-    var numI = parseInt(targetId / 9);
-    var numJ = targetId % 9;
-    var boxs = [];
-    //根据绘制时的规律判断 no = i*9+j
-    switch (direction) {
-      //绕z轴
-      case 0.1:
-      case 0.2:
-      case 1.1:
-      case 1.2:
-      case 2.3:
-      case 2.4:
-      case 3.3:
-      case 3.4:
-        for (var i = 0; i < this.cubes.length; i++) {
-          var tempId = this.cubes[i].cubeIndex - minId;
-          if (numI === parseInt(tempId / 9)) {
-            boxs.push(this.cubes[i]);
-          }
-        }
-        break;
-      //绕y轴
-      case 0.3:
-      case 0.4:
-      case 1.3:
-      case 1.4:
-      case 4.3:
-      case 4.4:
-      case 5.3:
-      case 5.4:
-        for (var i = 0; i < this.cubes.length; i++) {
-          var tempId = this.cubes[i].cubeIndex - minId;
-          if (parseInt(numJ / 3) === parseInt(tempId % 9 / 3)) {
-            boxs.push(this.cubes[i]);
-          }
-        }
-        break;
-      //绕x轴
-      case 2.1:
-      case 2.2:
-      case 3.1:
-      case 3.2:
-      case 4.1:
-      case 4.2:
-      case 5.1:
-      case 5.2:
-        for (var i = 0; i < this.cubes.length; i++) {
-          var tempId = this.cubes[i].cubeIndex - minId;
-          if (tempId % 9 % 3 === numJ % 3) {
-            boxs.push(this.cubes[i]);
-          }
-        }
-        break;
-      default:
-        break;
-    }
-    return boxs;
-  }
-
-  //获得旋转方向
   getDirection(vector3) {
     var direction;
     //判断差向量和x、y、z轴的夹角
@@ -351,7 +283,7 @@ export default class Main {
     var yAngleAd = vector3.angleTo(this.yLineAd);
     var zAngle = vector3.angleTo(this.zLine);
     var zAngleAd = vector3.angleTo(this.zLineAd);
-    var minAngle = this.min([xAngle, xAngleAd, yAngle, yAngleAd, zAngle, zAngleAd]);//最小夹角
+    var minAngle = Math.min.apply(null,[xAngle, xAngleAd, yAngle, yAngleAd, zAngle, zAngleAd]);//最小夹角
 
     switch (minAngle) {
       case xAngle:
@@ -432,30 +364,9 @@ export default class Main {
     return direction;
   }
 
-  //获取数组中的最小值
-  min(arr) {
-    var min = arr[0];
-    for (var i = 1; i < arr.length; i++) {
-      if (arr[i] < min) {
-        min = arr[i];
-      }
-    }
-    return min;
-  }
-
-  //开始操作魔方
-  startCube(event) {
-    this.getIntersects(event);
-    //魔方没有处于转动过程中且存在碰撞物体
-    if (!this.isRotating && this.intersect) {
-      this.controller.enabled = false;//焦点在魔方上时禁止视角变换
-      this.startPoint = this.intersect.point;//开始转动，设置起始点
-    }else{
-      this.controller.enabled = true;
-    }
-  }
-
-  //获取操作焦点以及该焦点所在平面的法向量
+  /**
+   * 获取操作焦点以及该焦点所在平面的法向量
+   */
   getIntersects(event) {
     //触摸事件和鼠标事件获得坐标的方式有点区别
     if (event.touches) {
@@ -484,6 +395,4 @@ export default class Main {
       }
     } 
   }
-
-  
 }

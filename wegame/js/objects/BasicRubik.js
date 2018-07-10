@@ -53,7 +53,9 @@ function SimpleCube(x, y, z, num, len, colors) {
   return cubes;
 }
 
-//生成canvas素材
+/**
+ * 生成canvas素材
+ */
 function faces(rgbaColor) {
   var canvas = document.createElement('canvas');
   canvas.width = 256;
@@ -79,6 +81,9 @@ export default class BasicRubik{
     this.initStatus = [];
   }
 
+  /**
+   * 生成模型并加入到场景中
+   */
   model(){
     //生成魔方小正方体
     this.cubes = SimpleCube(BasicParams.x, BasicParams.y, BasicParams.z, BasicParams.num, BasicParams.len, BasicParams.colors);
@@ -113,5 +118,94 @@ export default class BasicRubik{
     var container = new THREE.Mesh(cubegeo, cubemat);
     container.cubeType = 'coverCube';
     this.main.scene.add(container);
+  }
+
+  /**
+   * 根据方向获得运动元素
+   */
+  getBoxs(target, direction) {
+    var targetId = target.object.cubeIndex;
+    var ids = [];
+    for (var i = 0; i < this.cubes.length; i++) {
+      ids.push(this.cubes[i].cubeIndex);
+    }
+    var minId = Math.min.apply(null,ids);
+    targetId = targetId - minId;
+    var numI = parseInt(targetId / 9);
+    var numJ = targetId % 9;
+    var boxs = [];
+    //根据绘制时的规律判断 no = i*9+j
+    switch (direction) {
+      //绕z轴
+      case 0.1:
+      case 0.2:
+      case 1.1:
+      case 1.2:
+      case 2.3:
+      case 2.4:
+      case 3.3:
+      case 3.4:
+        for (var i = 0; i < this.cubes.length; i++) {
+          var tempId = this.cubes[i].cubeIndex - minId;
+          if (numI === parseInt(tempId / 9)) {
+            boxs.push(this.cubes[i]);
+          }
+        }
+        break;
+      //绕y轴
+      case 0.3:
+      case 0.4:
+      case 1.3:
+      case 1.4:
+      case 4.3:
+      case 4.4:
+      case 5.3:
+      case 5.4:
+        for (var i = 0; i < this.cubes.length; i++) {
+          var tempId = this.cubes[i].cubeIndex - minId;
+          if (parseInt(numJ / 3) === parseInt(tempId % 9 / 3)) {
+            boxs.push(this.cubes[i]);
+          }
+        }
+        break;
+      //绕x轴
+      case 2.1:
+      case 2.2:
+      case 3.1:
+      case 3.2:
+      case 4.1:
+      case 4.2:
+      case 5.1:
+      case 5.2:
+        for (var i = 0; i < this.cubes.length; i++) {
+          var tempId = this.cubes[i].cubeIndex - minId;
+          if (tempId % 9 % 3 === numJ % 3) {
+            boxs.push(this.cubes[i]);
+          }
+        }
+        break;
+      default:
+        break;
+    }
+    console.log(boxs);
+    return boxs;
+  }
+
+  /**
+   * 更新位置索引
+   */
+  updateCubeIndex(elements) {
+    for (var i = 0; i < elements.length; i++) {
+      var temp1 = elements[i];
+      for (var j = 0; j < this.initStatus.length; j++) {
+        var temp2 = this.initStatus[j];
+        if (Math.abs(temp1.position.x - temp2.x) <= BasicParams.len / 2 &&
+          Math.abs(temp1.position.y - temp2.y) <= BasicParams.len / 2 &&
+          Math.abs(temp1.position.z - temp2.z) <= BasicParams.len / 2) {
+          temp1.cubeIndex = temp2.cubeIndex;
+          break;
+        }
+      }
+    }
   }
 }
