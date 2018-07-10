@@ -257,70 +257,48 @@ THREE.OrbitControls = function ( object, domElement ) {
   var dollyDelta = new THREE.Vector2();
 
   function getAutoRotationAngle() {
-
     return 2 * Math.PI / 60 / 60 * scope.autoRotateSpeed;
-
   }
 
   function getZoomScale() {
-
     return Math.pow( 0.95, scope.zoomSpeed );
-
   }
 
   function rotateLeft( angle ) {
-
     sphericalDelta.theta -= angle;
-
   }
 
   function rotateUp( angle ) {
-
     sphericalDelta.phi -= angle;
-
   }
 
   var panLeft = function () {
-
     var v = new THREE.Vector3();
 
     return function panLeft( distance, objectMatrix ) {
-
       v.setFromMatrixColumn( objectMatrix, 0 ); // get X column of objectMatrix
       v.multiplyScalar( - distance );
-
       panOffset.add( v );
-
     };
-
   }();
 
   var panUp = function () {
-
     var v = new THREE.Vector3();
 
     return function panUp( distance, objectMatrix ) {
-
       v.setFromMatrixColumn( objectMatrix, 1 ); // get Y column of objectMatrix
       v.multiplyScalar( distance );
-
       panOffset.add( v );
-
     };
-
   }();
 
   // deltaX and deltaY are in pixels; right and down are positive
   var pan = function () {
-
     var offset = new THREE.Vector3();
 
     return function pan( deltaX, deltaY ) {
-
       var element = scope.domElement === document ? scope.domElement.body : scope.domElement;
-
       if ( scope.object instanceof THREE.PerspectiveCamera ) {
-
         // perspective
         var position = scope.object.position;
         offset.copy( position ).sub( scope.target );
@@ -340,57 +318,37 @@ THREE.OrbitControls = function ( object, domElement ) {
         panUp(deltaY * (scope.object.top - scope.object.bottom) / scope.object.zoom / element.height, scope.object.matrix);
 
       } else {
-
         // camera neither orthographic nor perspective
         console.warn( 'WARNING: OrbitControls.js encountered an unknown camera type - pan disabled.' );
         scope.enablePan = false;
-
       }
-
     };
-
   }();
 
   function dollyIn( dollyScale ) {
-
     if ( scope.object instanceof THREE.PerspectiveCamera ) {
-
       scale /= dollyScale;
-
     } else if ( scope.object instanceof THREE.OrthographicCamera ) {
-
       scope.object.zoom = Math.max( scope.minZoom, Math.min( scope.maxZoom, scope.object.zoom * dollyScale ) );
       scope.object.updateProjectionMatrix();
       zoomChanged = true;
-
     } else {
-
       console.warn( 'WARNING: OrbitControls.js encountered an unknown camera type - dolly/zoom disabled.' );
       scope.enableZoom = false;
-
     }
-
   }
 
   function dollyOut( dollyScale ) {
-
     if ( scope.object instanceof THREE.PerspectiveCamera ) {
-
       scale *= dollyScale;
-
     } else if ( scope.object instanceof THREE.OrthographicCamera ) {
-
       scope.object.zoom = Math.max( scope.minZoom, Math.min( scope.maxZoom, scope.object.zoom / dollyScale ) );
       scope.object.updateProjectionMatrix();
       zoomChanged = true;
-
     } else {
-
       console.warn( 'WARNING: OrbitControls.js encountered an unknown camera type - dolly/zoom disabled.' );
       scope.enableZoom = false;
-
     }
-
   }
 
   // event callbacks - update the object state
