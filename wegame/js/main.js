@@ -33,11 +33,11 @@ export default class Main {
     this.render();
     this.initEvent();
 
-    //视角控制
-    this.controller = new THREE.OrbitControls(this.camera, this.renderer.domElement);
-    this.controller.enableZoom = false;
-    this.controller.rotateSpeed = 2;
-    this.controller.target = new THREE.Vector3(0, 0, 0);//设置控制点
+    //轨道视角控制器
+    this.orbitController = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+    this.orbitController.enableZoom = false;
+    this.orbitController.rotateSpeed = 2;
+    this.orbitController.target = new THREE.Vector3(0, 0, 0);//设置控制点
   }
 
   /**
@@ -126,10 +126,10 @@ export default class Main {
     this.getIntersects(event);
     //魔方没有处于转动过程中且存在碰撞物体
     if (!this.isRotating && this.intersect) {
-      this.controller.enabled = false;//焦点在魔方上时禁止视角变换
+      this.orbitController.enabled = false;//焦点在魔方上时禁止视角变换
       this.startPoint = this.intersect.point;//开始转动，设置起始点
     } else {
-      this.controller.enabled = true;
+      this.orbitController.enabled = true;
     }
   }
 

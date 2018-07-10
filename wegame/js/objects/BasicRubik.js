@@ -207,7 +207,6 @@ export default class BasicRubik{
       default:
         break;
     }
-    console.log(boxs);
     return boxs;
   }
 
