@@ -7,7 +7,8 @@ const BasicParams = {
   z: 75,
   num: 3,
   len: 50,
-  //左、右、上、下、前、后
+  defaultColor:'#666666',
+  //右、左、上、下、前、后
   colors: ['#ff6b02', '#dd422f',
     '#ffffff', '#fdcd02',
     '#3d81f7', '#019d53']
@@ -24,16 +25,35 @@ function SimpleCube(x, y, z, num, len, colors) {
   var cubes = [];
   for (var i = 0; i < num; i++) {
     for (var j = 0; j < num * num; j++) {
+      //小正方体六个面，每个面使用相同材质的纹理，但是颜色不一样，内面为默认色
+      var myFaces = [];
+      var no = i * num * num + j;
+      if (no % 3 == 2) {//右
+        myFaces[0] = faces(colors[0]);
+      }
+      if (no % 3 == 0) {//左
+        myFaces[1] = faces(colors[1]);
+      }
+      if (no % 9 <= 2) {//上
+        myFaces[2] = faces(colors[2]);
+      }
+      if (no % 9 >= 6) {//下
+        myFaces[3] = faces(colors[3]);
+      }
+      if (parseInt(no / 9) == 0) {//前
+        myFaces[4] = faces(colors[4]);
+      }
+      if (parseInt(no / 9) == 2) {//后
+        myFaces[5] = faces(colors[5]);
+      }
+      for (var k = 0; k < 6; k++) {
+        if (!myFaces[k]) {
+          myFaces[k] = faces(BasicParams.defaultColor);
+        }
+      }
+
       var cubegeo = new THREE.BoxGeometry(len, len, len);
       var materials = [];
-      var myFaces = [];
-      //一个小正方体有六个面，每个面使用相同材质的纹理，但是颜色不一样
-      myFaces.push(faces(colors[0]));
-      myFaces.push(faces(colors[1]));
-      myFaces.push(faces(colors[2]));
-      myFaces.push(faces(colors[3]));
-      myFaces.push(faces(colors[4]));
-      myFaces.push(faces(colors[5]));
       for (var k = 0; k < 6; k++) {
         var texture = new THREE.Texture(myFaces[k]);
         texture.needsUpdate = true;
