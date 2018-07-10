@@ -369,15 +369,9 @@ export default class Main {
    * 获取操作焦点以及该焦点所在平面的法向量
    */
   getIntersects(event) {
-    //触摸事件和鼠标事件获得坐标的方式有点区别
-    if (event.touches) {
-      var touch = event.touches[0];
-      this.mouse.x = (touch.clientX / this.width) * 2 - 1;
-      this.mouse.y = -(touch.clientY / this.height) * 2 + 1;
-    } else {
-      this.mouse.x = (event.clientX / this.width) * 2 - 1;
-      this.mouse.y = -(event.clientY / this.height) * 2 + 1;
-    }
+    var touch = event.touches[0];
+    this.mouse.x = (touch.clientX / this.width) * 2 - 1;
+    this.mouse.y = -(touch.clientY / this.height) * 2 + 1;
     this.raycaster.setFromCamera(this.mouse, this.camera);
     //Raycaster方式定位选取元素，可能会选取多个，以第一个为准
     var intersects = this.raycaster.intersectObjects(this.scene.children);

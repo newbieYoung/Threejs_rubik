@@ -227,4 +227,6 @@ export default class BasicRubik{
       }
     }
   }
+
+  
 }
