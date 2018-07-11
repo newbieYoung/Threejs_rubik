@@ -9,14 +9,11 @@ let context   = canvas.getContext('webgl');
  */
 export default class Main {
   constructor() {
+
     this.raycaster = new THREE.Raycaster();//光线碰撞检测器
-    this.mouse = new THREE.Vector2();//存储鼠标坐标或者触摸坐标
-    this.isRotating = false;//魔方是否正在转动
     this.intersect;//碰撞光线穿过的元素
     this.normalize;//触发平面法向量
-    this.startPoint;//触发点
-    this.movePoint;
-    this.totalTime = 300;//转动动画时长
+    
     //魔方转动的六个方向
     this.xLine = new THREE.Vector3(1, 0, 0);//X轴正方向
     this.xLineAd = new THREE.Vector3(-1, 0, 0);//X轴负方向
@@ -24,6 +21,26 @@ export default class Main {
     this.yLineAd = new THREE.Vector3(0, -1, 0);//Y轴负方向
     this.zLine = new THREE.Vector3(0, 0, 1);//Z轴正方向
     this.zLineAd = new THREE.Vector3(0, 0, -1);//Z轴负方向
+
+    /**
+     * 魔方转动参数
+     * isRotating 魔方是否转动
+     * speed 转动速度
+     * animateSpeed 动画速度
+     * threshold 阀值
+     * startPoint 起始点
+     * movePoint 移动点
+     * sumRad 累计角度
+     */
+    this.rotateParams = {
+      speed:1,
+      threshold:Math.PI/2/12,
+      animateSpeed:Math.PI/2/300,
+      isRotating: false,
+      sumRad: 0,
+      startPoint: null,
+      movePoint: null,
+    };
 
     this.initThree();
     this.initCamera();
@@ -115,8 +132,23 @@ export default class Main {
    * 触摸结束
    */
   stopCube() {
+    var self = this;
+    //手动转动结束
     this.intersect = null;
-    this.startPoint = null
+    this.normalize = null;
+    this.rotateParams.startPoint = null;
+    this.rotateParams.movePoint = null;
+
+    if (this.rotateParams.isRotating){
+      var finalRad = 0;
+      var tag = this.rotateParams.sumRad<0?-1:1;
+      if (Math.abs(this.rotateParams.sumRad)>=this.rotateParams.threshold){//超过阀值
+        finalRad = tag*Math.PI/2;
+      }
+      requestAnimationFrame(function (timestamp) {
+        self.rotateAnimation(timestamp, timestamp, finalRad, tag);
+      });
+    }
   }
 
   /**
@@ -124,10 +156,9 @@ export default class Main {
    */
   startCube(event) {
     this.getIntersects(event);
-    //魔方没有处于转动过程中且存在碰撞物体
-    if (!this.isRotating && this.intersect) {
+    if (!this.rotateParams.isRotating && this.intersect) {//魔方没有转动中且存在碰撞物体
       this.orbitController.enabled = false;//焦点在魔方上时禁止视角变换
-      this.startPoint = this.intersect.point;//开始转动，设置起始点
+      this.rotateParams.startPoint = this.intersect.point;//开始转动，设置起始点
     } else {
       this.orbitController.enabled = true;
     }
@@ -137,22 +168,35 @@ export default class Main {
    * 滑动魔方
    */
   moveCube(event) {
-    var self = this;
-    this.getIntersects(event);
-    if (this.intersect) {
-      if (!this.isRotating && this.startPoint) {//魔方没有进行转动且满足进行转动的条件
-        this.movePoint = this.intersect.point;
-        if (!this.movePoint.equals(this.startPoint)) {//和起始点不一样则意味着可以得到转动向量了
-          this.isRotating = true;//转动标识置为true
-          var sub = this.movePoint.sub(this.startPoint);//计算转动向量
-          var direction = this.getDirection(sub);//获得方向
-          var elements = this.rubik.getBoxs(this.intersect, direction);
-          var startTime = new Date().getTime();
-          requestAnimationFrame(function (timestamp) {
-            self.rotateAnimation(elements, direction, timestamp, 0);
-          });
-        }
-      }
+    //魔方没有转动且触摸点在魔方上
+    if (!this.rotateParams.isRotating && this.rotateParams.startPoint){
+      /**
+       * 判断魔方转动方向以及转动元素，
+       * 判断时需要把二维坐标转换为三维坐标。
+       */
+      this.getIntersects(event);
+      this.rotateParams.movePoint = this.intersect.point;
+      var sub = this.rotateParams.movePoint.sub(this.rotateParams.startPoint);
+      this.rotateParams.direction = this.getDirection(sub);
+      this.rotateParams.elements = this.rubik.getBoxs(this.intersect, this.rotateParams.direction);
+
+      /**
+       * 初始化转动控制点，
+       * 转动时直接使用二维坐标即可。
+       */
+      this.rotateParams.movePoint = new THREE.Vector2();
+      this.rotateParams.movePoint.set(event.touches[0].pageX, event.touches[0].pageY);
+      this.rotateParams.startPoint = new THREE.Vector2();
+      this.rotateParams.startPoint.set(event.touches[0].pageX, event.touches[0].pageY);
+
+      this.rotateParams.isRotating = true;//转动魔方
+    }
+
+    if (this.rotateParams.isRotating){
+      this.rotateParams.movePoint.set(event.touches[0].pageX, event.touches[0].pageY);
+      var sub = this.rotateParams.movePoint.sub(this.rotateParams.startPoint);
+      this.rotateParams.startPoint.set(event.touches[0].pageX, event.touches[0].pageY);
+      this.rotateElements(sub);
     }
   }
 
@@ -193,81 +237,141 @@ export default class Main {
   }
 
   /**
-   * 旋转动画
+   * 转动元素
+   * 统一使用宽度为计算弧度，否则宽高不一致会导致，水平滑动和竖直滑动触发阀值的距离不一样，影响体验。
    */
-  rotateAnimation(elements, direction, currentstamp, startstamp, laststamp) {
-    var self = this;
-    if (startstamp === 0) {
-      startstamp = currentstamp;
-      laststamp = currentstamp;
-    }
-    if (currentstamp - startstamp >= this.totalTime) {
-      currentstamp = startstamp + this.totalTime;
-      this.isRotating = false;
-      this.startPoint = null;
-      this.rubik.updateCubeIndex(elements);
-    }
-    switch (direction) {
-      //绕z轴顺时针
-      case 0.1:
+  rotateElements(vector){
+    var rad = 0;
+    switch (this.rotateParams.direction) {
+      case 0.1://绕z轴顺时针
       case 1.2:
       case 2.4:
       case 3.3:
-        for (var i = 0; i < elements.length; i++) {
-          this.rotateAroundWorldZ(elements[i], -90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
-        }
-        break;
-      //绕z轴逆时针
-      case 0.2:
+      case 0.2://绕z轴逆时针
       case 1.1:
       case 2.3:
       case 3.4:
-        for (var i = 0; i < elements.length; i++) {
-          this.rotateAroundWorldZ(elements[i], 90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
+        rad = - Math.PI / 2 * vector.y / this.width * this.rotateParams.speed;
+        for (var i = 0; i < this.rotateParams.elements.length; i++) {
+          this.rotateAroundWorldZ(this.rotateParams.elements[i], rad);
         }
         break;
-      //绕y轴顺时针
-      case 0.4:
+      case 0.4://绕y轴顺时针
       case 1.3:
       case 4.3:
       case 5.4:
-        for (var i = 0; i < elements.length; i++) {
-          this.rotateAroundWorldY(elements[i], -90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
-        }
-        break;
-      //绕y轴逆时针
-      case 1.4:
+      case 1.4://绕y轴逆时针
       case 0.3:
       case 4.4:
       case 5.3:
-        for (var i = 0; i < elements.length; i++) {
-          this.rotateAroundWorldY(elements[i], 90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
+        rad = Math.PI / 2 * vector.x / this.width * this.rotateParams.speed;
+        for (var i = 0; i < this.rotateParams.elements.length; i++) {
+          this.rotateAroundWorldY(this.rotateParams.elements[i], rad);
         }
         break;
-      //绕x轴顺时针
-      case 2.2:
+      case 2.2://绕x轴顺时针
       case 3.1:
       case 4.1:
       case 5.2:
-        for (var i = 0; i < elements.length; i++) {
-          this.rotateAroundWorldX(elements[i], 90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
-        }
-        break;
-      //绕x轴逆时针
-      case 2.1:
+      case 2.1://绕x轴逆时针
       case 3.2:
       case 4.2:
       case 5.1:
-        for (var i = 0; i < elements.length; i++) {
-          this.rotateAroundWorldX(elements[i], -90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
+        rad = Math.PI / 2 * vector.y / this.width * this.rotateParams.speed;
+        for (var i = 0; i < this.rotateParams.elements.length; i++) {
+          this.rotateAroundWorldX(this.rotateParams.elements[i], rad);
         }
         break;
       default:
         break;
     }
-    if (currentstamp - startstamp < this.totalTime) {
+    this.rotateParams.sumRad += rad;
+  }
+
+  /**
+   * 旋转动画
+   */
+  rotateAnimation(currentstamp,laststamp,finalRad,tag) {
+    var self = this;
+    var isEnd = false;
+    var rad = tag * this.rotateParams.animateSpeed * (currentstamp - laststamp);
+
+    //动画结束
+    if (finalRad == 0 && Math.abs(rad) >= Math.abs(this.rotateParams.sumRad)){
+      isEnd = true;
+      rad = this.rotateParams.sumRad;
+    }
+    if (Math.abs(finalRad) == Math.PI / 2 && Math.abs(rad) >= Math.abs(Math.abs(finalRad) - Math.abs(this.rotateParams.sumRad))){
+      isEnd = true;
+      rad = finalRad - this.rotateParams.sumRad;
+    }
+
+    if(isEnd){
+      this.rotateParams.isRotating = false;
+      this.rotateParams.sumRad = 0;//清0
+      this.rubik.updateCubeIndex(this.rotateParams.elements);
+    }else{
+      if (finalRad == 0) {
+        this.rotateParams.sumRad -= rad;
+      }
+      if (Math.abs(finalRad) == Math.PI / 2) {
+        this.rotateParams.sumRad += rad;
+      }
+    }
+
+    switch (this.rotateParams.direction) {
+      case 0.1://绕z轴顺时针
+      case 1.2:
+      case 2.4:
+      case 3.3:
+      case 0.2://绕z轴逆时针
+      case 1.1:
+      case 2.3:
+      case 3.4:
+        if (finalRad == 0) {
+          rad = -rad;
+        }
+        for (var i = 0; i < this.rotateParams.elements.length; i++) {
+          this.rotateAroundWorldZ(this.rotateParams.elements[i], rad);
+        }
+        break;
+      case 0.4://绕y轴顺时针
+      case 1.3:
+      case 4.3:
+      case 5.4:
+      case 1.4://绕y轴逆时针
+      case 0.3:
+      case 4.4:
+      case 5.3:
+        if(finalRad==0){
+          rad = -rad;
+        }
+        for (var i = 0; i < this.rotateParams.elements.length; i++) {
+          this.rotateAroundWorldY(this.rotateParams.elements[i], rad);
+        }
+        break;
+      case 2.2://绕x轴顺时针
+      case 3.1:
+      case 4.1:
+      case 5.2:
+      case 2.1://绕x轴逆时针
+      case 3.2:
+      case 4.2:
+      case 5.1:
+        if (finalRad == 0) {
+          rad = -rad;
+        }
+        for (var i = 0; i < this.rotateParams.elements.length; i++) {
+          this.rotateAroundWorldX(this.rotateParams.elements[i], rad);
+        }
+        break;
+      default:
+        break;
+    }
+
+    if (!isEnd) {
       requestAnimationFrame(function (timestamp) {
-        self.rotateAnimation(elements, direction, timestamp, startstamp, currentstamp);
+        self.rotateAnimation(timestamp, currentstamp, finalRad, tag);
       });
     }
   }
@@ -370,12 +474,12 @@ export default class Main {
    */
   getIntersects(event) {
     var touch = event.touches[0];
-    this.mouse.x = (touch.clientX / this.width) * 2 - 1;
-    this.mouse.y = -(touch.clientY / this.height) * 2 + 1;
-    this.raycaster.setFromCamera(this.mouse, this.camera);
+    var mouse = new THREE.Vector2();
+    mouse.x = (touch.clientX / this.width) * 2 - 1;
+    mouse.y = -(touch.clientY / this.height) * 2 + 1;
+    this.raycaster.setFromCamera(mouse, this.camera);
     //Raycaster方式定位选取元素，可能会选取多个，以第一个为准
     var intersects = this.raycaster.intersectObjects(this.scene.children);
-    //如果操作焦点在魔方上则取消移动，反之恢复移动
     if (intersects.length) {
       try {
         if (intersects[0].object.cubeType === 'coverCube') {
