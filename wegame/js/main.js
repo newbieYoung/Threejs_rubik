@@ -148,7 +148,7 @@ export default class Main {
         finalRad = tag*Math.PI/2;
       }
       requestAnimationFrame(function (timestamp) {
-        self.rotateAnimation(timestamp, timestamp, finalRad, tag);
+        self.rotateAnimation(self.rotateParams,timestamp, timestamp, finalRad, tag);
       });
     }
   }
@@ -293,31 +293,31 @@ export default class Main {
   /**
    * 旋转动画
    */
-  rotateAnimation(currentstamp,laststamp,finalRad,tag) {
+  rotateAnimation(params,currentstamp,laststamp,finalRad,tag) {
     var self = this;
     var isEnd = false;
-    var rad = tag * this.rotateParams.animateSpeed * (currentstamp - laststamp);
+    var rad = tag * params.animateSpeed * (currentstamp - laststamp);
 
     //动画结束
-    if (finalRad == 0 && Math.abs(rad) >= Math.abs(this.rotateParams.sumRad)){
+    if (finalRad == 0 && Math.abs(rad) >= Math.abs(params.sumRad)){
       isEnd = true;
-      rad = this.rotateParams.sumRad;
+      rad = params.sumRad;
     }
-    if (Math.abs(finalRad) == Math.PI / 2 && Math.abs(rad) >= Math.abs(Math.abs(finalRad) - Math.abs(this.rotateParams.sumRad))){
+    if (Math.abs(finalRad) == Math.PI / 2 && Math.abs(rad) >= Math.abs(Math.abs(finalRad) - Math.abs(params.sumRad))){
       isEnd = true;
-      rad = finalRad - this.rotateParams.sumRad;
+      rad = finalRad - params.sumRad;
     }
 
     if(!isEnd){
       if (finalRad == 0) {
-        this.rotateParams.sumRad -= rad;
+        params.sumRad -= rad;
       }
       if (Math.abs(finalRad) == Math.PI / 2) {
-        this.rotateParams.sumRad += rad;
+        params.sumRad += rad;
       }
     }
 
-    switch (this.rotateParams.direction) {
+    switch (params.direction) {
       case 0.1://绕z轴顺时针
       case 1.2:
       case 2.4:
@@ -329,8 +329,8 @@ export default class Main {
         if (finalRad == 0) {
           rad = -rad;
         }
-        for (var i = 0; i < this.rotateParams.elements.length; i++) {
-          this.rotateAroundWorldZ(this.rotateParams.elements[i], rad);
+        for (var i = 0; i < params.elements.length; i++) {
+          this.rotateAroundWorldZ(params.elements[i], rad);
         }
         break;
       case 0.4://绕y轴顺时针
@@ -344,8 +344,8 @@ export default class Main {
         if(finalRad==0){
           rad = -rad;
         }
-        for (var i = 0; i < this.rotateParams.elements.length; i++) {
-          this.rotateAroundWorldY(this.rotateParams.elements[i], rad);
+        for (var i = 0; i < params.elements.length; i++) {
+          this.rotateAroundWorldY(params.elements[i], rad);
         }
         break;
       case 2.2://绕x轴顺时针
@@ -359,8 +359,8 @@ export default class Main {
         if (finalRad == 0) {
           rad = -rad;
         }
-        for (var i = 0; i < this.rotateParams.elements.length; i++) {
-          this.rotateAroundWorldX(this.rotateParams.elements[i], rad);
+        for (var i = 0; i < params.elements.length; i++) {
+          this.rotateAroundWorldX(params.elements[i], rad);
         }
         break;
       default:
@@ -369,14 +369,14 @@ export default class Main {
 
     if (!isEnd) {
       requestAnimationFrame(function (timestamp) {
-        self.rotateAnimation(timestamp, currentstamp, finalRad, tag);
+        self.rotateAnimation(params,timestamp, currentstamp, finalRad, tag);
       });
     }else{
-      this.rubik.updateCubeIndex(this.rotateParams.elements);
-      this.rotateParams.isRotating = false;
-      this.rotateParams.sumRad = 0;//清0
-      this.rotateParams.direction = null;
-      this.rotateParams.elements = null;
+      this.rubik.updateCubeIndex(params.elements);
+      params.isRotating = false;
+      params.sumRad = 0;//清0
+      params.direction = null;
+      params.elements = null;
     }
   }
 
