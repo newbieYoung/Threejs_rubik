@@ -306,11 +306,7 @@ export default class Main {
       rad = finalRad - this.rotateParams.sumRad;
     }
 
-    if(isEnd){
-      this.rotateParams.isRotating = false;
-      this.rotateParams.sumRad = 0;//清0
-      this.rubik.updateCubeIndex(this.rotateParams.elements);
-    }else{
+    if(!isEnd){
       if (finalRad == 0) {
         this.rotateParams.sumRad -= rad;
       }
@@ -373,6 +369,12 @@ export default class Main {
       requestAnimationFrame(function (timestamp) {
         self.rotateAnimation(timestamp, currentstamp, finalRad, tag);
       });
+    }else{
+      this.rubik.updateCubeIndex(this.rotateParams.elements);
+      this.rotateParams.isRotating = false;
+      this.rotateParams.sumRad = 0;//清0
+      this.rotateParams.direction = null;
+      this.rotateParams.elements = null;
     }
   }
 
