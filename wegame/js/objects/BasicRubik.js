@@ -228,34 +228,4 @@ export default class BasicRubik{
       }
     }
   }
-
-  /**
-   * 绕世界坐标系Y轴旋转
-   */
-  rotateAroundY(rad){
-    for(var i=0;i<this.cubes.length;i++){
-      this.main.rotateAroundWorldY(this.cubes[i],rad);
-    }
-    this.main.rotateAroundWorldY(this.container, rad);
-  }
-
-  /**
-   * 绕世界坐标系Z轴旋转
-   */
-  rotateAroundZ(rad) {
-    for (var i = 0; i < this.cubes.length; i++) {
-      this.main.rotateAroundWorldZ(this.cubes[i], rad);
-    }
-    this.main.rotateAroundWorldZ(this.container, rad);
-  }
-
-  /**
-   * 绕世界坐标系X轴旋转
-   */
-  rotateAroundX(rad) {
-    for (var i = 0; i < this.cubes.length; i++) {
-      this.main.rotateAroundWorldX(this.cubes[i], rad);
-    }
-    this.main.rotateAroundWorldX(this.container, rad);
-  }
 }

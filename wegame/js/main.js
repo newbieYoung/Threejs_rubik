@@ -41,7 +41,15 @@ export default class Main {
       startPoint: null,
       movePoint: null,
       elements:null,
-      direction:null
+      direction:null,
+      animationEnd:function(){
+        this.rubik.updateCubeIndex(this.rotateParams.elements);
+        this.rotateParams.isRotating = false;
+        this.rotateParams.sumRad = 0;//清0
+        this.rotateParams.direction = null;
+        this.rotateParams.elements = null;
+        console.log(this.rotateParams);
+      }
     };
 
     this.initThree();
@@ -372,11 +380,8 @@ export default class Main {
         self.rotateAnimation(params,timestamp, currentstamp, finalRad, tag);
       });
     }else{
-      this.rubik.updateCubeIndex(params.elements);
-      params.isRotating = false;
-      params.sumRad = 0;//清0
-      params.direction = null;
-      params.elements = null;
+      var callback = params.animationEnd.bind(self);
+      callback();
     }
   }
 
