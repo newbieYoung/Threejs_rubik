@@ -40,6 +40,8 @@ export default class Main {
       sumRad: 0,
       startPoint: null,
       movePoint: null,
+      elements:null,
+      direction:null
     };
 
     this.initThree();
@@ -196,7 +198,7 @@ export default class Main {
       this.rotateParams.movePoint.set(event.touches[0].pageX, event.touches[0].pageY);
       var sub = this.rotateParams.movePoint.sub(this.rotateParams.startPoint);
       this.rotateParams.startPoint.set(event.touches[0].pageX, event.touches[0].pageY);
-      this.rotateElements(sub);
+      this.rotateElements(this.rotateParams,sub);
     }
   }
 
@@ -240,9 +242,9 @@ export default class Main {
    * 转动元素
    * 统一使用宽度为计算弧度，否则宽高不一致会导致，水平滑动和竖直滑动触发阀值的距离不一样，影响体验。
    */
-  rotateElements(vector){
+  rotateElements(params,vector){
     var rad = 0;
-    switch (this.rotateParams.direction) {
+    switch (params.direction) {
       case 0.1://绕z轴顺时针
       case 1.2:
       case 2.4:
@@ -251,9 +253,9 @@ export default class Main {
       case 1.1:
       case 2.3:
       case 3.4:
-        rad = - Math.PI / 2 * vector.y / this.width * this.rotateParams.speed;
-        for (var i = 0; i < this.rotateParams.elements.length; i++) {
-          this.rotateAroundWorldZ(this.rotateParams.elements[i], rad);
+        rad = - Math.PI / 2 * vector.y / this.width * params.speed;
+        for (var i = 0; i < params.elements.length; i++) {
+          this.rotateAroundWorldZ(params.elements[i], rad);
         }
         break;
       case 0.4://绕y轴顺时针
@@ -264,9 +266,9 @@ export default class Main {
       case 0.3:
       case 4.4:
       case 5.3:
-        rad = Math.PI / 2 * vector.x / this.width * this.rotateParams.speed;
-        for (var i = 0; i < this.rotateParams.elements.length; i++) {
-          this.rotateAroundWorldY(this.rotateParams.elements[i], rad);
+        rad = Math.PI / 2 * vector.x / this.width * params.speed;
+        for (var i = 0; i < params.elements.length; i++) {
+          this.rotateAroundWorldY(params.elements[i], rad);
         }
         break;
       case 2.2://绕x轴顺时针
@@ -277,15 +279,15 @@ export default class Main {
       case 3.2:
       case 4.2:
       case 5.1:
-        rad = Math.PI / 2 * vector.y / this.width * this.rotateParams.speed;
-        for (var i = 0; i < this.rotateParams.elements.length; i++) {
-          this.rotateAroundWorldX(this.rotateParams.elements[i], rad);
+        rad = Math.PI / 2 * vector.y / this.width * params.speed;
+        for (var i = 0; i < params.elements.length; i++) {
+          this.rotateAroundWorldX(params.elements[i], rad);
         }
         break;
       default:
         break;
     }
-    this.rotateParams.sumRad += rad;
+    params.sumRad += rad;
   }
 
   /**
