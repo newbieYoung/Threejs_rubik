@@ -157,7 +157,6 @@ export default class BasicRubik{
     var boxs = [];
     //根据绘制时的规律判断 no = i*9+j
     switch (direction) {
-      //绕z轴
       case 0.1:
       case 0.2:
       case 1.1:
@@ -173,7 +172,6 @@ export default class BasicRubik{
           }
         }
         break;
-      //绕y轴
       case 0.3:
       case 0.4:
       case 1.3:
@@ -189,7 +187,6 @@ export default class BasicRubik{
           }
         }
         break;
-      //绕x轴
       case 2.1:
       case 2.2:
       case 3.1:

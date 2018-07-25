@@ -261,38 +261,48 @@ export default class Main {
   rotateElements(params,vector){
     var rad = 0;
     switch (params.direction) {
-      case 0.1://绕z轴顺时针
-      case 1.2:
-      case 2.4:
-      case 3.3:
-      case 0.2://绕z轴逆时针
+      case 0.1:
       case 1.1:
+      case 3.3:
       case 2.3:
-      case 3.4:
-        rad = - Math.PI / 2 * vector.y / this.width * params.speed;
+      case 1.2:
+      case 0.2:
+        rad = -Math.PI / 2 * vector.y / this.width * params.speed;
         for (var i = 0; i < params.elements.length; i++) {
           this.rotateAroundWorldZ(params.elements[i], rad);
         }
         break;
-      case 0.4://绕y轴顺时针
+      case 2.4:
+      case 3.4:
+        rad = Math.PI / 2 * vector.y / this.width * params.speed;
+        for (var i = 0; i < params.elements.length; i++) {
+          this.rotateAroundWorldZ(params.elements[i], rad);
+        }
+        break;
+      case 0.4:
       case 1.3:
-      case 4.3:
       case 5.4:
-      case 1.4://绕y轴逆时针
+      case 1.4:
       case 0.3:
       case 4.4:
       case 5.3:
+      case 4.3:
         rad = Math.PI / 2 * vector.x / this.width * params.speed;
         for (var i = 0; i < params.elements.length; i++) {
           this.rotateAroundWorldY(params.elements[i], rad);
         }
         break;
-      case 2.2://绕x轴顺时针
+      case 2.2:
+      case 3.2:
+        rad = -Math.PI / 2 * vector.y / this.width * params.speed;
+        for (var i = 0; i < params.elements.length; i++) {
+          this.rotateAroundWorldX(params.elements[i], rad);
+        }
+        break;
       case 3.1:
       case 4.1:
       case 5.2:
-      case 2.1://绕x轴逆时针
-      case 3.2:
+      case 2.1:
       case 4.2:
       case 5.1:
         rad = Math.PI / 2 * vector.y / this.width * params.speed;
@@ -334,11 +344,11 @@ export default class Main {
     }
 
     switch (params.direction) {
-      case 0.1://绕z轴顺时针
+      case 0.1:
       case 1.2:
       case 2.4:
       case 3.3:
-      case 0.2://绕z轴逆时针
+      case 0.2:
       case 1.1:
       case 2.3:
       case 3.4:
@@ -349,11 +359,11 @@ export default class Main {
           this.rotateAroundWorldZ(params.elements[i], rad);
         }
         break;
-      case 0.4://绕y轴顺时针
+      case 0.4:
       case 1.3:
       case 4.3:
       case 5.4:
-      case 1.4://绕y轴逆时针
+      case 1.4:
       case 0.3:
       case 4.4:
       case 5.3:
@@ -364,11 +374,11 @@ export default class Main {
           this.rotateAroundWorldY(params.elements[i], rad);
         }
         break;
-      case 2.2://绕x轴顺时针
+      case 2.2:
       case 3.1:
       case 4.1:
       case 5.2:
-      case 2.1://绕x轴逆时针
+      case 2.1:
       case 3.2:
       case 4.2:
       case 5.1:
