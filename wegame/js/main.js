@@ -24,7 +24,8 @@ export default class Main {
 
     /**
      * 魔方转动参数
-     * isRotating 魔方是否转动
+     * isHandControl 是否处于手动控制
+     * isAnimating 是否出于自动滚动动画中
      * speed 转动速度
      * animateSpeed 动画速度
      * threshold 阀值
@@ -36,7 +37,8 @@ export default class Main {
       speed:1,
       threshold:Math.PI/2/12,
       animateSpeed:Math.PI/2/300,
-      isRotating: false,
+      isHandControl: false,
+      isAnimating:false,
       sumRad: 0,
       startPoint: null,
       movePoint: null,
@@ -44,11 +46,10 @@ export default class Main {
       direction:null,
       animationEnd:function(){
         this.rubik.updateCubeIndex(this.rotateParams.elements);
-        this.rotateParams.isRotating = false;
+        this.rotateParams.isAnimating = false;
         this.rotateParams.sumRad = 0;//清0
         this.rotateParams.direction = null;
         this.rotateParams.elements = null;
-        console.log(this.rotateParams);
       }
     };
 
@@ -142,19 +143,21 @@ export default class Main {
    * 触摸结束
    */
   stopCube() {
-    var self = this;
-    //手动转动结束
-    this.intersect = null;
-    this.normalize = null;
-    this.rotateParams.startPoint = null;
-    this.rotateParams.movePoint = null;
-
-    if (this.rotateParams.isRotating){
+    if (this.rotateParams.isHandControl){
+      var self = this;
+      //手动操作结束      
+      this.rotateParams.isHandControl = false;
+      this.intersect = null;
+      this.normalize = null;
+      this.rotateParams.startPoint = null;
+      this.rotateParams.movePoint = null;
       var finalRad = 0;
       var tag = this.rotateParams.sumRad<0?-1:1;
       if (Math.abs(this.rotateParams.sumRad)>=this.rotateParams.threshold){//超过阀值
         finalRad = tag*Math.PI/2;
       }
+      //开始自动转动动画
+      this.rotateParams.isAnimating = true;
       requestAnimationFrame(function (timestamp) {
         self.rotateAnimation(self.rotateParams,timestamp, timestamp, finalRad, tag);
       });
@@ -165,12 +168,16 @@ export default class Main {
    * 触摸魔方
    */
   startCube(event) {
-    this.getIntersects(event);
-    if (!this.rotateParams.isRotating && this.intersect) {//魔方没有转动中且存在碰撞物体
-      this.orbitController.enabled = false;//焦点在魔方上时禁止视角变换
-      this.rotateParams.startPoint = this.intersect.point;//开始转动，设置起始点
-    } else {
-      this.orbitController.enabled = true;
+    //魔方自动滚动动画结束之后才能开启下一次转动
+    if(!this.rotateParams.isAnimating){
+      this.getIntersects(event);
+      //魔方没有处于手动转动且存在碰撞物体
+      if (!this.rotateParams.isHandControl && this.intersect) {
+        this.orbitController.enabled = false;//焦点在魔方上时禁止视角变换
+        this.rotateParams.startPoint = this.intersect.point;//开始转动，设置起始点
+      } else {
+        this.orbitController.enabled = true;
+      }
     }
   }
 
@@ -178,8 +185,8 @@ export default class Main {
    * 滑动魔方
    */
   moveCube(event) {
-    //魔方没有转动且触摸点在魔方上
-    if (!this.rotateParams.isRotating && this.rotateParams.startPoint){
+    //魔方没有处于手动转动且触摸点在魔方上
+    if (!this.rotateParams.isHandControl && this.rotateParams.startPoint){
       /**
        * 判断魔方转动方向以及转动元素，
        * 判断时需要把二维坐标转换为三维坐标。
@@ -199,10 +206,11 @@ export default class Main {
       this.rotateParams.startPoint = new THREE.Vector2();
       this.rotateParams.startPoint.set(event.touches[0].pageX, event.touches[0].pageY);
 
-      this.rotateParams.isRotating = true;//转动魔方
+      this.rotateParams.isHandControl = true;//设置魔方状态处于手动转动魔方
     }
 
-    if (this.rotateParams.isRotating){
+    //魔方处于手动转动
+    if (this.rotateParams.isHandControl){
       this.rotateParams.movePoint.set(event.touches[0].pageX, event.touches[0].pageY);
       var sub = this.rotateParams.movePoint.sub(this.rotateParams.startPoint);
       this.rotateParams.startPoint.set(event.touches[0].pageX, event.touches[0].pageY);
