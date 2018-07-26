@@ -35,7 +35,7 @@ export default class Main {
      */
     this.rotateParams = {
       speed:3,
-      threshold:Math.PI/2/6,
+      threshold:Math.PI/2/12,
       animateSpeed:Math.PI/2/300,
       isHandControl: false,
       isAnimating:false,
@@ -93,7 +93,7 @@ export default class Main {
    */
   initCamera() {
     this.camera = new THREE.PerspectiveCamera(45, this.width / this.height, 1, 1000);
-    this.camera.position.set(450,300,450);
+    this.camera.position.set(350,250,350);
     this.camera.up.set(0, 1, 0);//正方向
     this.camera.lookAt({x: 0,y: 0,z: 0});
   }
