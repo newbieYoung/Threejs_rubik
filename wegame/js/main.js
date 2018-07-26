@@ -185,6 +185,7 @@ export default class Main {
    * 滑动魔方
    */
   moveCube(event) {
+    var point = [event.touches[0].pageX, event.touches[0].pageY];
     //魔方没有处于手动转动且触摸点在魔方上
     if (!this.rotateParams.isHandControl && this.rotateParams.startPoint){
       /**
@@ -202,18 +203,18 @@ export default class Main {
        * 转动时直接使用二维坐标即可。
        */
       this.rotateParams.movePoint = new THREE.Vector2();
-      this.rotateParams.movePoint.set(event.touches[0].pageX, event.touches[0].pageY);
+      this.rotateParams.movePoint.set(point[0], point[1]);
       this.rotateParams.startPoint = new THREE.Vector2();
-      this.rotateParams.startPoint.set(event.touches[0].pageX, event.touches[0].pageY);
+      this.rotateParams.startPoint.set(point[0], point[1]);
 
       this.rotateParams.isHandControl = true;//设置魔方状态处于手动转动魔方
     }
 
     //魔方处于手动转动
     if (this.rotateParams.isHandControl){
-      this.rotateParams.movePoint.set(event.touches[0].pageX, event.touches[0].pageY);
+      this.rotateParams.movePoint.set(point[0], point[1]);
       var sub = this.rotateParams.movePoint.sub(this.rotateParams.startPoint);
-      this.rotateParams.startPoint.set(event.touches[0].pageX, event.touches[0].pageY);
+      this.rotateParams.startPoint.set(point[0], point[1]);
       this.rotateElements(this.rotateParams,sub);
     }
   }
