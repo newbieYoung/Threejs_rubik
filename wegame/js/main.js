@@ -34,8 +34,8 @@ export default class Main {
      * sumRad 累计角度
      */
     this.rotateParams = {
-      speed:1,
-      threshold:Math.PI/2/12,
+      speed:3,
+      threshold:Math.PI/2/6,
       animateSpeed:Math.PI/2/300,
       isHandControl: false,
       isAnimating:false,
