@@ -28,6 +28,7 @@ export default class Main {
      * isAnimating 是否出于自动滚动动画中
      * speed 转动速度
      * animateSpeed 动画速度
+     * directionAxis 二维转动方向
      * threshold 阀值
      * startPoint 起始点
      * movePoint 移动点
@@ -41,6 +42,7 @@ export default class Main {
       isAnimating:false,
       sumRad: 0,
       startPoint: null,
+      directionAxis:null,
       movePoint: null,
       elements:null,
       direction:null,
@@ -151,6 +153,7 @@ export default class Main {
       this.normalize = null;
       this.rotateParams.startPoint = null;
       this.rotateParams.movePoint = null;
+      this.rotateParams.directionAxis = null;
       var finalRad = 0;
       var tag = this.rotateParams.sumRad<0?-1:1;
       if (Math.abs(this.rotateParams.sumRad)>=this.rotateParams.threshold){//超过阀值
@@ -214,8 +217,25 @@ export default class Main {
     if (this.rotateParams.isHandControl){
       this.rotateParams.movePoint.set(point[0], point[1]);
       var sub = this.rotateParams.movePoint.sub(this.rotateParams.startPoint);
-      this.rotateParams.startPoint.set(point[0], point[1]);
-      this.rotateElements(this.rotateParams,sub);
+      if(Math.abs(sub.x)>0||Math.abs(sub.y)>0){
+        if (this.rotateParams.directionAxis==null){
+          if (Math.abs(sub.x) > Math.abs(sub.y)) {
+            if(sub.x>0){
+              this.rotateParams.directionAxis = '+x';
+            }else{
+              this.rotateParams.directionAxis = '-x';
+            }
+          } else {
+            if(sub.y>0){
+              this.rotateParams.directionAxis = '+y';
+            }else{
+              this.rotateParams.directionAxis = '-y';
+            }
+          }
+        }
+        this.rotateElements(this.rotateParams, sub);
+        this.rotateParams.startPoint.set(point[0], point[1]);
+      }
     }
   }
 
@@ -261,21 +281,51 @@ export default class Main {
    */
   rotateElements(params,vector){
     var rad = 0;
-    switch (params.direction) {
-      case 0.1:
-      case 1.1:
+    var len = 0;
+    var len = Math.sqrt(Math.pow(vector.x, 2) + Math.pow(vector.y, 2));
+    if (this.rotateParams.directionAxis.indexOf('y')!=-1){
+      len = vector.y == 0 ? 0 : vector.y / Math.abs(vector.y) * len;
+    }else{
+      len = vector.x == 0 ? 0 : vector.x / Math.abs(vector.x) * len;
+    }
+    switch (params.direction){
       case 3.3:
       case 2.3:
-      case 1.2:
+      case 3.2:
+      case 2.2:
+        len = -len;
+        break;
       case 0.2:
-        rad = -Math.PI / 2 * vector.y / this.width * params.speed;
-        for (var i = 0; i < params.elements.length; i++) {
-          this.rotateAroundWorldZ(params.elements[i], rad);
+      case 5.2:
+      case 4.1:
+      case 1.1:
+        if (this.rotateParams.directionAxis=='-x'||
+          this.rotateParams.directionAxis == '-y'){
+          len = -len;
         }
         break;
+      case 0.1:
+      case 4.2:
+      case 1.2:
+      case 5.1:
+        if (this.rotateParams.directionAxis == '+x'||
+          this.rotateParams.directionAxis == '+y') {
+          len = -len;
+        }
+        break;
+      default:
+        break;
+    }
+    switch (params.direction) {
+      case 3.3:
+      case 0.1:
+      case 1.1:
+      case 1.2:
+      case 0.2:
+      case 2.3:
       case 2.4:
       case 3.4:
-        rad = Math.PI / 2 * vector.y / this.width * params.speed;
+        rad = Math.PI / 2 * len / this.width * params.speed;
         for (var i = 0; i < params.elements.length; i++) {
           this.rotateAroundWorldZ(params.elements[i], rad);
         }
@@ -288,25 +338,20 @@ export default class Main {
       case 4.4:
       case 5.3:
       case 4.3:
-        rad = Math.PI / 2 * vector.x / this.width * params.speed;
+        rad = Math.PI / 2 * len / this.width * params.speed;
         for (var i = 0; i < params.elements.length; i++) {
           this.rotateAroundWorldY(params.elements[i], rad);
         }
         break;
+      case 4.1:
+      case 5.1:
       case 2.2:
       case 3.2:
-        rad = -Math.PI / 2 * vector.y / this.width * params.speed;
-        for (var i = 0; i < params.elements.length; i++) {
-          this.rotateAroundWorldX(params.elements[i], rad);
-        }
-        break;
-      case 3.1:
-      case 4.1:
       case 5.2:
-      case 2.1:
       case 4.2:
-      case 5.1:
-        rad = Math.PI / 2 * vector.y / this.width * params.speed;
+      case 3.1:
+      case 2.1:
+        rad = Math.PI / 2 * len / this.width * params.speed;
         for (var i = 0; i < params.elements.length; i++) {
           this.rotateAroundWorldX(params.elements[i], rad);
         }
