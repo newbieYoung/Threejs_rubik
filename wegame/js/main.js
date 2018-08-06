@@ -360,6 +360,14 @@ export default class Main {
         break;
     }
     params.sumRad += rad;
+    //手动滚动超过90度处理
+    if (Math.abs(params.sumRad) > Math.PI/2){
+      if (params.sumRad>0){
+        params.sumRad -= Math.PI/2;
+      }else{
+        params.sumRad += Math.PI/2;
+      }
+    }
   }
 
   /**
