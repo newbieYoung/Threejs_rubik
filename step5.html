@@ -101,7 +101,7 @@
             var currentStep = 1;
             var bottomColor;
             var topColor;
-            var startTime = 0;;
+            var startTime = 0;
             var endTime = 0;
             var stepCount = 0;
             function autoResetV1(cubes){
@@ -1890,7 +1890,6 @@
         		isRotating = true;//转动标识置为true
             	var direction = getDirection(vector);//获得方向
             	var elements = getBoxs(target,direction);
-            	var startTime = new Date().getTime();
                 window.requestAnimFrame(function(timestamp){
                     rotateAnimation(elements,direction,timestamp,0,null,next);
                 });
