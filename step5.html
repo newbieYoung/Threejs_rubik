@@ -1406,7 +1406,13 @@
 					}
             	}
             }
-            //按顺序执行数组里边的方法
+            /**
+             * 按顺序执行数组里边的方法
+             * @param  {[type]}   arr       [方法数组]
+             * @param  {[type]}   no        [当前执行方法序号]
+             * @param  {[type]}   rotateNum [旋转次数]
+             * @param  {Function} next      [所有方法执行完成之后回调]
+             */
             function runMethodAtNo(arr,no,rotateNum,next){
                 if(no>=arr.length-1){
                     if(next){
