@@ -83,7 +83,7 @@
                 len:50,
                 //[右,左,上,下,前,后]
                 colors:['yellow','red','blue','green','white','pink'],
-                sequences:['R','L','U','D','F','B']
+                sequences:['R','L','U','D','F','B']//默认序列名
             };
 
             //随机旋转，用于打乱魔方
@@ -210,6 +210,32 @@
             		seq.push(getFaceColorByVector(bi,ZLineAd));
             	}
 
+            	//因为并没有限制用户操作不能转动中心，因此默认魔方序列名可能会有变化，这里需要重新设置
+                var cube10 = getCubeByIndex(10);
+                var uColorIndex = getFaceColorByVector(cube10,YLine);
+                CubeParams.sequences[uColorIndex] = 'U';
+
+                var cube4 = getCubeByIndex(4);
+                var fColorIndex = getFaceColorByVector(cube4,ZLine);
+                CubeParams.sequences[fColorIndex] = 'F';
+
+                var cube14 = getCubeByIndex(14);
+                var rColorIndex = getFaceColorByVector(cube14,XLine);
+                CubeParams.sequences[rColorIndex] = 'R';
+
+                var cube12 = getCubeByIndex(12);
+                var lColorIndex = getFaceColorByVector(cube12,XLineAd);
+                CubeParams.sequences[lColorIndex] = 'L';
+
+                var cube16 = getCubeByIndex(16);
+                var dColorIndex = getFaceColorByVector(cube16,YLineAd);
+                CubeParams.sequences[dColorIndex] = 'D';
+
+                var cube22 = getCubeByIndex(22);
+                var bColorIndex = getFaceColorByVector(cube22,ZLineAd);
+                CubeParams.sequences[bColorIndex] = 'B';
+
+                //颜色序号转换为魔方序列
             	var str = '';
             	for(var i=0;i<seq.length;i++){
             		str += CubeParams.sequences[seq[i]];
