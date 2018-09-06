@@ -15,8 +15,6 @@ export default class MainPage {
     this.canvas.height = this.height;
     this.context = this.canvas.getContext('2d');
 
-    this.startPoint = [];
-
     this.initTouchLine();
     this.initEvent();
   }
@@ -41,11 +39,19 @@ export default class MainPage {
       self.touchLineCanvas.width = self.touchLineImage.width / Constant.density;
       self.touchLineCanvas.height = self.touchLineImage.height / Constant.density;
       self.touchLineContext = self.touchLineCanvas.getContext('2d');
-      self.touchLineWidth = Constant.touchLineWidth / Constant.density;
+      self.touchLineWidth = 61 / Constant.density;
       self.touchLineContext.drawImage(self.touchLineImage, 0, 0, self.touchLineCanvas.width, self.touchLineCanvas.height);
       self.changeTouchLine(self.height/2);
       self.touchLineInitialized = true;
     }
+  }
+
+  /**
+   * 初始化背景
+   */
+  initBackground() {
+    this.context.fillStyle = '#322c66';
+    this.context.fillRect(0,0,this.width,this.height);
   }
 
   /**
@@ -64,6 +70,7 @@ export default class MainPage {
   render(viewContext) {
     if (this.isViewChanged){
       this.context.clearRect(0, 0, this.width, this.height);
+      this.initBackground();//渲染背景
       this.context.drawImage(this.touchLineCanvas, 0, this.touchLineY - this.touchLineCanvas.height / 2, this.touchLineCanvas.width, this.touchLineCanvas.height);//渲染触摸线
       this.isViewChanged =false;
     }
