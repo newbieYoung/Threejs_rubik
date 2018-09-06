@@ -6,7 +6,7 @@ import {Constant} from '../util/Constant.js'
 
 export default class MainPage {
   constructor() {
-    this.isViewChange = false;//视图是否有变动
+    this.isViewChanged = false;//视图是否有变动
     this.width = window.innerWidth;
     this.height = window.innerHeight;
 
@@ -33,7 +33,8 @@ export default class MainPage {
     this.touchLineY = 0;
     this.touchLineInitialized = false;
     this.touchLineImage = wx.createImage();
-    this.touchLineImage.src = './images/touch-line.png';
+    this.touchLineImage.src = './images/touch-line.png';//本地预览使用本地图片
+    //this.touchLineImage.src = 'https://raw.githubusercontent.com/newbieYoung/Threejs_rubik/master/wegame/images/touch-line.png';//真机器预览使用网络图片
     this.touchLineImage.onload = function () {
       self.touchLineCanvas = wx.createCanvas();
       self.touchLineCanvas.width = self.touchLineImage.width / Constant.density;
