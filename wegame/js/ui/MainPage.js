@@ -7,8 +7,8 @@ import {Constant} from '../util/Constant.js'
 export default class MainPage {
   constructor() {
     this.isViewChanged = false;//视图是否有变动
-    this.width = window.innerWidth;
-    this.height = window.innerHeight;
+    this.width = window.innerWidth * window.devicePixelRatio;
+    this.height = window.innerHeight * window.devicePixelRatio;
 
     this.canvas = wx.createCanvas();
     this.canvas.width = this.width;
@@ -37,10 +37,10 @@ export default class MainPage {
     //this.touchLineImage.src = 'https://raw.githubusercontent.com/newbieYoung/Threejs_rubik/master/wegame/images/touch-line.png';//真机器预览使用网络图片
     this.touchLineImage.onload = function () {
       self.touchLineCanvas = wx.createCanvas();
-      self.touchLineCanvas.width = self.touchLineImage.width / Constant.density;
-      self.touchLineCanvas.height = self.touchLineImage.height / Constant.density;
+      self.touchLineCanvas.width = self.touchLineImage.width / Constant.density * window.devicePixelRatio;
+      self.touchLineCanvas.height = self.touchLineImage.height / Constant.density * window.devicePixelRatio;
       self.touchLineContext = self.touchLineCanvas.getContext('2d');
-      self.touchLineWidth = 61 / Constant.density;
+      self.touchLineWidth = 61 / Constant.density * window.devicePixelRatio;
       self.touchLineContext.drawImage(self.touchLineImage, 0, 0, self.touchLineCanvas.width, self.touchLineCanvas.height);
       self.changeTouchLine(self.height/2);
       self.touchLineInitialized = true;
@@ -118,8 +118,8 @@ export default class MainPage {
     if (e.touches.length > 0) {
       var touch = e.touches[0];
       point = {
-        x: touch.clientX,
-        y: touch.clientY
+        x: touch.clientX * window.devicePixelRatio,
+        y: touch.clientY * window.devicePixelRatio
       }
     }
     return point;

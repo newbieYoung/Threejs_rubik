@@ -7,8 +7,10 @@ import MainPage from 'ui/MainPage.js'
 export default class Main {
   constructor() {
     this.context = canvas.getContext('2d');
-    this.width = window.innerWidth;
-    this.height = window.innerHeight;
+    this.width = window.innerWidth * window.devicePixelRatio;
+    this.height = window.innerHeight * window.devicePixelRatio;
+    canvas.width = this.width;
+    canvas.height = this.height;
 
     this.mainPage = new MainPage();//初始化游戏主页面
     this.render();
