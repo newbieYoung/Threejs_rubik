@@ -4,7 +4,12 @@ import { BasicParams } from '../util/Constant.js'
 
 export default class Rubik {
   constructor(width,height) {
-    if(width<0||height<0){//宽高尺寸不合理
+    this.minWidth = 0;
+    this.maxWidth = window.innerWidth * window.devicePixelRatio;
+    this.minHeight = 0;
+    this.maxHeight = window.innerHeight * window.devicePixelRatio;
+
+    if (width < this.minWidth || height < this.minHeight){//宽高尺寸不合理
       return;
     }
 
@@ -306,7 +311,7 @@ export default class Rubik {
    * 宽度不变，高度随控制线的变化而变化
    */
   updateView(height){
-    if (height < 0 || height >= window.innerHeight * window.devicePixelRatio){
+    if (height < this.minHeight || height >= this.maxHeight){
       return;
     }
     this.viewHeight = height;
