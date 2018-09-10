@@ -73,7 +73,7 @@ export default class MainPage {
     this.frontRubik = new Rubik(this.width, this.touchLineY);
     this.frontPoint = { x: 0, y: 0 };
     this.endRubik = new Rubik(this.width, this.height - this.touchLineY);
-    //this.endRubik.setCameraPosition(-300, -300, -300);
+    this.endRubik.setCameraPosition(-300, -300, -300);
     this.endPoint = { x: 0, y: this.touchLineY };
     this.isViewChanged = true;
   }
@@ -83,6 +83,7 @@ export default class MainPage {
    */
   render() {
     if (this.isViewChanged){
+      console.log('render main page');
       this.context.clearRect(0, 0, this.width, this.height);
       //渲染背景
       this.initBackground();
@@ -91,6 +92,7 @@ export default class MainPage {
         this.context.drawImage(this.frontRubik.canvas, this.frontPoint.x, this.frontPoint.y, this.frontRubik.width, this.frontRubik.height);
         //渲染反视角魔方
         this.context.drawImage(this.endRubik.canvas, this.endPoint.x, this.endPoint.y, this.endRubik.width, this.endRubik.height);
+        console.log('render rubik canvas');
         //渲染控制线
         this.context.drawImage(this.touchLineCanvas, 0, this.touchLineY - this.touchLineCanvas.height / 2, this.touchLineCanvas.width, this.touchLineCanvas.height);
       }

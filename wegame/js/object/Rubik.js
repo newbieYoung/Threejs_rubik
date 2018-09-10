@@ -271,10 +271,14 @@ export default class Rubik {
     }
   }
 
-  //设置摄像机位置
+  /**
+   * 设置摄像机位置
+   * 设置摄像机位置后还需要重新设置摄像机目标点才能正常渲染
+   */
   setCameraPosition(x,y,z){
     if (x != this.camera.position.x || y != this.camera.position.y || z != this.camera.position.z){
       this.camera.position.set(x, y, z);
+      this.camera.lookAt({ x: 0, y: 0, z: 0 });
       this.isViewChanged = true;
       this.render();
     }
