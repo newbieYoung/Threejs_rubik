@@ -4,6 +4,14 @@ import { BasicParams } from '../util/Constant.js'
 
 export default class Rubik {
   constructor(width,height) {
+    if(width<0||height<0){//宽高尺寸不合理
+      return;
+    }
+
+    //视图尺寸
+    this.viewWidth = width;
+    this.viewHeight = height;
+
     //尺寸
     this.width = width;
     this.height = height;
@@ -61,6 +69,7 @@ export default class Rubik {
     this.initLight();
     this.initObject();
     this.render();
+    this.initView();
     this.initEvent();
   }
 
@@ -218,7 +227,7 @@ export default class Rubik {
 
     this.canvas.width = this.width * window.devicePixelRatio;
     this.canvas.height = this.height * window.devicePixelRatio;
-    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.setPixelRatio(window.devicePixelRatio);//为了防止在小视图放大到大视图时出现模糊的情况，这里再尺寸考虑的设备像素比的情况下还乘以一层设备像素比
   }
 
   /**
@@ -272,6 +281,13 @@ export default class Rubik {
   }
 
   /**
+   * 初始化视图
+   */
+  initView(){
+    this.updateView(this.height);
+  }
+
+  /**
    * 设置摄像机位置
    * 设置摄像机位置后还需要重新设置摄像机目标点才能正常渲染
    */
@@ -281,18 +297,36 @@ export default class Rubik {
       this.camera.lookAt({ x: 0, y: 0, z: 0 });
       this.isViewChanged = true;
       this.render();
+      this.updateView(this.height);
     }
   }
 
-  //屏幕尺寸变化
-  resize(width,height) {
-    if(this.width!=width||this.height!=height){
-      this.isViewChanged = true;
-      this.width = width;
-      this.height = height;
-      this.camera.aspect = width / height;
-      this.camera.updateProjectionMatrix();
-      this.renderer.setSize(width, height);
+  /**
+   * 视图高度变化
+   * 宽度不变，高度随控制线的变化而变化
+   */
+  updateView(height){
+    if (height < 0 || height >= window.innerHeight * window.devicePixelRatio){
+      return;
+    }
+    this.viewHeight = height;
+
+    //视图
+    this.viewCanvas = wx.createCanvas();
+    this.viewCanvas.width = this.viewWidth;
+    this.viewCanvas.height = this.viewHeight;
+    this.viewContext = this.viewCanvas.getContext('2d');
+
+    //内容以高度为准完全展示
+    var tempW = this.viewHeight * this.width / this.height;
+    this.viewContext.clearRect(0, 0, this.viewWidth, this.viewHeight);
+    var len = (this.viewWidth - tempW )/ 2;
+    if (len>=0){
+      this.viewContext.drawImage(this.canvas, len, 0, tempW, this.viewHeight);
+    }else{
+      len = Math.abs(len);
+      var percent = len / tempW;
+      this.viewContext.drawImage(this.canvas, this.width * percent * window.devicePixelRatio, 0, this.width * (1 - 2 * percent) * window.devicePixelRatio, this.height * window.devicePixelRatio, 0, 0, this.viewWidth, this.viewHeight);
     }
   }
 }

@@ -54,6 +54,7 @@ export default class MainPage {
   changeTouchLine(y) {
     if (y != this.touchLineY) {
       this.touchLineY = y;
+      this.resizeRubik();
       this.isViewChanged = true;
     }
   }
@@ -79,20 +80,31 @@ export default class MainPage {
   }
 
   /**
+   * 魔方尺寸调整
+   */
+  resizeRubik(){
+    if (this.frontRubik && this.endRubik){
+      this.frontRubik.updateView(this.touchLineY);
+      this.frontPoint = { x: 0, y: 0 };
+      this.endRubik.updateView(this.height - this.touchLineY);
+      this.endPoint = { x: 0, y: this.touchLineY };
+      this.isViewChanged = true;
+    }
+  }
+
+  /**
    * 渲染
    */
   render() {
     if (this.isViewChanged){
-      console.log('render main page');
       this.context.clearRect(0, 0, this.width, this.height);
       //渲染背景
       this.initBackground();
       if (this.touchLineInitialized){
         //渲染正视角魔方
-        this.context.drawImage(this.frontRubik.canvas, this.frontPoint.x, this.frontPoint.y, this.frontRubik.width, this.frontRubik.height);
+        this.context.drawImage(this.frontRubik.viewCanvas, this.frontPoint.x, this.frontPoint.y, this.frontRubik.viewWidth, this.frontRubik.viewHeight);
         //渲染反视角魔方
-        this.context.drawImage(this.endRubik.canvas, this.endPoint.x, this.endPoint.y, this.endRubik.width, this.endRubik.height);
-        console.log('render rubik canvas');
+        this.context.drawImage(this.endRubik.viewCanvas, this.endPoint.x, this.endPoint.y, this.endRubik.viewWidth, this.endRubik.viewHeight);
         //渲染控制线
         this.context.drawImage(this.touchLineCanvas, 0, this.touchLineY - this.touchLineCanvas.height / 2, this.touchLineCanvas.width, this.touchLineCanvas.height);
       }
