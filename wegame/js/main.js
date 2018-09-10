@@ -13,6 +13,7 @@ export default class Main {
     canvas.height = this.height;
 
     this.mainPage = new MainPage();//初始化游戏主页面
+
     this.render();
   }
 
@@ -20,8 +21,12 @@ export default class Main {
    * 渲染
    */
   render() {
-    this.context.clearRect(0,0,this.width,this.height);
-    this.mainPage.render(this.context);      
+    this.context.clearRect(0,0,this.width,this.height);//清空
+
+    //更新主页面
+    this.mainPage.render();
+    this.context.drawImage(this.mainPage.canvas, 0, 0, this.width, this.height);
+
     requestAnimationFrame(this.render.bind(this), canvas);
   }
 }
