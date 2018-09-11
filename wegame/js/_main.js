@@ -53,6 +53,7 @@ export default class Main {
         this.rotateParams.sumRad = 0;//清0
         this.rotateParams.direction = null;
         this.rotateParams.elements = null;
+        this.orbitController.enabled = true;//动画结束之后恢复控制器
       }
     };
 
@@ -63,12 +64,6 @@ export default class Main {
     this.initObject();
     this.render();
     this.initEvent();
-
-    //轨道视角控制器
-    this.orbitController = new THREE.OrbitControls(this.camera, this.renderer.domElement);
-    this.orbitController.enableZoom = false;
-    this.orbitController.rotateSpeed = 2;
-    this.orbitController.target = this.viewCenter;//设置控制点
   }
 
   /**
@@ -99,6 +94,12 @@ export default class Main {
     this.camera.position.set(350,250,350);
     this.camera.up.set(0, 1, 0);//正方向
     this.camera.lookAt(this.viewCenter);
+
+    //轨道视角控制器
+    this.orbitController = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+    this.orbitController.enableZoom = false;
+    this.orbitController.rotateSpeed = 2;
+    this.orbitController.target = this.viewCenter;//设置控制点
   }
 
   /**

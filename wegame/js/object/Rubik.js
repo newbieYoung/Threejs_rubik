@@ -21,7 +21,7 @@ export default class Rubik {
     this.width = width;
     this.height = height;
 
-    this.viewCenter = new THREE.Vector3(1, 0, 0);
+    this.viewCenter = new THREE.Vector3(0, 0, 0);
     this.isViewChanged = true;//视图是否有变动
     this.raycaster = new THREE.Raycaster();//光线碰撞检测器
     this.intersect;//碰撞光线穿过的元素
