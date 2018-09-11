@@ -98,8 +98,8 @@ export default class MainPage {
   render() {
     if (this.isViewChanged){
       this.context.clearRect(0, 0, this.width, this.height);
-      //渲染背景
       this.initBackground();
+      //渲染背景
       if (this.touchLineInitialized){
         //渲染正视角魔方
         this.context.drawImage(this.frontRubik.viewCanvas, this.frontPoint.x, this.frontPoint.y, this.frontRubik.viewWidth, this.frontRubik.viewHeight);

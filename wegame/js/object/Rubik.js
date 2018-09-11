@@ -1,4 +1,5 @@
-import * as THREE from '../lib/three.min.js'
+import * as THREE from '../threejs/three.js'
+require('../threejs/renderer/CanvasRenderer.js')
 import { BasicParams } from '../util/Constant.js'
 
 export default class Rubik {
@@ -221,19 +222,22 @@ export default class Rubik {
    */
   initThree() {
     this.canvas = wx.createCanvas();
-    this.context = this.canvas.getContext('webgl');
 
-    this.renderer = new THREE.WebGLRenderer({
-      antialias: true,
-      context: this.context
+    // this.context = this.canvas.getContext('webgl');
+    // this.renderer = new THREE.WebGLRenderer({
+    //   antialias: true,
+    //   context: this.context
+    // });
+
+    this.renderer = new THREE.CanvasRenderer({
+      canvas: this.canvas
     });
 
     this.renderer.setSize(this.width, this.height);
     this.renderer.setClearColor(0xFFFFFF, 0.0);//背景透明
 
-    this.canvas.width = this.width * window.devicePixelRatio;
-    this.canvas.height = this.height * window.devicePixelRatio;
-    this.renderer.setPixelRatio(window.devicePixelRatio);//为了防止在小视图放大到大视图时出现模糊的情况，这里再尺寸考虑的设备像素比的情况下还乘以一层设备像素比
+    this.canvas.width = this.width;
+    this.canvas.height = this.height;
   }
 
   /**
@@ -331,7 +335,7 @@ export default class Rubik {
     }else{
       len = Math.abs(len);
       var percent = len / tempW;
-      this.viewContext.drawImage(this.canvas, this.width * percent * window.devicePixelRatio, 0, this.width * (1 - 2 * percent) * window.devicePixelRatio, this.height * window.devicePixelRatio, 0, 0, this.viewWidth, this.viewHeight);
+      this.viewContext.drawImage(this.canvas, this.width * percent, 0, this.width * (1 - 2 * percent), this.height, 0, 0, this.viewWidth, this.viewHeight);
     }
   }
 }
