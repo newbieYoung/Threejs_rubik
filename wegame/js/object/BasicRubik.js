@@ -1,4 +1,4 @@
-import * as THREE from '../libs/three.js'
+import * as THREE from '../threejs/three.js'
 
 //基础模型参数
 const BasicParams = {
@@ -61,8 +61,7 @@ function SimpleCube(x, y, z, num, len, colors) {
           map: texture
         }));
       }
-      var cubemat = new THREE.MeshFaceMaterial(materials);
-      var cube = new THREE.Mesh(cubegeo, cubemat);
+      var cube = new THREE.Mesh(cubegeo, materials);
       //假设整个魔方的中心在坐标系原点，推出每个小正方体的中心
       cube.position.x = (x + len / 2) + (j % 3) * len;
       cube.position.y = (y - len / 2) - parseInt(j / 3) * len;

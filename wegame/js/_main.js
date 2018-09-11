@@ -1,6 +1,6 @@
-import * as THREE from 'libs/three.js'
-require('libs/three-orbit-controls.js')
-import BasicRubik from 'objects/BasicRubik.js'
+import * as THREE from 'threejs/three.js'
+require('threejs/controls/OrbitControls.js')
+import BasicRubik from 'object/BasicRubik.js'
 
 let context   = canvas.getContext('webgl');
 
@@ -13,6 +13,7 @@ export default class Main {
     this.raycaster = new THREE.Raycaster();//光线碰撞检测器
     this.intersect;//碰撞光线穿过的元素
     this.normalize;//触发平面法向量
+    this.viewCenter = new THREE.Vector3(0, 0, 0);
     
     //魔方转动的六个方向
     this.xLine = new THREE.Vector3(1, 0, 0);//X轴正方向
@@ -67,7 +68,7 @@ export default class Main {
     this.orbitController = new THREE.OrbitControls(this.camera, this.renderer.domElement);
     this.orbitController.enableZoom = false;
     this.orbitController.rotateSpeed = 2;
-    this.orbitController.target = new THREE.Vector3(0, 0, 0);//设置控制点
+    this.orbitController.target = this.viewCenter;//设置控制点
   }
 
   /**
@@ -97,7 +98,7 @@ export default class Main {
     this.camera = new THREE.PerspectiveCamera(45, this.width / this.height, 1, 1000);
     this.camera.position.set(350,250,350);
     this.camera.up.set(0, 1, 0);//正方向
-    this.camera.lookAt({x: 0,y: 0,z: 0});
+    this.camera.lookAt(this.viewCenter);
   }
 
   /**
