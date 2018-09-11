@@ -3,7 +3,8 @@
     <head>
         <meta charset="UTF-8">
         <title>第一步：搭架子</title>
-        <script type="text/javascript" src="./lib/three.js"></script>
+        <script type="text/javascript" src="./threejs/three.js"></script>
+        <link rel="stylesheet" href="./reset.import.css">
         <style type="text/css">
             div#canvas-frame {
                 cursor: pointer;
@@ -19,6 +20,7 @@
             var renderer;//渲染器
             var width;//页面宽度
             var height;//页面高度
+            var origPoint = new THREE.Vector3(0, 0, 0);//原点
 
             window.requestAnimFrame = (function() {//如果有变化则可能还需要requestAnimationFrame刷新
                 return window.requestAnimationFrame ||
@@ -54,17 +56,9 @@
             var camera;
             function initCamera() {
                 camera = new THREE.PerspectiveCamera(45, width / height, 1, 1000);
-                camera.position.x = 0;
-                camera.position.y = 0;
-                camera.position.z = 600;
-                camera.up.x = 0;//正方向
-                camera.up.y = 1;
-                camera.up.z = 0;
-                camera.lookAt({
-                    x : 0,
-                    y : 0,
-                    z : 0
-                });
+                camera.position.set(200, 400, 600);
+                camera.up.set(0, 1, 0);//正方向
+                camera.lookAt(origPoint);
             }
 
             //创建场景，后续元素需要加入到场景中才会显示出来
@@ -83,6 +77,33 @@
             //创建展示场景所需的各种元素
             var cubes
             function initObject() {
+                //坐标轴
+                var xmat = new THREE.LineBasicMaterial({ color: 0xff0000 });
+                var xgeo = new THREE.Geometry();
+                xgeo.vertices.push(
+                        new THREE.Vector3(0, 0, 0),
+                        new THREE.Vector3(300, 0, 0)
+                );
+                var xline = new THREE.Line(xgeo, xmat);
+                scene.add(xline);
+
+                var ymat = new THREE.LineBasicMaterial({ color: 0x00ff00 });
+                var ygeo = new THREE.Geometry();
+                ygeo.vertices.push(
+                        new THREE.Vector3(0, 0, 0),
+                        new THREE.Vector3(0, 300, 0)
+                );
+                var yline = new THREE.Line(ygeo, ymat);
+                scene.add(yline);
+
+                var zmat = new THREE.LineBasicMaterial({ color: 0x0000ff });
+                var zgeo = new THREE.Geometry();
+                zgeo.vertices.push(
+                        new THREE.Vector3(0, 0, 0),
+                        new THREE.Vector3(0, 0, 300)
+                );
+                var zline = new THREE.Line(zgeo, zmat);
+                scene.add(zline);
             }
 
             //渲染
