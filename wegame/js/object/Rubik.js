@@ -1,5 +1,4 @@
-import * as THREE from '../lib/three.js'
-require('../lib/three-orbit-controls.js')
+import * as THREE from '../lib/three.min.js'
 import { BasicParams } from '../util/Constant.js'
 
 export default class Rubik {
@@ -21,6 +20,7 @@ export default class Rubik {
     this.width = width;
     this.height = height;
 
+    this.viewCenter = new THREE.Vector3(1, 0, 0);
     this.isViewChanged = true;//视图是否有变动
     this.raycaster = new THREE.Raycaster();//光线碰撞检测器
     this.intersect;//碰撞光线穿过的元素
@@ -125,8 +125,7 @@ export default class Rubik {
             map: texture
           }));
         }
-        var cubemat = new THREE.MeshFaceMaterial(materials);
-        var cube = new THREE.Mesh(cubegeo, cubemat);
+        var cube = new THREE.Mesh(cubegeo, materials);
         //假设整个魔方的中心在坐标系原点，推出每个小正方体的中心
         cube.position.x = (x + len / 2) + (j % 3) * len;
         cube.position.y = (y - len / 2) - parseInt(j / 3) * len;
@@ -223,10 +222,12 @@ export default class Rubik {
   initThree() {
     this.canvas = wx.createCanvas();
     this.context = this.canvas.getContext('webgl');
+
     this.renderer = new THREE.WebGLRenderer({
       antialias: true,
       context: this.context
     });
+
     this.renderer.setSize(this.width, this.height);
     this.renderer.setClearColor(0xFFFFFF, 0.0);//背景透明
 
@@ -249,8 +250,7 @@ export default class Rubik {
     this.camera = new THREE.PerspectiveCamera(45, this.width / this.height, 1, 1000);
     this.camera.position.set(300, 300, 300);//需要保证魔方最大时不能超出页面范围
     this.camera.up.set(0, 1, 0);//正方向
-    this.camera.lookAt({ x: 0, y: 0, z: 0 });
-    this.scene.add(this.camera);
+    this.camera.lookAt(this.viewCenter);
   }
 
   /**
@@ -299,7 +299,7 @@ export default class Rubik {
   setCameraPosition(x,y,z){
     if (x != this.camera.position.x || y != this.camera.position.y || z != this.camera.position.z){
       this.camera.position.set(x, y, z);
-      this.camera.lookAt({ x: 0, y: 0, z: 0 });
+      this.camera.lookAt(this.viewCenter);
       this.isViewChanged = true;
       this.render();
       this.updateView(this.height);

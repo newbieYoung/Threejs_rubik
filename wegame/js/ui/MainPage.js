@@ -32,8 +32,8 @@ export default class MainPage {
     var self = this;
     this.touchLineY = 0;
     this.touchLineImage = wx.createImage();
-    this.touchLineImage.src = './images/touch-line.png';//本地预览使用本地图片
-    //this.touchLineImage.src = 'https://raw.githubusercontent.com/newbieYoung/Threejs_rubik/master/wegame/images/touch-line.png';//真机器预览使用网络图片
+    //this.touchLineImage.src = './images/touch-line.png';//本地预览使用本地图片
+    this.touchLineImage.src = 'https://raw.githubusercontent.com/newbieYoung/Threejs_rubik/master/wegame/images/touch-line.png';//真机器预览使用网络图片
     this.touchLineImage.onload = function () {
       self.touchLineCanvas = wx.createCanvas();
       self.touchLineCanvas.width = self.touchLineImage.width / Constant.density * window.devicePixelRatio;
