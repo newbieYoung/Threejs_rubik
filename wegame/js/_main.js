@@ -70,8 +70,13 @@ export default class Main {
    * 初始化物体
    */
   initObject() {
-    this.rubik = new BasicRubik(this);
-    this.rubik.model();
+    this.frontRubik = new BasicRubik(this);
+    this.frontRubik.model();
+    this.frontRubik.resizeHeight(.5,1);
+
+    this.endRubik = new BasicRubik(this);
+    this.endRubik.model();
+    this.endRubik.resizeHeight(.5, -1);
   }
 
   /**

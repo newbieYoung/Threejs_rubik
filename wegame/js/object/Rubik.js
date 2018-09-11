@@ -95,6 +95,7 @@ function faces(rgbaColor) {
 }
 
 export default class Rubik {
+
   constructor(context) {
     this.context = context;
     this.initStatus = [];
@@ -143,5 +144,19 @@ export default class Rubik {
     this.group.add(this.container);
 
     this.context.scene.add(this.group);
+  }
+
+  /**
+   * 高度所占比例发生变化
+   */
+  resizeHeight(percent,transformTag){
+    var mat4 = new THREE.Matrix4();
+    var transformY = window.innerHeight * (1 - percent) / 2 * this.context.camera.aspect * transformTag;
+    mat4.set(percent, 0, 0, 0,
+              0, percent, 0, transformY,
+              0, 0, percent, 0,
+              0, 0, 0, 1);   
+
+    this.group.applyMatrix(mat4);
   }
 }
