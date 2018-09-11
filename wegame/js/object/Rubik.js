@@ -103,8 +103,9 @@ export default class Rubik {
 
   /**
    * 生成模型并加入到场景中
+   * type 视角类型，front表示正视角、back表示反视角
    */
-  model() {
+  model(type) {
     //网格元素直接放入到一个集合里边，方便整体进行矩阵变换，比如缩放等。
     this.group = new THREE.Group();
     this.group.childType = 'MeshGroup';
@@ -143,6 +144,15 @@ export default class Rubik {
     this.container.cubeType = 'coverCube';
     this.group.add(this.container);
 
+    //进行一定的旋转变换保证三个面可视
+    if(type=='front'){
+      this.group.rotateY(45/180*Math.PI);
+      this.group.rotateOnAxis(new THREE.Vector3(1, 0, 1), 20 / 180 * Math.PI);
+    }else{
+      this.group.rotateY((270-45) / 180 * Math.PI);
+      this.group.rotateOnAxis(new THREE.Vector3(1, 0, 1), 20 / 180 * Math.PI);
+    }
+
     this.context.scene.add(this.group);
   }
 
@@ -150,13 +160,10 @@ export default class Rubik {
    * 高度所占比例发生变化
    */
   resizeHeight(percent,transformTag){
-    var mat4 = new THREE.Matrix4();
-    var transformY = window.innerHeight * (1 - percent) / 2 * this.context.camera.aspect * transformTag;
-    mat4.set(percent, 0, 0, 0,
-              0, percent, 0, transformY,
-              0, 0, percent, 0,
-              0, 0, 0, 1);   
-
-    this.group.applyMatrix(mat4);
+    var translateY = window.innerHeight * (1 - percent) / 2 * this.context.camera.aspect;
+    this.group.scale.set(percent, percent, percent);
+    this.group.translateY(translateY * transformTag);
+    var angle = Math.atan(translateY / this.context.camera.position.z);
+    this.group.rotateOnAxis(new THREE.Vector3(1, 0, 1), angle * this.context.camera.aspect);
   }
 }

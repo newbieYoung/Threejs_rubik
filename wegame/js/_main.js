@@ -46,7 +46,11 @@ export default class Main {
    */
   initCamera() {
     this.camera = new THREE.PerspectiveCamera(45, this.width / this.height, 1, 1000);
-    this.camera.position.set(200 / this.camera.aspect, 150 / this.camera.aspect, 200 / this.camera.aspect);//保证魔方在不同宽高比的屏幕中宽度所占的比例基本一致
+    /**
+     * 相机放置在Z轴上方便计算；
+     * Z轴坐标需要除以屏幕宽高比保证魔方在不同宽高比的屏幕中宽度所占的比例基本一致
+     */
+    this.camera.position.set(0, 0, 300 / this.camera.aspect);
     this.camera.up.set(0, 1, 0);//正方向
     this.camera.lookAt(this.viewCenter);
   }
@@ -70,13 +74,15 @@ export default class Main {
    * 初始化物体
    */
   initObject() {
+    //正视角
     this.frontRubik = new BasicRubik(this);
-    this.frontRubik.model();
-    this.frontRubik.resizeHeight(.5,1);
+    this.frontRubik.model('front');
+    this.frontRubik.resizeHeight(.8,1);
 
+    //反视角
     this.endRubik = new BasicRubik(this);
-    this.endRubik.model();
-    this.endRubik.resizeHeight(.5, -1);
+    this.endRubik.model('back');
+    this.endRubik.resizeHeight(.2, -1);
   }
 
   /**
