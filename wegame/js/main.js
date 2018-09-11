@@ -570,7 +570,14 @@ export default class Main {
     mouse.y = -(touch.clientY / this.height) * 2 + 1;
     this.raycaster.setFromCamera(mouse, this.camera);
     //Raycaster方式定位选取元素，可能会选取多个，以第一个为准
-    var intersects = this.raycaster.intersectObjects(this.scene.children);
+    var children = this.scene.children;
+    for (var i = 0; i < children.length;i++){
+      if (children[i].childType =='MeshGroup'){
+        children = children[i];
+        break;
+      }
+    }
+    var intersects = this.raycaster.intersectObjects(children.children);
     if (intersects.length) {
       try {
         if (intersects[0].object.cubeType === 'coverCube') {

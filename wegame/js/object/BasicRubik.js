@@ -104,6 +104,18 @@ export default class BasicRubik{
    * 生成模型并加入到场景中
    */
   model(){
+
+    //网格元素直接放入到一个集合里边，方便整体进行矩阵变换，比如缩放等。
+    this.group = new THREE.Group();
+    this.group.childType = 'MeshGroup';
+
+    // var m = new THREE.Matrix4();
+    // m.set(.5, 0, 0, 0,
+    //       0, .5, 0, 0,
+    //       0, 0, .5, 0,
+    //       0, 0, 0, 1);
+    // this.group.applyMatrix(m)
+
     //生成魔方小正方体
     this.cubes = SimpleCube(BasicParams.x, BasicParams.y, BasicParams.z, BasicParams.num, BasicParams.len, BasicParams.colors);
     for (var i = 0; i < this.cubes.length; i++) {
@@ -123,7 +135,7 @@ export default class BasicRubik{
         cubeIndex: item.id
       });
       item.cubeIndex = item.id;
-      this.main.scene.add(item);//并依次加入到场景中
+      this.group.add(item);
     }
 
     //透明正方体
@@ -137,7 +149,9 @@ export default class BasicRubik{
 
     this.container = new THREE.Mesh(cubegeo, cubemat);
     this.container.cubeType = 'coverCube';
-    this.main.scene.add(this.container);
+    this.group.add(this.container);
+
+    this.main.scene.add(this.group);
   }
 
   /**
