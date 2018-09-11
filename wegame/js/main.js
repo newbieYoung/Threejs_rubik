@@ -99,7 +99,7 @@ export default class Main {
    */
   initCamera() {
     this.camera = new THREE.PerspectiveCamera(45, this.width / this.height, 1, 1000);
-    this.camera.position.set(350,250,350);
+    this.camera.position.set(200 / this.camera.aspect, 150 / this.camera.aspect, 200 / this.camera.aspect);//保证魔方在不同宽高比的屏幕中宽度所占的比例基本一致
     this.camera.up.set(0, 1, 0);//正方向
     this.camera.lookAt(this.viewCenter);
 

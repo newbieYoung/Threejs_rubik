@@ -1,4 +1,4 @@
 import '/adapter/index.js'
-import Main from './js/main'
+import Main from './js/_main'
 
 new Main()
