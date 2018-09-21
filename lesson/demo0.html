@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>ThreeJS基础</title>
+        <script type="text/javascript" src="../threejs/three.js"></script>
+        <link rel="stylesheet" href="../reset.import.css">
+    </head>
+    <body>
+        <div id="retina"></div>
+        <script>
+            //页面加载完成
+            window.onload = function(){
+                createWorld();
+            }
+
+            //模拟现实场景
+            function createWorld() {
+                initRetina();//创建视网膜
+                initCamera();//创建相机
+                initLight();//创建光源
+                initObject();//创建物体
+                initScene();//创建场景
+                render();//渲染
+
+                document.addEventListener( 'mousedown', onDocumentMouseDown, false );
+            }
+
+            var renderer;//渲染器
+            var width;
+            var height;
+            function initRetina(){
+                width = window.innerWidth;
+                height = window.innerHeight;
+                renderer = new THREE.WebGLRenderer({
+                    antialias : true//抗锯齿开启
+                });
+                renderer.setSize(width, height);//设置渲染器宽度和高度
+                renderer.setClearColor('#ffffff', 1.0);//设置背景颜色
+                document.getElementById('retina').appendChild(renderer.domElement);//把渲染器放置到页面中
+            }
+
+            var camera;
+            var origPoint = new THREE.Vector3(0, 0, 0);//原点
+            function initCamera(){
+                camera = new THREE.PerspectiveCamera(45, width / height, 1, 1000);
+                camera.position.set(0, 300, 600);//设置相机位置
+                camera.up.set(0, 1, 0);//设置相机正方向
+                camera.lookAt(origPoint);//设置相机视点
+            }
+
+            var light;
+            function initLight() {
+                light = new THREE.PointLight( 0xffffff, 1, 2000 );
+                light.position.set(0, 300, 600);
+            }
+
+            var cube;
+            function initObject(){
+                var geometry = new THREE.BoxGeometry( 100, 100, 100);
+                var material = new THREE.MeshLambertMaterial( {color: 0xff0000} );
+                cube = new THREE.Mesh( geometry, material );
+                cube.position.set(0,0,0);
+            }
+
+            var scene;
+            function initScene(){
+                scene = new THREE.Scene();
+                scene.add(light);
+                scene.add(cube);
+                scene.add(camera);
+            }
+
+            //渲染
+            function render(){
+                renderer.clear();
+                renderer.render(scene, camera);
+                cube.rotation.y += moveX/1000;//绕y轴旋转
+                requestAnimationFrame(render);
+            }
+
+            //事件相关
+            var startX;
+            var moveX = 0;
+            function onDocumentMouseDown(event){
+                startX = event.clientX;
+                moveX = 0;
+                document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+                document.addEventListener( 'mouseup', onDocumentMouseUp, false );
+                document.addEventListener( 'mouseout', onDocumentMouseOut, false );
+            }
+            function onDocumentMouseMove(event){
+                moveX = event.clientX-startX-moveX;
+            }
+            function onDocumentMouseUp( event ) {
+                document.removeEventListener( 'mousemove', onDocumentMouseMove, false );
+                document.removeEventListener( 'mouseup', onDocumentMouseUp, false );
+                document.removeEventListener( 'mouseout', onDocumentMouseOut, false );
+
+            }
+            function onDocumentMouseOut( event ) {
+                document.removeEventListener( 'mousemove', onDocumentMouseMove, false );
+                document.removeEventListener( 'mouseup', onDocumentMouseUp, false );
+                document.removeEventListener( 'mouseout', onDocumentMouseOut, false );
+            }
+        </script>
+    </body>
+</html>
