@@ -22,8 +22,6 @@
                 initObject();//创建物体
                 initScene();//创建场景
                 render();//渲染
-
-                document.addEventListener( 'mousedown', onDocumentMouseDown, false );
             }
 
             var renderer;//渲染器
@@ -68,40 +66,14 @@
                 scene = new THREE.Scene();
                 scene.add(light);
                 scene.add(cube);
-                scene.add(camera);
             }
 
-            //渲染
             function render(){
                 renderer.clear();
                 renderer.render(scene, camera);
-                cube.rotation.y += moveX/1000;//绕y轴旋转
+                cube.rotation.x += 0.005;
+                cube.rotation.y += 0.005;
                 requestAnimationFrame(render);
-            }
-
-            //事件相关
-            var startX;
-            var moveX = 0;
-            function onDocumentMouseDown(event){
-                startX = event.clientX;
-                moveX = 0;
-                document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-                document.addEventListener( 'mouseup', onDocumentMouseUp, false );
-                document.addEventListener( 'mouseout', onDocumentMouseOut, false );
-            }
-            function onDocumentMouseMove(event){
-                moveX = event.clientX-startX-moveX;
-            }
-            function onDocumentMouseUp( event ) {
-                document.removeEventListener( 'mousemove', onDocumentMouseMove, false );
-                document.removeEventListener( 'mouseup', onDocumentMouseUp, false );
-                document.removeEventListener( 'mouseout', onDocumentMouseOut, false );
-
-            }
-            function onDocumentMouseOut( event ) {
-                document.removeEventListener( 'mousemove', onDocumentMouseMove, false );
-                document.removeEventListener( 'mouseup', onDocumentMouseUp, false );
-                document.removeEventListener( 'mouseout', onDocumentMouseOut, false );
             }
         </script>
     </body>
