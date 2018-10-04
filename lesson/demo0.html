@@ -16,7 +16,7 @@
 
             //模拟现实场景
             function createWorld() {
-                initRetina();//创建视网膜
+                initRender();//创建渲染器
                 initCamera();//创建相机
                 initLight();//创建光源
                 initObject();//创建物体
@@ -27,7 +27,7 @@
             var renderer;//渲染器
             var width;
             var height;
-            function initRetina(){
+            function initRender(){
                 width = window.innerWidth;
                 height = window.innerHeight;
                 renderer = new THREE.WebGLRenderer({
