@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>WebGL基础</title>
+    <script src="../lib/combine.js"></script>
+    <link rel="stylesheet" href="../reset.import.css">
+</head>
+<body>
+<canvas id="webgl"></canvas>
+<script src="../lib/matrix4.js"></script>
+<script src="../lib/combine.js"></script>
+
+<!-- 片段着色器程序 -->
+<script id="shader-fs" type="x-shader/x-fragment">
+	precision mediump float;//不写会报错 No precision specified for (float)，缺少精度描述
+	varying vec4 v_color;
+    void main() {
+    	gl_FragColor = v_color;//从顶点着色器接收数据
+    }
+</script>
+<!-- 顶点着色器程序 -->
+<script id="shader-vs" type="x-shader/x-vertex">
+		attribute vec4 a_position;
+		attribute vec4 a_color;
+		varying vec4 v_color;
+		uniform mat4 u_matrix;//投影矩阵+视图矩阵+模型矩阵
+	    void main() {
+	    	gl_Position = u_matrix*a_position;
+	    	v_color = a_color;//将数据传给片元着色器
+	    }
+</script>
+<script type="text/javascript">
+
+    var EyePoint = {//视点以及默认位置
+        x:3.0,
+        y:3.0,
+        z:7.0
+    };
+    var PerspParams = {//透视投影参数
+        g_near:1.0,
+        g_far:100.0
+    };
+    var width = document.documentElement.clientWidth;
+    var height = document.documentElement.clientHeight;
+
+    window.onload = function(){
+    	createWorld();
+    }
+
+    function createWorld(){
+    	var gl = initRender();//创建渲染器
+
+        var shaderPorgram = initShaders(gl);//初始化着色器程序
+
+        var num = initObject(gl,shaderPorgram);//创建物体
+
+        var cameraMatrix = initCamera();//创建相机
+        
+        render(gl,num,shaderPorgram,cameraMatrix);//渲染
+    }
+
+    function initRender(){
+    	var canvas = document.querySelector('#webgl');
+        canvas.height = height;
+        canvas.width = width;
+        var gl = canvas.getContext('webgl');//获取canvas上下文
+        gl.clearColor(1.0,1.0,1.0,1.0);//设置背景颜色
+        gl.enable(gl.DEPTH_TEST);//开启隐藏面消除
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);//清空颜色和深度缓冲区
+        return gl;
+    }
+
+    function initCamera(){
+    	var viewMatrix = new Matrix4();//视图矩阵
+        viewMatrix.setLookAt(EyePoint.x,EyePoint.y,EyePoint.z,0, 0, 0, 0, 1, 0);
+
+        var projMatrix = new Matrix4();//投影矩阵
+        projMatrix.setPerspective(30,width/height,PerspParams.g_near,PerspParams.g_far);
+
+        var cameraMatrix = projMatrix.multiply(viewMatrix);
+        return cameraMatrix;
+    }
+
+    var rotateX = 0;
+    var rotateY = 0;
+    function render(gl,num,shaderPorgram,cameraMatrix){
+    	rotateX += 0.005;
+    	rotateY += 0.005;
+
+    	var originMatrix = new Matrix4();
+    	for(var i=0;i<cameraMatrix.elements.length;i++){
+    		originMatrix.elements[i] = cameraMatrix.elements[i];
+    	}
+		
+        var modelMatrix = new Matrix4();
+        modelMatrix.setRotate(rotateX,rotateY,0,1);
+        var matrix = cameraMatrix.multiply(modelMatrix);
+
+        var u_matrix = gl.getUniformLocation(shaderPorgram,'u_matrix');
+        gl.uniformMatrix4fv(u_matrix,false,matrix.elements);
+
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        gl.drawElements(gl.TRIANGLES, num, gl.UNSIGNED_BYTE, 0);
+
+        requestAnimationFrame(function(){
+        	render(gl,num,shaderPorgram,originMatrix);
+        });
+    }
+
+    function initObject(gl,shaderPorgram){
+    	//    v6----- v5
+        //   /|      /|
+        //  v1------v0|
+        //  | |     | |
+        //  | |v7---|-|v4
+        //  |/      |/
+        //  v2------v3
+        
+        //顶点坐标和颜色
+        var verticesColors = new Float32Array([
+            1.0,  1.0,  1.0,     1.0,  0.0,  0.0,   // v0 Red
+            -1.0,  1.0,  1.0,     1.0,  0.0,  0.0,  // v1 Red
+            -1.0, -1.0,  1.0,     1.0,  0.0,  0.0,  // v2 Red
+            1.0, -1.0,  1.0,     1.0,  0.0,  0.0,   // v3 Red
+            1.0, -1.0, -1.0,     1.0,  0.0,  0.0,   // v4 Red
+            1.0,  1.0, -1.0,     1.0,  0.0,  0.0,   // v5 Red
+            -1.0,  1.0, -1.0,     1.0,  0.0,  0.0,  // v6 Red
+            -1.0, -1.0, -1.0,     1.0,  0.0,  0.0   // v7 Red
+        ]);
+
+        // 顶点索引
+        var indices = new Uint8Array([
+            0, 1, 2,   0, 2, 3,    // 正面
+            0, 3, 4,   0, 4, 5,    // 右面
+            0, 5, 6,   0, 6, 1,    // 上面
+            1, 6, 7,   1, 7, 2,    // 左面
+            7, 4, 3,   7, 3, 2,    // 下面
+            4, 7, 6,   4, 6, 5     // 后面
+        ]);
+
+        var size = verticesColors.BYTES_PER_ELEMENT;//数组中的每个元素的大小（以字节为单位）
+       	var num = indices.length;
+
+       	//数据缓冲区对象
+        var vertexBuffer = gl.createBuffer();
+        if(!vertexBuffer){
+            console.log('Failed to create the buffer object!');
+            return -1;
+        }
+        //向缓冲区对象中写入数据
+        gl.bindBuffer(gl.ARRAY_BUFFER,vertexBuffer);//将缓冲区对象绑定到目标
+        gl.bufferData(gl.ARRAY_BUFFER,verticesColors,gl.STATIC_DRAW);
+
+        var a_position = gl.getAttribLocation(shaderPorgram,'a_position');//获取attribute变量的存储位置
+        gl.vertexAttribPointer(a_position,3,gl.FLOAT,false,size*6,0);//将缓冲区对象分配给a_position变量
+        gl.enableVertexAttribArray(a_position);//连接a_position变量与分配给它的缓冲区对象
+
+        var a_color = gl.getAttribLocation(shaderPorgram,'a_color');
+        gl.vertexAttribPointer(a_color,3,gl.FLOAT,false,size*6,size*3);
+        gl.enableVertexAttribArray(a_color);
+
+        //索引缓冲区对象
+        var indexBuffer = gl.createBuffer();
+        if(!indexBuffer){
+            console.log('Failed to create the buffer object!');
+            return -1;
+        }
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, indexBuffer);
+        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, indices, gl.STATIC_DRAW);
+
+        //解绑缓冲区对象
+        gl.bindBuffer(gl.ARRAY_BUFFER, null);
+        //gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);//没有绘制完成之前并不能解绑
+
+        return num;
+    }
+</script>
+</body>
+</html>
