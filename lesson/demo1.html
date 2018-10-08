@@ -30,12 +30,14 @@
 </script>
 <!-- 顶点着色器程序 -->
 <script id="shader-vs" type="x-shader/x-vertex">
-        attribute vec4 a_Position;
-        attribute vec4 a_Color;
-        attribute vec4 a_Normal;
-        uniform mat4 u_MvpMatrix;
-        uniform mat4 u_NormalMatrix;
-        uniform mat4 u_ModelMatrix;
+        attribute vec4 a_Position;//顶点
+        attribute vec4 a_Color;//颜色
+        attribute vec4 a_Normal;//法向量
+
+        uniform mat4 u_MvpMatrix;//投影矩阵
+        uniform mat4 u_NormalMatrix;//法向量变换矩阵
+        uniform mat4 u_ModelMatrix;//模型矩阵
+
         varying vec3 v_Position;
         varying vec4 v_Color;
         varying vec3 v_Normal;
@@ -65,7 +67,7 @@
     }
 
     function createWorld(){
-        var gl = initRender();//初始化渲染器
+        var gl = initRender();//创建渲染器
         var shaderPorgram = initShaders(gl);//初始化着色器程序
         var cameraMatrix = initCamera();//创建相机
         initLight(gl,shaderPorgram);//创建光源
@@ -80,7 +82,6 @@
         var gl = canvas.getContext('webgl');//获取webgl上下文
         gl.clearColor(1.0,1.0,1.0,1.0);//设置背景颜色
         gl.enable(gl.DEPTH_TEST);//开启隐藏面消除
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);//清空颜色和深度缓冲区
         return gl;
     }
 
@@ -88,7 +89,7 @@
         var viewMatrix = new Matrix4();//视图矩阵
         viewMatrix.setLookAt(EyePoint.x,EyePoint.y,EyePoint.z,0, 0, 0, 0, 1, 0);
 
-        var projMatrix = new Matrix4();//投影矩阵
+        var projMatrix = new Matrix4();//透视投影矩阵
         projMatrix.setPerspective(PerspParams.fovy, width/height, PerspParams.g_near, PerspParams.g_far);
 
         var cameraMatrix = projMatrix.multiply(viewMatrix);
@@ -176,7 +177,7 @@
         var u_ModelMatrix = gl.getUniformLocation(shaderPorgram, 'u_ModelMatrix');
         gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
 
-        //投影矩阵+视图矩阵+模型矩阵
+        //投影矩阵
         var mvpMatrix = cameraMatrix;
         var originMatrix = new Matrix4();
         for(var i=0;i<cameraMatrix.elements.length;i++){
