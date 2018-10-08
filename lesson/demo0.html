@@ -42,15 +42,19 @@
             var origPoint = new THREE.Vector3(0, 0, 0);//原点
             function initCamera(){
                 camera = new THREE.PerspectiveCamera(45, width / height, 1, 1000);
-                camera.position.set(0, 300, 600);//设置相机位置
+                camera.position.set(200, 400, 600);//设置相机位置
                 camera.up.set(0, 1, 0);//设置相机正方向
                 camera.lookAt(origPoint);//设置相机视点
             }
 
-            var light;
+            var pointLight;
+            var ambientLight;
             function initLight() {
-                light = new THREE.PointLight( 0xffffff, 1, 2000 );
-                light.position.set(0, 300, 600);
+                //点光源
+                pointLight = new THREE.PointLight( 0xffffff, 1, 2000 );
+                pointLight.position.set(70, 112, 98);
+                //环境光
+                ambientLight = new THREE.AmbientLight( 0x333333 );
             }
 
             var cube;
@@ -64,7 +68,8 @@
             var scene;
             function initScene(){
                 scene = new THREE.Scene();
-                scene.add(light);
+                scene.add(pointLight);
+                scene.add(ambientLight);
                 scene.add(cube);
             }
 
