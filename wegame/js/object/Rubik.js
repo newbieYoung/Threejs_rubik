@@ -146,10 +146,10 @@ export default class Rubik {
 
     //进行一定的旋转变换保证三个面可视
     if(type=='front'){
-      this.group.rotateY(45/180*Math.PI);
+      this.group.rotateY(44/180*Math.PI);
       this.group.rotateOnAxis(new THREE.Vector3(1, 0, 1), 20 / 180 * Math.PI);
     }else{
-      this.group.rotateY((270-45) / 180 * Math.PI);
+      this.group.rotateY((270-44) / 180 * Math.PI);
       this.group.rotateOnAxis(new THREE.Vector3(1, 0, 1), 20 / 180 * Math.PI);
     }
 
@@ -160,13 +160,15 @@ export default class Rubik {
    * 高度所占比例发生变化
    */
   resizeHeight(percent,transformTag){
-    this.group.scale.set(percent, percent, percent);
-    var angle1 = Math.atan(this.group.position.y / this.main.camera.position.z)/Math.PI*180;
+    if (percent>=this.main.minPercent&&percent<=(1-this.main.minPercent)){
+      this.group.scale.set(percent, percent, percent);
+      var angle1 = Math.atan(this.group.position.y / this.main.camera.position.z) / Math.PI * 180;
 
-    this.group.position.y = this.main.originHeight * (0.5 - percent / 2) * transformTag;
-    var angle2 = Math.atan(this.group.position.y / this.main.camera.position.z)/Math.PI*180;
+      this.group.position.y = this.main.originHeight * (0.5 - percent / 2) * transformTag;
+      var angle2 = Math.atan(this.group.position.y / this.main.camera.position.z) / Math.PI * 180;
 
-    var angle = transformTag * (angle2 - angle1) * this.main.camera.aspect;
-    this.group.rotateOnAxis(new THREE.Vector3(1, 0, 1), angle / 180 * Math.PI );
+      var angle = transformTag * (angle2 - angle1) * this.main.camera.aspect;
+      this.group.rotateOnAxis(new THREE.Vector3(1, 0, 1), angle / 180 * Math.PI);
+    }
   }
 }

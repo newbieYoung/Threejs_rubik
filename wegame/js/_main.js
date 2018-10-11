@@ -16,6 +16,7 @@ export default class Main {
     this.height = window.innerHeight;
     this.devicePixelRatio = window.devicePixelRatio;
     this.viewCenter = new THREE.Vector3(0, 0, 0);//原点
+    this.minPercent = 0.1;//正反视图至少占10%区域
 
     this.initThree();
     this.initCamera();
@@ -88,7 +89,7 @@ export default class Main {
     this.endRubik.resizeHeight(0,-1);
 
     this.touchLine = new TouchLine(this);
-    this.rubikResize(0.8, 0.2);//默认正视图占80%区域，反视图占20%区域
+    this.rubikResize((1-this.minPercent), this.minPercent);//默认正视图占90%区域，反视图占10%区域
   }
 
   /**
@@ -137,18 +138,8 @@ export default class Main {
    * 正反魔方区域占比变化
    */
   rubikResize(frontPercent, endPercent){
-    if (this.touchLine.isVisiable) {
-      this.frontRubik.resizeHeight(frontPercent, 1);
-      this.endRubik.resizeHeight(endPercent, -1);
-    } else {
-      if (frontPercent >= 0.5) {
-        this.frontRubik.resizeHeight(1, 1);
-        this.endRubik.resizeHeight(0, -1);
-      } else {
-        this.frontRubik.resizeHeight(0, 1);
-        this.endRubik.resizeHeight(1, -1);
-      }
-    }
+    this.frontRubik.resizeHeight(frontPercent, 1);
+    this.endRubik.resizeHeight(endPercent, -1);
   }
 
   /**

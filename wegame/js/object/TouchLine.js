@@ -5,7 +5,6 @@ export default class TouchLine {
   constructor(main) {
     this.main = main;
     this.isActive = false;
-    this.isVisiable = true;
 
     var self = this;
     //滑动条实际尺寸
@@ -44,43 +43,27 @@ export default class TouchLine {
    */
   defaultPosition(){
     this.enable();
-    this.move(window.innerHeight * 0.8);//默认正视图占80%区域，反视图占20%区域
+    this.move(window.innerHeight * (1-this.main.minPercent));
     this.disable();
   }
 
   enable(){
-    if (this.isVisiable){
-      this.isActive = true;
-    }
+    this.isActive = true;
   }
 
   disable(){
     this.isActive = false;
   }
 
-  hide(){
-    if (this.isVisiable){
-      this.isVisiable = false;
-      this.main.scene.remove(this.plane);
-    }
-  }
-
-  show(){
-    if (!this.isVisiable){
-      this.isVisiable = true;
-      this.main.scene.remove(this.plane);
-    }
-  }
-
   move(y){
     if (this.isActive){
       var shouldHide = false;
-      if (y < window.innerHeight * 0.2 || y > window.innerHeight * 0.8) {//小视图区域得最少得占20%，否则就隐藏掉
+      if (y < window.innerHeight * this.main.minPercent || y > window.innerHeight * (1-this.main.minPercent)) {
         shouldHide = true;
-        if (y < window.innerHeight * 0.2) {
-          y = window.innerHeight * 0.2;
+        if (y < window.innerHeight * this.main.minPercent) {
+          y = window.innerHeight * this.main.minPercent;
         } else {
-          y = window.innerHeight * 0.8;
+          y = window.innerHeight * (1-this.main.minPercent);
         }
       }
 
@@ -89,11 +72,6 @@ export default class TouchLine {
       var len2 = this.main.originHeight * percent;
       this.plane.position.y += len2;
       this.screenRect.top = y - this.screenRect.height / 2;
-
-      if (shouldHide){
-        this.disable();
-        this.hide();
-      }
     }
   }
 }
