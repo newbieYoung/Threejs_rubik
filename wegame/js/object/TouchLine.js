@@ -13,10 +13,8 @@ export default class TouchLine {
     this.realHeight = 68;
 
     //滑动条逻辑尺寸
-    this.width = 248;//把touchline放在原点位置时视野内宽度为248*2
+    this.width = this.main.originWidth;
     this.height = this.realHeight * this.width / self.realWidth;
-    this.wholeWidth = this.width;
-    this.wholeHeight = this.wholeWidth / this.main.camera.aspect;
 
     this.screenRect = {
       width: window.innerWidth,
@@ -33,11 +31,21 @@ export default class TouchLine {
       self.plane = new THREE.Mesh(geometry, material);
       self.plane.position.set(0, 0, 0);
       self.main.scene.add(self.plane)
+      self.defaultPosition();
     }, function (xhr) {
       console.log((xhr.loaded / xhr.total * 100) + '% loaded');
     }, function (xhr) {
       console.log('An error happened');
     });
+  }
+
+  /**
+   * 默认位置
+   */
+  defaultPosition(){
+    this.enable();
+    this.move(window.innerHeight * 0.8);//默认正视图占80%区域，反视图占20%区域
+    this.disable();
   }
 
   enable(){
@@ -51,18 +59,41 @@ export default class TouchLine {
   }
 
   hide(){
-    this.isVisiable = true;
+    if (this.isVisiable){
+      this.isVisiable = false;
+      this.main.scene.remove(this.plane);
+    }
   }
 
   show(){
-    this.isVisiable = false;
+    if (!this.isVisiable){
+      this.isVisiable = true;
+      this.main.scene.remove(this.plane);
+    }
   }
 
   move(y){
-    var len = this.screenRect.top + this.screenRect.height / 2 - y;//屏幕移动距离
-    var percent = len / window.innerHeight;
-    var len2 = this.wholeHeight * percent;
-    this.plane.position.y += len2;
-    this.screenRect.top = y - this.screenRect.height / 2;
+    if (this.isActive){
+      var shouldHide = false;
+      if (y < window.innerHeight * 0.2 || y > window.innerHeight * 0.8) {//小视图区域得最少得占20%，否则就隐藏掉
+        shouldHide = true;
+        if (y < window.innerHeight * 0.2) {
+          y = window.innerHeight * 0.2;
+        } else {
+          y = window.innerHeight * 0.8;
+        }
+      }
+
+      var len = this.screenRect.top + this.screenRect.height / 2 - y;//屏幕移动距离
+      var percent = len / window.innerHeight;
+      var len2 = this.main.originHeight * percent;
+      this.plane.position.y += len2;
+      this.screenRect.top = y - this.screenRect.height / 2;
+
+      if (shouldHide){
+        this.disable();
+        this.hide();
+      }
+    }
   }
 }

@@ -53,6 +53,9 @@ export default class Main {
     this.camera.position.set(0, 0, 300 / this.camera.aspect);
     this.camera.up.set(0, 1, 0);//正方向
     this.camera.lookAt(this.viewCenter);
+
+    this.originWidth = 248;
+    this.originHeight = this.originWidth / this.camera.aspect;
   }
 
   /**
@@ -75,16 +78,17 @@ export default class Main {
    */
   initObject() {
     //正视角
-    //this.frontRubik = new BasicRubik(this);
-    //this.frontRubik.model('front');
-    //this.frontRubik.resizeHeight(1,1);
+    this.frontRubik = new BasicRubik(this);
+    this.frontRubik.model('front');
+    this.frontRubik.resizeHeight(0,1);
 
     //反视角
-    //this.endRubik = new BasicRubik(this);
-    //this.endRubik.model('back');
-    //this.endRubik.resizeHeight(.2, -1);
+    this.endRubik = new BasicRubik(this);
+    this.endRubik.model('back');
+    this.endRubik.resizeHeight(0,-1);
 
     this.touchLine = new TouchLine(this);
+    this.rubikResize(0.8, 0.2);//默认正视图占80%区域，反视图占20%区域
   }
 
   /**
@@ -123,6 +127,27 @@ export default class Main {
     var touch = event.touches[0];
     if (this.touchLine.isActive){//滑动touchline
       this.touchLine.move(touch.clientY);
+      var frontPercent = touch.clientY / window.innerHeight;
+      var endPercent = 1 - frontPercent;
+      this.rubikResize(frontPercent, endPercent);
+    }
+  }
+
+  /**
+   * 正反魔方区域占比变化
+   */
+  rubikResize(frontPercent, endPercent){
+    if (this.touchLine.isVisiable) {
+      this.frontRubik.resizeHeight(frontPercent, 1);
+      this.endRubik.resizeHeight(endPercent, -1);
+    } else {
+      if (frontPercent >= 0.5) {
+        this.frontRubik.resizeHeight(1, 1);
+        this.endRubik.resizeHeight(0, -1);
+      } else {
+        this.frontRubik.resizeHeight(0, 1);
+        this.endRubik.resizeHeight(1, -1);
+      }
     }
   }
 

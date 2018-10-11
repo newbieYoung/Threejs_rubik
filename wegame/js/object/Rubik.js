@@ -160,10 +160,13 @@ export default class Rubik {
    * 高度所占比例发生变化
    */
   resizeHeight(percent,transformTag){
-    var translateY = window.innerHeight * (1 - percent) / 2 * this.main.camera.aspect;
     this.group.scale.set(percent, percent, percent);
-    this.group.translateY(translateY * transformTag);
-    var angle = Math.atan(translateY / this.main.camera.position.z);
-    this.group.rotateOnAxis(new THREE.Vector3(1, 0, 1), angle * this.main.camera.aspect);
+    var angle1 = Math.atan(this.group.position.y / this.main.camera.position.z)/Math.PI*180;
+
+    this.group.position.y = this.main.originHeight * (0.5 - percent / 2) * transformTag;
+    var angle2 = Math.atan(this.group.position.y / this.main.camera.position.z)/Math.PI*180;
+
+    var angle = transformTag * (angle2 - angle1) * this.main.camera.aspect;
+    this.group.rotateOnAxis(new THREE.Vector3(1, 0, 1), angle / 180 * Math.PI );
   }
 }
