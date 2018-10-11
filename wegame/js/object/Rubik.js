@@ -108,7 +108,7 @@ export default class Rubik {
   model(type) {
     //网格元素直接放入到一个集合里边，方便整体进行矩阵变换，比如缩放等。
     this.group = new THREE.Group();
-    this.group.childType = 'MeshGroup';
+    this.group.childType = type;
 
     //生成魔方小正方体
     this.cubes = SimpleCube(BasicParams.x, BasicParams.y, BasicParams.z, BasicParams.num, BasicParams.len, BasicParams.colors);
@@ -145,12 +145,12 @@ export default class Rubik {
     this.group.add(this.container);
 
     //进行一定的旋转变换保证三个面可视
-    if(type=='front'){
+    if(type==this.main.frontViewName){
       this.group.rotateY(44/180*Math.PI);
-      this.group.rotateOnAxis(new THREE.Vector3(1, 0, 1), 20 / 180 * Math.PI);
+      this.group.rotateOnAxis(new THREE.Vector3(1, 0, 1), 25 / 180 * Math.PI);
     }else{
       this.group.rotateY((270-44) / 180 * Math.PI);
-      this.group.rotateOnAxis(new THREE.Vector3(1, 0, 1), 20 / 180 * Math.PI);
+      this.group.rotateOnAxis(new THREE.Vector3(1, 0, 1), 25 / 180 * Math.PI);
     }
 
     this.main.scene.add(this.group);
@@ -170,5 +170,90 @@ export default class Rubik {
       var angle = transformTag * (angle2 - angle1) * this.main.camera.aspect;
       this.group.rotateOnAxis(new THREE.Vector3(1, 0, 1), angle / 180 * Math.PI);
     }
+  }
+
+  /**
+   * 更新位置索引
+   */
+  updateCubeIndex(elements) {
+    for (var i = 0; i < elements.length; i++) {
+      var temp1 = elements[i];
+      for (var j = 0; j < this.initStatus.length; j++) {
+        var temp2 = this.initStatus[j];
+        if (Math.abs(temp1.position.x - temp2.x) <= BasicParams.len / 2 &&
+          Math.abs(temp1.position.y - temp2.y) <= BasicParams.len / 2 &&
+          Math.abs(temp1.position.z - temp2.z) <= BasicParams.len / 2) {
+          temp1.cubeIndex = temp2.cubeIndex;
+          break;
+        }
+      }
+    }
+  }
+
+  /**
+   * 根据方向获得运动元素
+   */
+  getBoxs(target, direction) {
+    var targetId = target.object.cubeIndex;
+    var ids = [];
+    for (var i = 0; i < this.cubes.length; i++) {
+      ids.push(this.cubes[i].cubeIndex);
+    }
+    var minId = Math.min.apply(null, ids);
+    targetId = targetId - minId;
+    var numI = parseInt(targetId / 9);
+    var numJ = targetId % 9;
+    var boxs = [];
+    //根据绘制时的规律判断 no = i*9+j
+    switch (direction) {
+      case 0.1:
+      case 0.2:
+      case 1.1:
+      case 1.2:
+      case 2.3:
+      case 2.4:
+      case 3.3:
+      case 3.4:
+        for (var i = 0; i < this.cubes.length; i++) {
+          var tempId = this.cubes[i].cubeIndex - minId;
+          if (numI === parseInt(tempId / 9)) {
+            boxs.push(this.cubes[i]);
+          }
+        }
+        break;
+      case 0.3:
+      case 0.4:
+      case 1.3:
+      case 1.4:
+      case 4.3:
+      case 4.4:
+      case 5.3:
+      case 5.4:
+        for (var i = 0; i < this.cubes.length; i++) {
+          var tempId = this.cubes[i].cubeIndex - minId;
+          if (parseInt(numJ / 3) === parseInt(tempId % 9 / 3)) {
+            boxs.push(this.cubes[i]);
+          }
+        }
+        break;
+      case 2.1:
+      case 2.2:
+      case 3.1:
+      case 3.2:
+      case 4.1:
+      case 4.2:
+      case 5.1:
+      case 5.2:
+        for (var i = 0; i < this.cubes.length; i++) {
+          var tempId = this.cubes[i].cubeIndex - minId;
+          if (tempId % 9 % 3 === numJ % 3) {
+            boxs.push(this.cubes[i]);
+          }
+        }
+        break;
+      default:
+        break;
+    }
+    return boxs;
   }
 }
