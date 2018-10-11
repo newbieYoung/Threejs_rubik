@@ -67,11 +67,11 @@ export default class Main {
       direction: null,
       target:null,
       animationEnd: function () {
-        this.rotateParams.target.updateCubeIndex(this.rotateParams.elements);
-        this.rotateParams.isAnimating = false;
-        this.rotateParams.sumRad = 0;//清0
-        this.rotateParams.direction = null;
-        this.rotateParams.elements = null;
+        this.target.updateCubeIndex(this.elements);
+        this.isAnimating = false;
+        this.sumRad = 0;//清0
+        this.direction = null;
+        this.elements = null;
         this.target = null;
       }
     };
@@ -84,6 +84,8 @@ export default class Main {
     this.render();
     this.initEvent();
   }
+
+
 
   /**
    * 初始化渲染器
@@ -583,8 +585,7 @@ export default class Main {
         self.rotateAnimation(params, timestamp, currentstamp, finalRad, tag);
       });
     } else {
-      var callback = params.animationEnd.bind(self);
-      callback();
+      params.animationEnd();
     }
   }
 
