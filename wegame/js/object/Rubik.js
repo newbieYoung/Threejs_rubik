@@ -96,8 +96,8 @@ function faces(rgbaColor) {
 
 export default class Rubik {
 
-  constructor(context) {
-    this.context = context;
+  constructor(main) {
+    this.main = main;
     this.initStatus = [];
   }
 
@@ -153,17 +153,17 @@ export default class Rubik {
       this.group.rotateOnAxis(new THREE.Vector3(1, 0, 1), 20 / 180 * Math.PI);
     }
 
-    this.context.scene.add(this.group);
+    this.main.scene.add(this.group);
   }
 
   /**
    * 高度所占比例发生变化
    */
   resizeHeight(percent,transformTag){
-    var translateY = window.innerHeight * (1 - percent) / 2 * this.context.camera.aspect;
+    var translateY = window.innerHeight * (1 - percent) / 2 * this.main.camera.aspect;
     this.group.scale.set(percent, percent, percent);
     this.group.translateY(translateY * transformTag);
-    var angle = Math.atan(translateY / this.context.camera.position.z);
-    this.group.rotateOnAxis(new THREE.Vector3(1, 0, 1), angle * this.context.camera.aspect);
+    var angle = Math.atan(translateY / this.main.camera.position.z);
+    this.group.rotateOnAxis(new THREE.Vector3(1, 0, 1), angle * this.main.camera.aspect);
   }
 }

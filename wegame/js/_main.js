@@ -1,6 +1,7 @@
 import * as THREE from 'threejs/three.js'
 require('threejs/controls/OrbitControls.js')
 import BasicRubik from 'object/Rubik.js'
+import TouchLine from 'object/TouchLine.js'
 
 const Context = canvas.getContext('webgl');
 
@@ -14,7 +15,6 @@ export default class Main {
     this.width = window.innerWidth;
     this.height = window.innerHeight;
     this.devicePixelRatio = window.devicePixelRatio;
-
     this.viewCenter = new THREE.Vector3(0, 0, 0);//原点
 
     this.initThree();
@@ -75,14 +75,16 @@ export default class Main {
    */
   initObject() {
     //正视角
-    this.frontRubik = new BasicRubik(this);
-    this.frontRubik.model('front');
-    this.frontRubik.resizeHeight(.8,1);
+    //this.frontRubik = new BasicRubik(this);
+    //this.frontRubik.model('front');
+    //this.frontRubik.resizeHeight(1,1);
 
     //反视角
-    this.endRubik = new BasicRubik(this);
-    this.endRubik.model('back');
-    this.endRubik.resizeHeight(.2, -1);
+    //this.endRubik = new BasicRubik(this);
+    //this.endRubik.model('back');
+    //this.endRubik.resizeHeight(.2, -1);
+
+    this.touchLine = new TouchLine(this);
   }
 
   /**
@@ -98,5 +100,36 @@ export default class Main {
    * 初始化事件
    */
   initEvent() {
+    wx.onTouchStart(this.touchStart.bind(this));
+    wx.onTouchMove(this.touchMove.bind(this));
+    wx.onTouchEnd(this.touchEnd.bind(this));
+  }
+
+  /**
+   * 触摸开始
+   */
+  touchStart(event){
+    var touch = event.touches[0];
+    this.startPoint = touch;
+    if (touch.clientY >= this.touchLine.screenRect.top && touch.clientY <= this.touchLine.screenRect.top + this.touchLine.screenRect.height){
+      this.touchLine.enable();
+    }
+  }
+
+  /**
+   * 触摸移动
+   */
+  touchMove(event){
+    var touch = event.touches[0];
+    if (this.touchLine.isActive){//滑动touchline
+      this.touchLine.move(touch.clientY);
+    }
+  }
+
+  /**
+   * 触摸结束
+   */
+  touchEnd(){
+
   }
 }
