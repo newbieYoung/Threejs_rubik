@@ -99,6 +99,35 @@ export default class Rubik {
   constructor(main) {
     this.main = main;
     this.initStatus = [];
+    this.totalTime = 300;//转动动画时长
+  }
+
+  /**
+   * 获得自身坐标系的坐标轴在世界坐标系中坐标
+   */
+  updateCurLocalAxisInWorld(){
+    var center = new THREE.Vector3(0, 0, 0);
+    var xPoint = new THREE.Vector3(1, 0, 0);
+    var xPointAd = new THREE.Vector3(-1, 0, 0);
+    var yPoint = new THREE.Vector3(0, 1, 0);
+    var yPointAd = new THREE.Vector3(0, -1, 0);
+    var zPoint = new THREE.Vector3(0, 0, 1);
+    var zPointAd = new THREE.Vector3(0, 0, -1);
+
+    center = center.applyMatrix4(this.group.matrix);
+    xPoint = xPoint.applyMatrix4(this.group.matrix);
+    xPointAd = xPointAd.applyMatrix4(this.group.matrix);
+    yPoint = yPoint.applyMatrix4(this.group.matrix);
+    yPointAd = yPointAd.applyMatrix4(this.group.matrix);
+    zPoint = zPoint.applyMatrix4(this.group.matrix);
+    zPointAd = zPointAd.applyMatrix4(this.group.matrix);
+
+    this.xLine = xPoint.sub(center);
+    this.xLineAd = xPointAd.sub(center);
+    this.yLine = yPoint.sub(center);
+    this.yLineAd = yPointAd.sub(center);
+    this.zLine = zPoint.sub(center);
+    this.zLineAd = zPointAd.sub(center);
   }
 
   /**
@@ -152,7 +181,6 @@ export default class Rubik {
       this.group.rotateY((270-44) / 180 * Math.PI);
       this.group.rotateOnAxis(new THREE.Vector3(1, 0, 1), 25 / 180 * Math.PI);
     }
-
     this.main.scene.add(this.group);
   }
 
@@ -188,6 +216,192 @@ export default class Rubik {
         }
       }
     }
+  }
+
+  /**
+   * 旋转动画
+   */
+  rotateAnimation(elements, direction, currentstamp, startstamp, laststamp, callback) {
+    var self = this;
+    if (startstamp === 0) {
+      startstamp = currentstamp;
+      laststamp = currentstamp;
+    }
+    if (currentstamp - startstamp >= this.totalTime) {
+      currentstamp = startstamp + this.totalTime;
+      callback();
+    }
+    var rotateMatrix = new THREE.Matrix4();//旋转矩阵
+    switch (direction) {
+      //绕z轴顺时针
+      case 0.1:
+      case 1.2:
+      case 2.4:
+      case 3.3:
+        rotateMatrix = this.rotateAroundWorldAxis(this.group.position, this.zLine, -90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
+        break;
+      //绕z轴逆时针
+      case 0.2:
+      case 1.1:
+      case 2.3:
+      case 3.4:
+        rotateMatrix = this.rotateAroundWorldAxis(this.group.position, this.zLine, 90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
+        break;
+      //绕y轴顺时针
+      case 0.4:
+      case 1.3:
+      case 4.3:
+      case 5.4:
+        rotateMatrix = this.rotateAroundWorldAxis(this.group.position, this.yLine, -90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
+        break;
+      //绕y轴逆时针
+      case 1.4:
+      case 0.3:
+      case 4.4:
+      case 5.3:
+        rotateMatrix = this.rotateAroundWorldAxis(this.group.position, this.yLine, 90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
+        break;
+      //绕x轴顺时针
+      case 2.2:
+      case 3.1:
+      case 4.1:
+      case 5.2:
+        rotateMatrix = this.rotateAroundWorldAxis(this.group.position, this.xLine, 90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
+        break;
+      //绕x轴逆时针
+      case 2.1:
+      case 3.2:
+      case 4.2:
+      case 5.1:
+        rotateMatrix = this.rotateAroundWorldAxis(this.group.position, this.xLine, -90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
+        break;
+      default:
+        break;
+    }
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].setRotationFromMatrix(rotateMatrix);
+    }
+    if (currentstamp - startstamp < this.totalTime) {
+      requestAnimationFrame(function (timestamp) {
+        self.rotateAnimation(elements, direction, timestamp, startstamp, currentstamp, callback);
+      });
+    }
+  }
+
+  /**
+   * 绕过点p的向量vector旋转一定角度
+   */
+  rotateAroundWorldAxis(p, vector, rad){
+    vector = vector.normalize();
+    var u = vector.x;
+    var v = vector.y;
+    var w = vector.z;
+
+    var a = p.x;
+    var b = p.y;
+    var c = p.z;
+
+    var matrix4 = new THREE.Matrix4();
+    matrix4.set(u * u + (v * v + w * w) * Math.cos(rad), u * v * (1 - Math.cos(rad)) - w * Math.sin(rad), u * w * (1 - Math.cos(rad)) + v * Math.sin(rad), (a * (v * v + w * w) - u * (b * v + c * w)) * (1 - Math.cos(rad)) + (b * w - c * v) * Math.sin(rad),
+      u * v * (1 - Math.cos(rad)) + w * Math.sin(rad), v * v + (u * u + w * w) * Math.cos(rad), v * w * (1 - Math.cos(rad)) - u * Math.sin(rad), (b * (u * u + w * w) - v * (a * u + c * w)) * (1 - Math.cos(rad)) + (c * u - a * w) * Math.sin(rad),
+      u * w * (1 - Math.cos(rad)) - v * Math.sin(rad), v * w * (1 - Math.cos(rad)) + u * Math.sin(rad), w * w + (u * u + v * v) * Math.cos(rad), (c * (u * u + v * v) - w * (a * u + b * v)) * (1 - Math.cos(rad)) + (a * v - b * u) * Math.sin(rad),
+      0, 0, 0, 1);
+
+    return matrix4;
+  }
+
+  /**
+   * 获得旋转方向
+   */
+  getDirection(vector3, normalize) {
+    this.updateCurLocalAxisInWorld();
+    var direction;
+    //判断差向量和x、y、z轴的夹角
+    var xAngle = vector3.angleTo(this.xLine);
+    var xAngleAd = vector3.angleTo(this.xLineAd);
+    var yAngle = vector3.angleTo(this.yLine);
+    var yAngleAd = vector3.angleTo(this.yLineAd);
+    var zAngle = vector3.angleTo(this.zLine);
+    var zAngleAd = vector3.angleTo(this.zLineAd);
+    var minAngle = Math.min.apply(null, [xAngle, xAngleAd, yAngle, yAngleAd, zAngle, zAngleAd]);//最小夹角
+
+    switch (minAngle) {
+      case xAngle:
+        direction = 0;//向x轴正方向旋转90度（还要区分是绕z轴还是绕y轴）
+        if (normalize.equals(this.yLine)) {
+          direction = direction + 0.1;//绕z轴顺时针
+        } else if (normalize.equals(this.yLineAd)) {
+          direction = direction + 0.2;//绕z轴逆时针
+        } else if (normalize.equals(this.zLine)) {
+          direction = direction + 0.3;//绕y轴逆时针
+        } else {
+          direction = direction + 0.4;//绕y轴顺时针
+        }
+        break;
+      case xAngleAd:
+        direction = 1;//向x轴反方向旋转90度
+        if (normalize.equals(this.yLine)) {
+          direction = direction + 0.1;//绕z轴逆时针
+        } else if (normalize.equals(this.yLineAd)) {
+          direction = direction + 0.2;//绕z轴顺时针
+        } else if (normalize.equals(this.zLine)) {
+          direction = direction + 0.3;//绕y轴顺时针
+        } else {
+          direction = direction + 0.4;//绕y轴逆时针
+        }
+        break;
+      case yAngle:
+        direction = 2;//向y轴正方向旋转90度
+        if (normalize.equals(this.zLine)) {
+          direction = direction + 0.1;//绕x轴逆时针
+        } else if (normalize.equals(this.zLineAd)) {
+          direction = direction + 0.2;//绕x轴顺时针
+        } else if (normalize.equals(this.xLine)) {
+          direction = direction + 0.3;//绕z轴逆时针
+        } else {
+          direction = direction + 0.4;//绕z轴顺时针
+        }
+        break;
+      case yAngleAd:
+        direction = 3;//向y轴反方向旋转90度
+        if (normalize.equals(this.zLine)) {
+          direction = direction + 0.1;//绕x轴顺时针
+        } else if (normalize.equals(this.zLineAd)) {
+          direction = direction + 0.2;//绕x轴逆时针
+        } else if (normalize.equals(this.xLine)) {
+          direction = direction + 0.3;//绕z轴顺时针
+        } else {
+          direction = direction + 0.4;//绕z轴逆时针
+        }
+        break;
+      case zAngle:
+        direction = 4;//向z轴正方向旋转90度
+        if (normalize.equals(this.yLine)) {
+          direction = direction + 0.1;//绕x轴顺时针
+        } else if (normalize.equals(this.yLineAd)) {
+          direction = direction + 0.2;//绕x轴逆时针
+        } else if (normalize.equals(this.xLine)) {
+          direction = direction + 0.3;//绕y轴顺时针
+        } else {
+          direction = direction + 0.4;//绕y轴逆时针
+        }
+        break;
+      case zAngleAd:
+        direction = 5;//向z轴反方向旋转90度
+        if (normalize.equals(this.yLine)) {
+          direction = direction + 0.1;//绕x轴逆时针
+        } else if (normalize.equals(this.yLineAd)) {
+          direction = direction + 0.2;//绕x轴顺时针
+        } else if (normalize.equals(this.xLine)) {
+          direction = direction + 0.3;//绕y轴逆时针
+        } else {
+          direction = direction + 0.4;//绕y轴顺时针
+        }
+        break;
+      default:
+        break;
+    }
+    return direction;
   }
 
   /**
