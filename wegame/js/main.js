@@ -21,7 +21,8 @@ export default class Main {
 
     this.raycaster = new THREE.Raycaster();//光线碰撞检测器
     this.isRotating = false;//魔方是否正在转动
-    this.targetRubik;
+    this.targetRubik;//目标魔方
+    this.anotherRubik;//非目标魔方
     this.intersect;//碰撞光线穿过的元素
     this.normalize;//触发平面法向量
     this.startPoint;//触发点
@@ -143,7 +144,6 @@ export default class Main {
    * 触摸移动
    */
   touchMove(event) {
-    var self = this;
     var touch = event.touches[0];
     if (this.touchLine.isActive) {//滑动touchline
       this.touchLine.move(touch.clientY);
@@ -155,21 +155,7 @@ export default class Main {
       if (!this.isRotating && this.startPoint && this.intersect) {//移动点在魔方上且魔方没有转动
         this.movePoint = this.intersect.point;
         if (!this.movePoint.equals(this.startPoint)) {//触摸点和移动点不一样则意味着可以得到转动向量
-          this.isRotating = true;//转动标识置为true
-          var sub = this.movePoint.sub(this.startPoint);//计算转动向量
-          var direction = this.targetRubik.getDirection(sub, this.normalize);//获得方向
-          var elements = this.targetRubik.getBoxs(this.intersect, direction);
-          requestAnimationFrame(function (timestamp) {
-            self.targetRubik.rotateAnimation(elements, direction, timestamp, 0, 0, function(){
-              self.targetRubik.updateCubeIndex(elements);
-              self.isRotating = false;
-              self.targetRubik = null;
-              self.intersect = null;
-              self.normalize = null;
-              self.startPoint = null;
-              self.movePoint = null;
-            });
-          });
+          this.rotateRubik();
         }
       }
     }
@@ -180,6 +166,35 @@ export default class Main {
    */
   touchEnd() {
     this.touchLine.disable();
+  }
+
+  /**
+   * 转动魔方
+   */
+  rotateRubik(){
+    var self = this;
+    this.isRotating = true;//转动标识置为true
+    var sub = this.movePoint.sub(this.startPoint);//计算转动向量
+    var direction = this.targetRubik.getDirection(sub, this.normalize);//获得方向
+    var cubeIndex = this.intersect.object.cubeIndex;
+    this.targetRubik.rotateMove(cubeIndex, direction, function () {
+      self.resetRotateParams();
+    });
+    var anotherIndex = cubeIndex - this.targetRubik.minCubeIndex + this.anotherRubik.minCubeIndex;
+    this.anotherRubik.rotateMove(anotherIndex, direction);
+  }
+
+  /**
+   * 重置魔方转动参数
+   */
+  resetRotateParams(){
+    this.isRotating = false;
+    this.targetRubik = null;
+    this.anotherRubik = null;
+    this.intersect = null;
+    this.normalize = null;
+    this.startPoint = null;
+    this.movePoint = null;
   }
 
   /**
@@ -194,9 +209,11 @@ export default class Main {
     var rubikTypeName;
     if (this.touchLine.screenRect.top > touch.clientY) {//正视图
       this.targetRubik = this.frontRubik;
+      this.anotherRubik = this.endRubik;
       rubikTypeName = this.frontViewName;
     } else if (this.touchLine.screenRect.top + this.touchLine.screenRect.height < touch.clientY) {//反视图
       this.targetRubik = this.endRubik;
+      this.anotherRubik = this.frontRubik;
       rubikTypeName = this.endViewName;
     }
     //Raycaster方式定位选取元素，可能会选取多个，以第一个为准

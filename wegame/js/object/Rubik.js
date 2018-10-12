@@ -184,6 +184,8 @@ export default class Rubik {
       this.group.rotateOnAxis(new THREE.Vector3(1, 0, 1), 25 / 180 * Math.PI);
     }
     this.main.scene.add(this.group);
+
+    this.getMinCubeIndex();
   }
 
   /**
@@ -421,18 +423,53 @@ export default class Rubik {
   }
 
   /**
-   * 根据方向获得运动元素
+   * 根据索引获取方块
    */
-  getBoxs(target, direction) {
-    var targetId = target.object.cubeIndex;
+  getCubeByIndex(index) {
+    var cube;
+    for (var i = 0; i < cubes.length; i++) {
+      if (cubes[i].cubeIndex == index + this.minCubeIndex) {
+        cube = cubes[i];
+      }
+    }
+    return cube;
+  }
+
+  /**
+   * 转动魔方
+   */
+  rotateMove(cubeIndex, direction, callback) {
+    var self = this;
+    var elements = this.getBoxs(cubeIndex, direction);
+    requestAnimationFrame(function (timestamp) {
+      self.rotateAnimation(elements, direction, timestamp, 0, 0,function(){
+        self.updateCubeIndex(elements);
+        if (callback){
+          callback();
+        }
+      });
+    });
+  }
+
+  /**
+   * 获取最小索引值
+   */
+  getMinCubeIndex(){
     var ids = [];
     for (var i = 0; i < this.cubes.length; i++) {
       ids.push(this.cubes[i].cubeIndex);
     }
-    var minId = Math.min.apply(null, ids);
-    targetId = targetId - minId;
-    var numI = parseInt(targetId / 9);
-    var numJ = targetId % 9;
+    this.minCubeIndex = Math.min.apply(null, ids);
+  }
+
+  /**
+   * 根据触摸方块的索引以及滑动方向获得转动元素
+   */
+  getBoxs(cubeIndex, direction) {
+    var targetIndex = cubeIndex;
+    targetIndex = targetIndex - this.minCubeIndex;
+    var numI = parseInt(targetIndex / 9);
+    var numJ = targetIndex % 9;
     var boxs = [];
     //根据绘制时的规律判断 no = i*9+j
     switch (direction) {
@@ -445,7 +482,7 @@ export default class Rubik {
       case 3.3:
       case 3.4:
         for (var i = 0; i < this.cubes.length; i++) {
-          var tempId = this.cubes[i].cubeIndex - minId;
+          var tempId = this.cubes[i].cubeIndex - this.minCubeIndex;
           if (numI === parseInt(tempId / 9)) {
             boxs.push(this.cubes[i]);
           }
@@ -460,7 +497,7 @@ export default class Rubik {
       case 5.3:
       case 5.4:
         for (var i = 0; i < this.cubes.length; i++) {
-          var tempId = this.cubes[i].cubeIndex - minId;
+          var tempId = this.cubes[i].cubeIndex - this.minCubeIndex;
           if (parseInt(numJ / 3) === parseInt(tempId % 9 / 3)) {
             boxs.push(this.cubes[i]);
           }
@@ -475,7 +512,7 @@ export default class Rubik {
       case 5.1:
       case 5.2:
         for (var i = 0; i < this.cubes.length; i++) {
-          var tempId = this.cubes[i].cubeIndex - minId;
+          var tempId = this.cubes[i].cubeIndex - this.minCubeIndex;
           if (tempId % 9 % 3 === numJ % 3) {
             boxs.push(this.cubes[i]);
           }
