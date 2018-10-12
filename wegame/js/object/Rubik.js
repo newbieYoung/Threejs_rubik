@@ -114,14 +114,16 @@ export default class Rubik {
     var zPoint = new THREE.Vector3(0, 0, 1);
     var zPointAd = new THREE.Vector3(0, 0, -1);
 
-    center = center.applyMatrix4(this.group.matrix);
-    xPoint = xPoint.applyMatrix4(this.group.matrix);
-    xPointAd = xPointAd.applyMatrix4(this.group.matrix);
-    yPoint = yPoint.applyMatrix4(this.group.matrix);
-    yPointAd = yPointAd.applyMatrix4(this.group.matrix);
-    zPoint = zPoint.applyMatrix4(this.group.matrix);
-    zPointAd = zPointAd.applyMatrix4(this.group.matrix);
+    var matrix = this.group.matrixWorld;
+    center.applyMatrix4(matrix);
+    xPoint.applyMatrix4(matrix);
+    xPointAd.applyMatrix4(matrix);
+    yPoint.applyMatrix4(matrix);
+    yPointAd.applyMatrix4(matrix);
+    zPoint.applyMatrix4(matrix);
+    zPointAd.applyMatrix4(matrix);
 
+    this.center = center;
     this.xLine = xPoint.sub(center);
     this.xLineAd = xPointAd.sub(center);
     this.yLine = yPoint.sub(center);
@@ -220,6 +222,8 @@ export default class Rubik {
 
   /**
    * 旋转动画
+   * currentstamp 当前时间
+   * startstamp   开始时间
    */
   rotateAnimation(elements, direction, currentstamp, startstamp, laststamp, callback) {
     var self = this;
@@ -232,54 +236,58 @@ export default class Rubik {
       callback();
     }
     var rotateMatrix = new THREE.Matrix4();//旋转矩阵
+    var origin = new THREE.Vector3(0, 0, 0);
+    var xLine = new THREE.Vector3(1, 0, 0);
+    var yLine = new THREE.Vector3(0, 1, 0);
+    var zLine = new THREE.Vector3(0, 0, 1);
     switch (direction) {
       //绕z轴顺时针
       case 0.1:
       case 1.2:
       case 2.4:
       case 3.3:
-        rotateMatrix = this.rotateAroundWorldAxis(this.group.position, this.zLine, -90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
+        rotateMatrix = this.rotateAroundWorldAxis(origin, zLine, -90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
         break;
       //绕z轴逆时针
       case 0.2:
       case 1.1:
       case 2.3:
       case 3.4:
-        rotateMatrix = this.rotateAroundWorldAxis(this.group.position, this.zLine, 90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
+        rotateMatrix = this.rotateAroundWorldAxis(origin, zLine, 90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
         break;
       //绕y轴顺时针
       case 0.4:
       case 1.3:
       case 4.3:
       case 5.4:
-        rotateMatrix = this.rotateAroundWorldAxis(this.group.position, this.yLine, -90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
+        rotateMatrix = this.rotateAroundWorldAxis(origin, yLine, -90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
         break;
       //绕y轴逆时针
       case 1.4:
       case 0.3:
       case 4.4:
       case 5.3:
-        rotateMatrix = this.rotateAroundWorldAxis(this.group.position, this.yLine, 90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
+        rotateMatrix = this.rotateAroundWorldAxis(origin, yLine, 90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
         break;
       //绕x轴顺时针
       case 2.2:
       case 3.1:
       case 4.1:
       case 5.2:
-        rotateMatrix = this.rotateAroundWorldAxis(this.group.position, this.xLine, 90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
+        rotateMatrix = this.rotateAroundWorldAxis(origin, xLine, 90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
         break;
       //绕x轴逆时针
       case 2.1:
       case 3.2:
       case 4.2:
       case 5.1:
-        rotateMatrix = this.rotateAroundWorldAxis(this.group.position, this.xLine, -90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
+        rotateMatrix = this.rotateAroundWorldAxis(origin, xLine, -90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
         break;
       default:
         break;
     }
     for (var i = 0; i < elements.length; i++) {
-      elements[i].setRotationFromMatrix(rotateMatrix);
+      elements[i].applyMatrix(rotateMatrix);
     }
     if (currentstamp - startstamp < this.totalTime) {
       requestAnimationFrame(function (timestamp) {
@@ -291,8 +299,8 @@ export default class Rubik {
   /**
    * 绕过点p的向量vector旋转一定角度
    */
-  rotateAroundWorldAxis(p, vector, rad){
-    vector = vector.normalize();
+  rotateAroundWorldAxis(p, vector, rad) {
+    vector.normalize();
     var u = vector.x;
     var v = vector.y;
     var w = vector.z;
@@ -302,6 +310,7 @@ export default class Rubik {
     var c = p.z;
 
     var matrix4 = new THREE.Matrix4();
+
     matrix4.set(u * u + (v * v + w * w) * Math.cos(rad), u * v * (1 - Math.cos(rad)) - w * Math.sin(rad), u * w * (1 - Math.cos(rad)) + v * Math.sin(rad), (a * (v * v + w * w) - u * (b * v + c * w)) * (1 - Math.cos(rad)) + (b * w - c * v) * Math.sin(rad),
       u * v * (1 - Math.cos(rad)) + w * Math.sin(rad), v * v + (u * u + w * w) * Math.cos(rad), v * w * (1 - Math.cos(rad)) - u * Math.sin(rad), (b * (u * u + w * w) - v * (a * u + c * w)) * (1 - Math.cos(rad)) + (c * u - a * w) * Math.sin(rad),
       u * w * (1 - Math.cos(rad)) - v * Math.sin(rad), v * w * (1 - Math.cos(rad)) + u * Math.sin(rad), w * w + (u * u + v * v) * Math.cos(rad), (c * (u * u + v * v) - w * (a * u + b * v)) * (1 - Math.cos(rad)) + (a * v - b * u) * Math.sin(rad),
@@ -325,14 +334,21 @@ export default class Rubik {
     var zAngleAd = vector3.angleTo(this.zLineAd);
     var minAngle = Math.min.apply(null, [xAngle, xAngleAd, yAngle, yAngleAd, zAngle, zAngleAd]);//最小夹角
 
+    var xLine = new THREE.Vector3(1, 0, 0);
+    var xLineAd = new THREE.Vector3(-1, 0, 0);
+    var yLine = new THREE.Vector3(0, 1, 0);
+    var yLineAd = new THREE.Vector3(0, -1, 0);
+    var zLine = new THREE.Vector3(0, 0, 1);
+    var zLineAd = new THREE.Vector3(0, 0, -1);
+
     switch (minAngle) {
       case xAngle:
         direction = 0;//向x轴正方向旋转90度（还要区分是绕z轴还是绕y轴）
-        if (normalize.equals(this.yLine)) {
+        if (normalize.equals(yLine)) {
           direction = direction + 0.1;//绕z轴顺时针
-        } else if (normalize.equals(this.yLineAd)) {
+        } else if (normalize.equals(yLineAd)) {
           direction = direction + 0.2;//绕z轴逆时针
-        } else if (normalize.equals(this.zLine)) {
+        } else if (normalize.equals(zLine)) {
           direction = direction + 0.3;//绕y轴逆时针
         } else {
           direction = direction + 0.4;//绕y轴顺时针
@@ -340,11 +356,11 @@ export default class Rubik {
         break;
       case xAngleAd:
         direction = 1;//向x轴反方向旋转90度
-        if (normalize.equals(this.yLine)) {
+        if (normalize.equals(yLine)) {
           direction = direction + 0.1;//绕z轴逆时针
-        } else if (normalize.equals(this.yLineAd)) {
+        } else if (normalize.equals(yLineAd)) {
           direction = direction + 0.2;//绕z轴顺时针
-        } else if (normalize.equals(this.zLine)) {
+        } else if (normalize.equals(zLine)) {
           direction = direction + 0.3;//绕y轴顺时针
         } else {
           direction = direction + 0.4;//绕y轴逆时针
@@ -352,11 +368,11 @@ export default class Rubik {
         break;
       case yAngle:
         direction = 2;//向y轴正方向旋转90度
-        if (normalize.equals(this.zLine)) {
+        if (normalize.equals(zLine)) {
           direction = direction + 0.1;//绕x轴逆时针
-        } else if (normalize.equals(this.zLineAd)) {
+        } else if (normalize.equals(zLineAd)) {
           direction = direction + 0.2;//绕x轴顺时针
-        } else if (normalize.equals(this.xLine)) {
+        } else if (normalize.equals(xLine)) {
           direction = direction + 0.3;//绕z轴逆时针
         } else {
           direction = direction + 0.4;//绕z轴顺时针
@@ -364,11 +380,11 @@ export default class Rubik {
         break;
       case yAngleAd:
         direction = 3;//向y轴反方向旋转90度
-        if (normalize.equals(this.zLine)) {
+        if (normalize.equals(zLine)) {
           direction = direction + 0.1;//绕x轴顺时针
-        } else if (normalize.equals(this.zLineAd)) {
+        } else if (normalize.equals(zLineAd)) {
           direction = direction + 0.2;//绕x轴逆时针
-        } else if (normalize.equals(this.xLine)) {
+        } else if (normalize.equals(xLine)) {
           direction = direction + 0.3;//绕z轴顺时针
         } else {
           direction = direction + 0.4;//绕z轴逆时针
@@ -376,11 +392,11 @@ export default class Rubik {
         break;
       case zAngle:
         direction = 4;//向z轴正方向旋转90度
-        if (normalize.equals(this.yLine)) {
+        if (normalize.equals(yLine)) {
           direction = direction + 0.1;//绕x轴顺时针
-        } else if (normalize.equals(this.yLineAd)) {
+        } else if (normalize.equals(yLineAd)) {
           direction = direction + 0.2;//绕x轴逆时针
-        } else if (normalize.equals(this.xLine)) {
+        } else if (normalize.equals(xLine)) {
           direction = direction + 0.3;//绕y轴顺时针
         } else {
           direction = direction + 0.4;//绕y轴逆时针
@@ -388,11 +404,11 @@ export default class Rubik {
         break;
       case zAngleAd:
         direction = 5;//向z轴反方向旋转90度
-        if (normalize.equals(this.yLine)) {
+        if (normalize.equals(yLine)) {
           direction = direction + 0.1;//绕x轴逆时针
-        } else if (normalize.equals(this.yLineAd)) {
+        } else if (normalize.equals(yLineAd)) {
           direction = direction + 0.2;//绕x轴顺时针
-        } else if (normalize.equals(this.xLine)) {
+        } else if (normalize.equals(xLine)) {
           direction = direction + 0.3;//绕y轴逆时针
         } else {
           direction = direction + 0.4;//绕y轴顺时针

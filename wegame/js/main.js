@@ -158,11 +158,17 @@ export default class Main {
           this.isRotating = true;//转动标识置为true
           var sub = this.movePoint.sub(this.startPoint);//计算转动向量
           var direction = this.targetRubik.getDirection(sub, this.normalize);//获得方向
-          console.log(direction);
           var elements = this.targetRubik.getBoxs(this.intersect, direction);
-          var startTime = new Date().getTime();
           requestAnimationFrame(function (timestamp) {
-            self.targetRubik.rotateAnimation(elements, direction, timestamp, 0);
+            self.targetRubik.rotateAnimation(elements, direction, timestamp, 0, 0, function(){
+              self.targetRubik.updateCubeIndex(elements);
+              self.isRotating = false;
+              self.targetRubik = null;
+              self.intersect = null;
+              self.normalize = null;
+              self.startPoint = null;
+              self.movePoint = null;
+            });
           });
         }
       }
