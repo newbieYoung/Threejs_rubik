@@ -20,12 +20,12 @@ export default class Main {
     this.endViewName = 'end-rubik';//反视图名称
 
     this.raycaster = new THREE.Raycaster();//光线碰撞检测器
-    this.isRotating = false;//魔方是否正在转动
     this.targetRubik;//目标魔方
     this.anotherRubik;//非目标魔方
+    this.isRotating = false;//魔方是否正在转动
     this.intersect;//碰撞光线穿过的元素
     this.normalize;//触发平面法向量
-    this.startPoint;//触发点
+    this.startPoint;//触摸点
     this.movePoint;//移动点
 
     this.initThree();
@@ -102,8 +102,6 @@ export default class Main {
 
     this.touchLine = new TouchLine(this);
     this.rubikResize((1 - this.minPercent), this.minPercent);//默认正视图占90%区域，反视图占10%区域
-
-    
   }
 
   /**
@@ -137,6 +135,9 @@ export default class Main {
       if (!this.isRotating && this.intersect) {//触摸点在魔方上且魔方没有转动
         this.startPoint = this.intersect.point;//开始转动，设置起始点
       }
+      if (!this.intersect){//触摸点没在魔方上
+        this.startPoint = new THREE.Vector2(touch.clientX, touch.clientY);
+      }
     }
   }
 
@@ -156,6 +157,12 @@ export default class Main {
         this.movePoint = this.intersect.point;
         if (!this.movePoint.equals(this.startPoint)) {//触摸点和移动点不一样则意味着可以得到转动向量
           this.rotateRubik();
+        }
+      }
+      if (!this.isRotating && !this.intersect){//触摸点没在魔方上
+        this.movePoint = new THREE.Vector2(touch.clientX, touch.clientY);
+        if (!this.movePoint.equals(this.startPoint)){
+          this.rotateView();
         }
       }
     }
@@ -185,6 +192,61 @@ export default class Main {
   }
 
   /**
+   * 转动视图
+   */
+  rotateView(){
+    var self = this;
+    if (this.startPoint.y < this.touchLine.screenRect.top){
+      this.targetRubik = this.frontRubik;
+      this.anotherRubik = this.endRubik;
+    } else if (this.startPoint.y > this.touchLine.screenRect.top + this.touchLine.screenRect.height){
+      this.targetRubik = this.endRubik;
+      this.anotherRubik = this.frontRubik;
+    }
+    if (this.targetRubik && this.anotherRubik){
+      this.isRotating = true;//转动标识置为true
+      //以默认序号小方块为基准计算整体转动方向
+      var lenX = this.movePoint.x - this.startPoint.x;
+      var lenY = this.movePoint.y - this.startPoint.y;
+      var cubeIndex = 10;
+      var direction;
+      if (lenX >= 0) {
+        if (lenY >= 0) {
+          if (Math.abs(lenY) >= Math.tan(30 / 180 * Math.PI) * Math.abs(lenX)) {
+            direction = 4.1;
+          } else {
+            direction = 0.3;
+          }
+        }else{
+          if (Math.abs(lenY) >= Math.tan(30 / 180 * Math.PI) * Math.abs(lenX)){
+            direction = 0.1;
+          }else{
+            direction = 0.3;
+          }
+        }
+      }else{
+        if(lenY>=0){
+          if (Math.abs(lenY) >= Math.tan(30 / 180 * Math.PI) * Math.abs(lenX)) {
+            direction = 1.1;
+          } else {
+            direction = 5.4;
+          }
+        }else{
+          if (Math.abs(lenY) >= Math.tan(30 / 180 * Math.PI) * Math.abs(lenX)) {
+            direction = 5.1;
+          } else {
+            direction = 5.4;
+          }
+        }
+      }
+      this.targetRubik.rotateMoveWhole(cubeIndex, direction, function () {
+        self.resetRotateParams();
+      });
+      this.anotherRubik.rotateMoveWhole(cubeIndex, direction);
+    }
+  }
+
+  /**
    * 重置魔方转动参数
    */
   resetRotateParams(){
@@ -195,6 +257,7 @@ export default class Main {
     this.normalize = null;
     this.startPoint = null;
     this.movePoint = null;
+
   }
 
   /**
@@ -217,21 +280,23 @@ export default class Main {
       rubikTypeName = this.endViewName;
     }
     //Raycaster方式定位选取元素，可能会选取多个，以第一个为准
-    var children = this.scene.children;
-    for (var i = 0; i < children.length; i++) {
-      if (children[i].childType == rubikTypeName) {
-        children = children[i];
+    var targetIntersect;
+    for (var i = 0; i < this.scene.children.length; i++) {
+      if (this.scene.children[i].childType == rubikTypeName) {
+        targetIntersect = this.scene.children[i];
         break;
       }
     }
-    var intersects = this.raycaster.intersectObjects(children.children);
-    if (intersects.length >= 2) {
-      if (intersects[0].object.cubeType === 'coverCube') {
-        this.intersect = intersects[1];
-        this.normalize = intersects[0].face.normal;
-      } else {
-        this.intersect = intersects[0];
-        this.normalize = intersects[1].face.normal;
+    if (targetIntersect){
+      var intersects = this.raycaster.intersectObjects(targetIntersect.children);
+      if (intersects.length >= 2) {
+        if (intersects[0].object.cubeType === 'coverCube') {
+          this.intersect = intersects[1];
+          this.normalize = intersects[0].face.normal;
+        } else {
+          this.intersect = intersects[0];
+          this.normalize = intersects[1].face.normal;
+        }
       }
     }
   }

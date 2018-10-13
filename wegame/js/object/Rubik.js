@@ -417,6 +417,7 @@ export default class Rubik {
       default:
         break;
     }
+    console.log(direction);
     return direction;
   }
 
@@ -443,6 +444,22 @@ export default class Rubik {
       self.rotateAnimation(elements, direction, timestamp, 0, 0,function(){
         self.updateCubeIndex(elements);
         if (callback){
+          callback();
+        }
+      });
+    });
+  }
+
+  /**
+   * 转动魔方整体
+   */
+  rotateMoveWhole(cubeIndex, direction, callback){
+    var self = this;
+    var elements = this.cubes;
+    requestAnimationFrame(function (timestamp) {
+      self.rotateAnimation(elements, direction, timestamp, 0, 0, function () {
+        self.updateCubeIndex(elements);
+        if (callback) {
           callback();
         }
       });
