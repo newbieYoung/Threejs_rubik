@@ -15,7 +15,7 @@ export default class Main {
     this.height = window.innerHeight;
     this.devicePixelRatio = window.devicePixelRatio;
     this.viewCenter = new THREE.Vector3(0, 0, 0);//原点
-    this.minPercent = 0.1;//正反视图至少占10%区域
+    this.minPercent = 0.15;//正反视图至少占15%区域
     this.frontViewName = 'front-rubik';//正视图名称
     this.endViewName = 'end-rubik';//反视图名称
 
@@ -101,7 +101,7 @@ export default class Main {
     this.endRubik.resizeHeight(0, -1);
 
     this.touchLine = new TouchLine(this);
-    this.rubikResize((1 - this.minPercent), this.minPercent);//默认正视图占90%区域，反视图占10%区域
+    this.rubikResize((1 - this.minPercent), this.minPercent);//默认正视图占85%区域，反视图占15%区域
   }
 
   /**
