@@ -192,10 +192,14 @@ export default class Rubik {
    * 高度所占比例发生变化
    */
   resizeHeight(percent,transformTag){
-    if (percent>=this.main.minPercent&&percent<=(1-this.main.minPercent)){
-      this.group.scale.set(percent, percent, percent);
-      this.group.position.y = this.main.originHeight * (0.5 - percent / 2) * transformTag;
+    if (percent < this.main.minPercent){
+      percent = this.main.minPercent;
     }
+    if (percent > (1 - this.main.minPercent)){
+      percent = 1 - this.main.minPercent;
+    }
+    this.group.scale.set(percent, percent, percent);
+    this.group.position.y = this.main.originHeight * (0.5 - percent / 2) * transformTag;
   }
 
   /**
