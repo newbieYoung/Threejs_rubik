@@ -9,7 +9,7 @@
 	},
 	"compileType": "game",
 	"libVersion": "game",
-	"appid": "wxaf9e9260d9027dc3",
+	"appid": "touristappid",
 	"projectname": "FirstRubik",
 	"isGameTourist": true,
 	"condition": {

@@ -205,45 +205,97 @@ export default class Main {
     }
     if (this.targetRubik && this.anotherRubik){
       this.isRotating = true;//转动标识置为true
-      //以默认序号小方块为基准计算整体转动方向
-      var lenX = this.movePoint.x - this.startPoint.x;
-      var lenY = this.movePoint.y - this.startPoint.y;
-      var cubeIndex = 10;
-      var direction;
-      if (lenX >= 0) {
-        if (lenY >= 0) {
-          if (Math.abs(lenY) >= Math.tan(30 / 180 * Math.PI) * Math.abs(lenX)) {
-            direction = 4.1;
-          } else {
-            direction = 0.3;
-          }
-        }else{
-          if (Math.abs(lenY) >= Math.tan(30 / 180 * Math.PI) * Math.abs(lenX)){
-            direction = 0.1;
-          }else{
-            direction = 0.3;
-          }
-        }
-      }else{
-        if(lenY>=0){
-          if (Math.abs(lenY) >= Math.tan(30 / 180 * Math.PI) * Math.abs(lenX)) {
-            direction = 1.1;
-          } else {
-            direction = 5.4;
-          }
-        }else{
-          if (Math.abs(lenY) >= Math.tan(30 / 180 * Math.PI) * Math.abs(lenX)) {
-            direction = 5.1;
-          } else {
-            direction = 5.4;
-          }
-        }
-      }
+      //计算整体转动方向
+      var targetType = this.targetRubik.group.childType;
+      var cubeIndex = this.getViewRotateCubeIndex(targetType);
+      var direction = this.getViewDirection(targetType, this.startPoint, this.movePoint);
       this.targetRubik.rotateMoveWhole(cubeIndex, direction, function () {
         self.resetRotateParams();
       });
       this.anotherRubik.rotateMoveWhole(cubeIndex, direction);
     }
+  }
+
+  /**
+   * 获得转动视图方块索引
+   */
+  getViewRotateCubeIndex(type){
+    if (type == this.frontViewName){
+      return 10;
+    }else{
+      return 65;
+    }
+  }
+
+  /**
+   * 获得视图转动方向
+   */
+  getViewDirection(type,startPoint,movePoint){
+    var direction;
+    var lenX = movePoint.x - startPoint.x;
+    var lenY = movePoint.y - startPoint.y;
+    if(type==this.frontViewName){
+      if(startPoint.x>window.innerWidth/2){
+        if (Math.abs(lenY) > Math.abs(lenX)){//纵向移动
+          if(lenY<0){
+            direction = 2.1;
+          }else{
+            direction = 3.1;
+          }
+        }else{//横行移动
+          if(lenX>0){
+            direction = 0.3;
+          }else{
+            direction = 1.3;
+          }
+        }
+      }else{
+        if (Math.abs(lenY) > Math.abs(lenX)) {//纵向移动
+          if (lenY < 0) {
+            direction = 2.4;
+          } else {
+            direction = 3.4;
+          }
+        } else {//横行移动
+          if (lenX > 0) {
+            direction = 4.4;
+          } else {
+            direction = 5.4;
+          }
+        }
+      }
+    }else{
+      if (startPoint.x > window.innerWidth / 2) {
+        if (Math.abs(lenY) > Math.abs(lenX)) {//纵向移动
+          if (lenY < 0) {
+            direction = 2.2;
+          } else {
+            direction = 3.2;
+          }
+        } else {//横行移动
+          if (lenX > 0) {
+            direction = 1.4;
+          } else {
+            direction = 0.4;
+          }
+        }
+      } else {
+        if (Math.abs(lenY) > Math.abs(lenX)) {//纵向移动
+          if (lenY < 0) {
+            direction = 2.3;
+          } else {
+            direction = 3.3;
+          }
+        } else {//横行移动
+          if (lenX > 0) {
+            direction = 5.3;
+          } else {
+            direction = 4.3;
+          }
+        }
+      }
+    }
+    return direction;
   }
 
   /**
@@ -257,7 +309,6 @@ export default class Main {
     this.normalize = null;
     this.startPoint = null;
     this.movePoint = null;
-
   }
 
   /**
