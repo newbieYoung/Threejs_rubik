@@ -418,7 +418,6 @@ export default class Rubik {
       default:
         break;
     }
-    console.log(direction);
     return direction;
   }
 
