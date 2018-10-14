@@ -1,4 +1,5 @@
 import * as THREE from 'threejs/three.js'
+import TWEEN from 'tween/tween.js'
 import BasicRubik from 'object/Rubik.js'
 import TouchLine from 'object/TouchLine.js'
 
@@ -34,10 +35,7 @@ export default class Main {
     this.initLight();
     this.initObject();
     this.render();
-    this.initEvent();
   }
-
-
 
   /**
    * 初始化渲染器
@@ -102,6 +100,7 @@ export default class Main {
 
     this.touchLine = new TouchLine(this);
     this.rubikResize((1 - this.minPercent), this.minPercent);//默认正视图占85%区域，反视图占15%区域
+    this.enterAnimation();
   }
 
   /**
@@ -173,6 +172,50 @@ export default class Main {
    */
   touchEnd() {
     this.touchLine.disable();
+  }
+
+  /**
+   * 进场动画
+   */
+  enterAnimation() {
+    var self = this;
+    
+    var endStatus = {//目标状态
+      rotateY: this.frontRubik.group.rotation.y,
+      y: this.frontRubik.group.position.y,
+      z: this.frontRubik.group.position.z
+    }
+
+    this.frontRubik.group.rotateY(-90 / 180 * Math.PI);//把魔方设置为动画开始状态
+    this.frontRubik.group.position.y += 200;
+    this.frontRubik.group.position.z -= 300;
+
+    var startStatus = {//开始状态
+      rotateY: this.frontRubik.group.rotation.y,
+      y: this.frontRubik.group.position.y,
+      z: this.frontRubik.group.position.z
+    }
+
+    var tween = new TWEEN.Tween(startStatus)
+                          .to(endStatus, 2000)
+                          .easing(TWEEN.Easing.Quadratic.In)
+                          .onUpdate(function () {
+                            self.frontRubik.group.rotation.y = startStatus.rotateY;
+                            self.frontRubik.group.position.y = startStatus.y
+                            self.frontRubik.group.position.z = startStatus.z
+                          })
+                          .start();
+
+    function animate(time) {
+      requestAnimationFrame(animate);
+      TWEEN.update(time);
+    }
+    
+    animate();
+    var stepArr = this.frontRubik.randomRotate(function(){
+      self.initEvent();//进场动画结束之后才能进行手动操作
+    });
+    this.endRubik.runMethodAtNo(stepArr, 0);
   }
 
   /**

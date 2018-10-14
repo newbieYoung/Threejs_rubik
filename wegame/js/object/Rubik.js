@@ -99,7 +99,7 @@ export default class Rubik {
   constructor(main) {
     this.main = main;
     this.initStatus = [];
-    this.totalTime = 300;//转动动画时长
+    this.defaultTotalTime = 300;//默认转动动画时长
   }
 
   /**
@@ -225,15 +225,14 @@ export default class Rubik {
    * currentstamp 当前时间
    * startstamp   开始时间
    */
-  rotateAnimation(elements, direction, currentstamp, startstamp, laststamp, callback) {
+  rotateAnimation(elements, direction, currentstamp, startstamp, laststamp, callback ,totalTime) {
     var self = this;
     if (startstamp === 0) {
       startstamp = currentstamp;
       laststamp = currentstamp;
     }
-    if (currentstamp - startstamp >= this.totalTime) {
-      currentstamp = startstamp + this.totalTime;
-      callback();
+    if (currentstamp - startstamp >= totalTime) {
+      currentstamp = startstamp + totalTime;
     }
     var rotateMatrix = new THREE.Matrix4();//旋转矩阵
     var origin = new THREE.Vector3(0, 0, 0);
@@ -246,42 +245,42 @@ export default class Rubik {
       case 1.2:
       case 2.4:
       case 3.3:
-        rotateMatrix = this.rotateAroundWorldAxis(origin, zLine, -90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
+        rotateMatrix = this.rotateAroundWorldAxis(origin, zLine, -90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
         break;
       //绕z轴逆时针
       case 0.2:
       case 1.1:
       case 2.3:
       case 3.4:
-        rotateMatrix = this.rotateAroundWorldAxis(origin, zLine, 90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
+        rotateMatrix = this.rotateAroundWorldAxis(origin, zLine, 90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
         break;
       //绕y轴顺时针
       case 0.4:
       case 1.3:
       case 4.3:
       case 5.4:
-        rotateMatrix = this.rotateAroundWorldAxis(origin, yLine, -90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
+        rotateMatrix = this.rotateAroundWorldAxis(origin, yLine, -90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
         break;
       //绕y轴逆时针
       case 1.4:
       case 0.3:
       case 4.4:
       case 5.3:
-        rotateMatrix = this.rotateAroundWorldAxis(origin, yLine, 90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
+        rotateMatrix = this.rotateAroundWorldAxis(origin, yLine, 90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
         break;
       //绕x轴顺时针
       case 2.2:
       case 3.1:
       case 4.1:
       case 5.2:
-        rotateMatrix = this.rotateAroundWorldAxis(origin, xLine, 90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
+        rotateMatrix = this.rotateAroundWorldAxis(origin, xLine, 90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
         break;
       //绕x轴逆时针
       case 2.1:
       case 3.2:
       case 4.2:
       case 5.1:
-        rotateMatrix = this.rotateAroundWorldAxis(origin, xLine, -90 * Math.PI / 180 * (currentstamp - laststamp) / this.totalTime);
+        rotateMatrix = this.rotateAroundWorldAxis(origin, xLine, -90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
         break;
       default:
         break;
@@ -289,10 +288,12 @@ export default class Rubik {
     for (var i = 0; i < elements.length; i++) {
       elements[i].applyMatrix(rotateMatrix);
     }
-    if (currentstamp - startstamp < this.totalTime) {
+    if (currentstamp - startstamp < totalTime) {
       requestAnimationFrame(function (timestamp) {
-        self.rotateAnimation(elements, direction, timestamp, startstamp, currentstamp, callback);
+        self.rotateAnimation(elements, direction, timestamp, startstamp, currentstamp, callback, totalTime);
       });
+    }else{
+      callback();
     }
   }
 
@@ -417,6 +418,7 @@ export default class Rubik {
       default:
         break;
     }
+    console.log(direction);
     return direction;
   }
 
@@ -436,8 +438,9 @@ export default class Rubik {
   /**
    * 转动魔方
    */
-  rotateMove(cubeIndex, direction, callback) {
+  rotateMove(cubeIndex, direction, callback, totalTime) {
     var self = this;
+    totalTime = totalTime ? totalTime:this.defaultTotalTime;
     var elements = this.getBoxs(cubeIndex, direction);
     requestAnimationFrame(function (timestamp) {
       self.rotateAnimation(elements, direction, timestamp, 0, 0,function(){
@@ -445,16 +448,17 @@ export default class Rubik {
         if (callback){
           callback();
         }
-      });
+      }, totalTime);
     });
   }
 
   /**
    * 转动魔方整体
    */
-  rotateMoveWhole(cubeIndex, direction, callback){
+  rotateMoveWhole(cubeIndex, direction, callback, totalTime){
     if(cubeIndex!=null&&direction!=null){
       var self = this;
+      totalTime = totalTime ? totalTime : this.defaultTotalTime;
       var elements = this.cubes;
       requestAnimationFrame(function (timestamp) {
         self.rotateAnimation(elements, direction, timestamp, 0, 0, function () {
@@ -462,7 +466,7 @@ export default class Rubik {
           if (callback) {
             callback();
           }
-        });
+        }, totalTime);
       });
     }
   }
@@ -538,5 +542,81 @@ export default class Rubik {
         break;
     }
     return boxs;
+  }
+  /**
+   * 以正视角魔方为基准
+   * 魔方基本公式 U、F、L、D、R、u、f、l、d
+   */
+  U(next) {
+    this.rotateMove(this.minCubeIndex, 5.4, next, 100);
+  }
+  u(next) {
+    this.rotateMove(this.minCubeIndex, 0.3, next, 100);
+  }
+  F(next) {
+    this.rotateMove(this.minCubeIndex, 3.1, next, 100);
+  }
+  f(next) {
+    this.rotateMove(this.minCubeIndex, 5.1, next, 100);
+  }
+  L(next) {
+    this.rotateMove(this.minCubeIndex + 18, 3.4, next, 100);
+  }
+  l(next) {
+    this.rotateMove(this.minCubeIndex + 18, 0.1, next, 100);
+  }
+  D(next) {
+    this.rotateMove(this.minCubeIndex + 6, 0.3, next, 100);
+  }
+  d(next) {
+    this.rotateMove(this.minCubeIndex + 6, 5.4, next, 100);
+  }
+  R(next) {
+    this.rotateMove(this.minCubeIndex, 0.1, next, 100);
+  }
+  r(next) {
+    this.rotateMove(this.minCubeIndex, 3.4, next, 100);
+  }
+  B(next) {
+    this.rotateMove(this.minCubeIndex + 2, 5.1, next, 100);
+  }
+  b(next) {
+    this.rotateMove(this.minCubeIndex + 2, 3.1, next, 100);
+  }
+
+  /**
+   * 按顺序执行数组里边的方法
+   */
+  runMethodAtNo(arr, no, next) {
+    var self = this;
+    if (no >= arr.length - 1) {
+      if (next) {
+        this[arr[no]](next);
+      } else {
+        this[arr[no]]();
+      }
+    } else {
+      this[arr[no]](function () {
+        if (no < arr.length - 1) {
+          no++
+          self.runMethodAtNo(arr, no, next);
+        }
+      })
+    }
+  }
+
+  /**
+   * 随机旋转，用于打乱魔方
+   */
+  randomRotate(callback) {
+    var stepNum = 21;
+    var stepArr = [];
+    var funcArr = ['R', 'U', 'F', 'B', 'L', 'D', 'r', 'u', 'f', 'b', 'l', 'd'];
+    for (var i = 0; i < stepNum; i++) {
+      var num = parseInt(Math.random() * funcArr.length);
+      stepArr.push(funcArr[num]);
+    }
+    this.runMethodAtNo(stepArr, 0, callback);
+    return stepArr;
   }
 }
