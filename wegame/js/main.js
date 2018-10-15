@@ -203,19 +203,21 @@ export default class Main {
                             self.frontRubik.group.rotation.y = startStatus.rotateY;
                             self.frontRubik.group.position.y = startStatus.y
                             self.frontRubik.group.position.z = startStatus.z
-                          })
-                          .start();
+                          });
 
     function animate(time) {
       requestAnimationFrame(animate);
       TWEEN.update(time);
     }
     
-    animate();
-    var stepArr = this.frontRubik.randomRotate(function(){
+    setTimeout(function(){
+      tween.start();
+      animate();
+    },500)
+    var stepArr = this.frontRubik.randomRotate();
+    this.endRubik.runMethodAtNo(stepArr, 0, function () {
       self.initEvent();//进场动画结束之后才能进行手动操作
     });
-    this.endRubik.runMethodAtNo(stepArr, 0);
   }
 
   /**
@@ -227,11 +229,11 @@ export default class Main {
     var sub = this.movePoint.sub(this.startPoint);//计算转动向量
     var direction = this.targetRubik.getDirection(sub, this.normalize);//获得方向
     var cubeIndex = this.intersect.object.cubeIndex;
-    this.targetRubik.rotateMove(cubeIndex, direction, function () {
+    this.targetRubik.rotateMove(cubeIndex, direction);
+    var anotherIndex = cubeIndex - this.targetRubik.minCubeIndex + this.anotherRubik.minCubeIndex;
+    this.anotherRubik.rotateMove(anotherIndex, direction, function () {
       self.resetRotateParams();
     });
-    var anotherIndex = cubeIndex - this.targetRubik.minCubeIndex + this.anotherRubik.minCubeIndex;
-    this.anotherRubik.rotateMove(anotherIndex, direction);
   }
 
   /**
@@ -252,10 +254,10 @@ export default class Main {
       var targetType = this.targetRubik.group.childType;
       var cubeIndex = this.getViewRotateCubeIndex(targetType);
       var direction = this.getViewDirection(targetType, this.startPoint, this.movePoint);
-      this.targetRubik.rotateMoveWhole(cubeIndex, direction, function () {
+      this.targetRubik.rotateMoveWhole(cubeIndex, direction);
+      this.anotherRubik.rotateMoveWhole(cubeIndex, direction, function () {
         self.resetRotateParams();
       });
-      this.anotherRubik.rotateMoveWhole(cubeIndex, direction);
     }
   }
 
