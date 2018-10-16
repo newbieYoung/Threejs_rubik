@@ -179,6 +179,7 @@ export default class Main {
    */
   enterAnimation() {
     var self = this;
+    var isAnimationEnd = false;
     
     var endStatus = {//目标状态
       rotateY: this.frontRubik.group.rotation.y,
@@ -203,13 +204,17 @@ export default class Main {
                             self.frontRubik.group.rotation.y = startStatus.rotateY;
                             self.frontRubik.group.position.y = startStatus.y
                             self.frontRubik.group.position.z = startStatus.z
+                          }).onComplete(function(){
+                            isAnimationEnd = true;
                           });
 
     function animate(time) {
-      requestAnimationFrame(animate);
-      TWEEN.update(time);
+      if (!isAnimationEnd){
+        requestAnimationFrame(animate);
+        TWEEN.update(time);
+      }
     }
-    
+
     setTimeout(function(){
       tween.start();
       animate();
