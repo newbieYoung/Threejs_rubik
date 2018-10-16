@@ -99,7 +99,7 @@ export default class Rubik {
   constructor(main) {
     this.main = main;
     this.initStatus = [];
-    this.defaultTotalTime = 300;//默认转动动画时长
+    this.defaultTotalTime = 250;//默认转动动画时长
   }
 
   /**
@@ -227,11 +227,14 @@ export default class Rubik {
    */
   rotateAnimation(elements, direction, currentstamp, startstamp, laststamp, callback ,totalTime) {
     var self = this;
+    var isAnimationEnd = false;//动画是否结束
+
     if (startstamp === 0) {
       startstamp = currentstamp;
       laststamp = currentstamp;
     }
     if (currentstamp - startstamp >= totalTime) {
+      isAnimationEnd = true;
       currentstamp = startstamp + totalTime;
     }
     var rotateMatrix = new THREE.Matrix4();//旋转矩阵
@@ -239,6 +242,7 @@ export default class Rubik {
     var xLine = new THREE.Vector3(1, 0, 0);
     var yLine = new THREE.Vector3(0, 1, 0);
     var zLine = new THREE.Vector3(0, 0, 1);
+
     switch (direction) {
       //绕z轴顺时针
       case 0.1:
@@ -288,7 +292,7 @@ export default class Rubik {
     for (var i = 0; i < elements.length; i++) {
       elements[i].applyMatrix(rotateMatrix);
     }
-    if (currentstamp - startstamp < totalTime) {
+    if (!isAnimationEnd) {
       requestAnimationFrame(function (timestamp) {
         self.rotateAnimation(elements, direction, timestamp, startstamp, currentstamp, callback, totalTime);
       });

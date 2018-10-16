@@ -158,9 +158,9 @@ export default class Main {
           this.rotateRubik();
         }
       }
-      if (!this.isRotating && !this.intersect){//触摸点没在魔方上
+      if (!this.isRotating && this.startPoint && !this.intersect){//触摸点没在魔方上
         this.movePoint = new THREE.Vector2(touch.clientX, touch.clientY);
-        if (!this.movePoint.equals(this.startPoint)){
+        if (!this.movePoint.equals(this.startPoint)) {
           this.rotateView();
         }
       }
