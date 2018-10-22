@@ -10,7 +10,7 @@
 <script src="../lib/combine.js"></script>
 <script src="../lib/matrix4.js"></script>
 
-<!-- 片段着色器程序 -->
+<!-- 片元着色器程序 -->
 <script id="shader-fs" type="x-shader/x-fragment">
         precision mediump float;
         uniform vec3 u_LightColor;
@@ -48,6 +48,7 @@
             v_Normal = normalize(vec3(u_NormalMatrix * a_Normal));
         }
 </script>
+
 <script type="text/javascript">
     var EyePoint = {//视点以及默认位置
         x:8.0,
