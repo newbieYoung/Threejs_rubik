@@ -69,11 +69,11 @@
 
     function createWorld(){
         var gl = initRender();//创建渲染器
-        var shaderPorgram = initShaders(gl);//初始化着色器程序
+        var shaderProgram = initShaders(gl);//初始化着色器程序
         var cameraMatrix = initCamera();//创建相机
-        initLight(gl,shaderPorgram);//创建光源
-        var num = initObject(gl,shaderPorgram);//创建物体
-        render(gl,num,shaderPorgram,cameraMatrix);//渲染
+        initLight(gl,shaderProgram);//创建光源
+        var num = initObject(gl,shaderProgram);//创建物体
+        render(gl,num,shaderProgram,cameraMatrix);//渲染
     }
 
     function initRender(){
@@ -97,18 +97,18 @@
         return cameraMatrix;
     }
 
-    function initLight(gl,shaderPorgram){
+    function initLight(gl,shaderProgram){
         //点光源
-        var u_LightColor = gl.getUniformLocation(shaderPorgram, 'u_LightColor');
+        var u_LightColor = gl.getUniformLocation(shaderProgram, 'u_LightColor');
         gl.uniform3f(u_LightColor, 1.0, 1.0, 1.0);
-        var u_LightPosition = gl.getUniformLocation(shaderPorgram, 'u_LightPosition');
+        var u_LightPosition = gl.getUniformLocation(shaderProgram, 'u_LightPosition');
         gl.uniform3f(u_LightPosition, 2.5, 4.0, 3.5);
         //环境光
-        var u_AmbientLight = gl.getUniformLocation(shaderPorgram, 'u_AmbientLight');
+        var u_AmbientLight = gl.getUniformLocation(shaderProgram, 'u_AmbientLight');
         gl.uniform3f(u_AmbientLight, 0.2, 0.2, 0.2);
     }
 
-    function initObject(gl,shaderPorgram){
+    function initObject(gl,shaderProgram){
 
         //    v6----- v5
         //   /|      /|
@@ -161,21 +161,21 @@
         var num = indices.length;
         
         if(!_initElementBuffer(gl,indices)) return -1;//创建索引缓冲区
-        if(!_initArrayBuffer(gl,shaderPorgram,'a_Normal',normals,3,gl.FLOAT)) return -1;//创建法向量缓冲区
-        if(!_initArrayBuffer(gl,shaderPorgram,'a_Position',vertices,3,gl.FLOAT)) return -1;//创建顶点缓冲区
-        if(!_initArrayBuffer(gl,shaderPorgram,'a_Color',colors,3,gl.FLOAT)) return -1;////创建颜色缓冲区
+        if(!_initArrayBuffer(gl,shaderProgram,'a_Normal',normals,3,gl.FLOAT)) return -1;//创建法向量缓冲区
+        if(!_initArrayBuffer(gl,shaderProgram,'a_Position',vertices,3,gl.FLOAT)) return -1;//创建顶点缓冲区
+        if(!_initArrayBuffer(gl,shaderProgram,'a_Color',colors,3,gl.FLOAT)) return -1;////创建颜色缓冲区
 
         return num;
     }
 
     var rotateAngle = 0;
-    function render(gl,num,shaderPorgram,cameraMatrix){
+    function render(gl,num,shaderProgram,cameraMatrix){
         //模型矩阵
         rotateAngle += .3;
         var modelMatrix = new Matrix4();
         modelMatrix.rotate(rotateAngle, 1, 0, 0);
         modelMatrix.rotate(rotateAngle, 0, 1, 0);
-        var u_ModelMatrix = gl.getUniformLocation(shaderPorgram, 'u_ModelMatrix');
+        var u_ModelMatrix = gl.getUniformLocation(shaderProgram, 'u_ModelMatrix');
         gl.uniformMatrix4fv(u_ModelMatrix, false, modelMatrix.elements);
 
         //投影矩阵
@@ -185,21 +185,21 @@
             originMatrix.elements[i] = cameraMatrix.elements[i];
         }
         mvpMatrix.multiply(modelMatrix);
-        var u_MvpMatrix = gl.getUniformLocation(shaderPorgram, 'u_MvpMatrix');
+        var u_MvpMatrix = gl.getUniformLocation(shaderProgram, 'u_MvpMatrix');
         gl.uniformMatrix4fv(u_MvpMatrix, false, mvpMatrix.elements);
 
         //法向量变换矩阵
         var normalMatrix = new Matrix4(); 
         normalMatrix.setInverseOf(modelMatrix);
         normalMatrix.transpose();
-        var u_NormalMatrix = gl.getUniformLocation(shaderPorgram, 'u_NormalMatrix');
+        var u_NormalMatrix = gl.getUniformLocation(shaderProgram, 'u_NormalMatrix');
         gl.uniformMatrix4fv(u_NormalMatrix, false, normalMatrix.elements);
 
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         gl.drawElements(gl.TRIANGLES, num, gl.UNSIGNED_BYTE, 0);
 
         requestAnimationFrame(function(){
-            render(gl,num,shaderPorgram,originMatrix);
+            render(gl,num,shaderProgram,originMatrix);
         });
     }
 
@@ -217,7 +217,7 @@
     }
 
     //初始化数据缓冲区
-    function _initArrayBuffer (gl,shaderPorgram,attribute, data, num, type) {
+    function _initArrayBuffer (gl,shaderProgram,attribute, data, num, type) {
         //创建缓冲区
         var buffer = gl.createBuffer();
         if (!buffer) {
@@ -228,7 +228,7 @@
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
         gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
         //把缓冲区数据赋予指定变量
-        var a_attribute = gl.getAttribLocation(shaderPorgram, attribute);
+        var a_attribute = gl.getAttribLocation(shaderProgram, attribute);
         if (a_attribute < 0) {
             console.log('Failed to get the storage location of ' + attribute);
             return false;
