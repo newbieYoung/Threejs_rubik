@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="../reset.import.css">
 </head>
 <body>
-<canvas id="webgl"></canvas>
+<canvas id="retina"></canvas>
 <script src="../lib/compile.js"></script>
 <script src="../lib/matrix4.js"></script>
 
@@ -77,7 +77,7 @@
     }
 
     function initRender(){
-        var canvas = document.querySelector('#webgl');
+        var canvas = document.querySelector('#retina');
         canvas.width = width;
         canvas.height = height;
         var gl = canvas.getContext('webgl');//获取webgl上下文
