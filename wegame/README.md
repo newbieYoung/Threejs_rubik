@@ -1,15 +1,20 @@
-## quickstart
+## FirstRubik
+
+## 二维码
 
 ## 源码目录介绍
 ```
+./adapter                                  // 适配库
+./images                                   // 素材图片
+./game.js                                  // 入口脚本
+./game.json                                // 配置文件
 ./js
-├── libs
-│   ├── symbol.js                          // ES6 Symbol简易兼容
-│   ├── weapp-adapter.js                   // 小游戏适配器
-│   ├── three.js                           // 适当修改的threejs框架
-│   └── three-orbit-controls.js            // 适当修改的three-orbit-controls控制器代码
-├── objects
-│   ├── rubiks.js                          // 简单魔方类
+├── object
+│   ├── Rubik.js                           // 简易魔方对象
+│   └── TouchLine.js                       // 滑动条对象
+├── threejs
+│   └── three.js                           // threejs框架源代码
+├── tween
+│   └── tween.js                           // tweenjs框架源代码
 └── main.js                                // 游戏入口主函数
-
 ```
