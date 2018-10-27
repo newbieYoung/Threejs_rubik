@@ -2,6 +2,8 @@
 
 ## 二维码
 
+<img src="https://raw.githubusercontent.com/newbieYoung/Threejs_rubik/master/firstrubik-arcode.jpg">
+
 ## 源码目录介绍
 ```
 ./adapter                                  // 适配库
@@ -16,5 +18,5 @@
 │   └── three.js                           // threejs框架源代码
 ├── tween
 │   └── tween.js                           // tweenjs框架源代码
-└── main.js                                // 游戏入口主函数
+└── main.js                                // 游戏主函数
 ```
