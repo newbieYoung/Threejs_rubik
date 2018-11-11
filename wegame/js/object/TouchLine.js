@@ -7,11 +7,11 @@ export default class TouchLine {
     this.isActive = false;
 
     var self = this;
-    //滑动条实际尺寸
+    //实际尺寸
     this.realWidth = 750;
     this.realHeight = 64;
 
-    //滑动条逻辑尺寸
+    //逻辑尺寸
     this.width = this.main.originWidth;
     this.height = this.realHeight * this.width / self.realWidth;
 
@@ -22,7 +22,7 @@ export default class TouchLine {
     this.screenRect.left = 0;
     this.screenRect.top = window.innerHeight / 2 - this.screenRect.height / 2;
     
-    //球体
+    //加载图片
     var loader = new THREE.TextureLoader();
     loader.load('images/touch-line.png', function (texture) {
       var geometry = new THREE.PlaneBufferGeometry(self.width, self.height);

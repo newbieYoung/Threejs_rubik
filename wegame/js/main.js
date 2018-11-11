@@ -2,6 +2,10 @@ import * as THREE from 'threejs/three.js'
 import TWEEN from 'tween/tween.js'
 import BasicRubik from 'object/Rubik.js'
 import TouchLine from 'object/TouchLine.js'
+import ResetBtn from 'object/ResetBtn.js'
+import DisorganizeBtn from 'object/DisorganizeBtn.js'
+import SaveBtn from 'object/SaveBtn.js'
+import RestoreBtn from 'object/RestoreBtn.js'
 
 const Context = canvas.getContext('webgl');
 
@@ -16,7 +20,7 @@ export default class Main {
     this.height = window.innerHeight;
     this.devicePixelRatio = window.devicePixelRatio;
     this.viewCenter = new THREE.Vector3(0, 0, 0);//原点
-    this.minPercent = 0.15;//正反视图至少占15%区域
+    this.minPercent = 0.25;//正反视图至少占25%区域
     this.frontViewName = 'front-rubik';//正视图名称
     this.endViewName = 'end-rubik';//反视图名称
 
@@ -98,9 +102,22 @@ export default class Main {
     this.endRubik.model(this.endViewName);
     this.endRubik.resizeHeight(0, -1);
 
+    //滑动条
     this.touchLine = new TouchLine(this);
     this.rubikResize((1 - this.minPercent), this.minPercent);//默认正视图占85%区域，反视图占15%区域
     this.enterAnimation();
+
+    //重置按钮
+    this.resetBtn = new ResetBtn(this);
+
+    //混乱按钮
+    this.disorganizeBtn = new DisorganizeBtn(this);
+
+    //保存按钮
+    this.saveBtn = new SaveBtn(this);
+
+    //还原按钮
+    this.restoreBtn = new RestoreBtn(this);
   }
 
   /**
@@ -188,8 +205,8 @@ export default class Main {
     }
 
     this.frontRubik.group.rotateY(-90 / 180 * Math.PI);//把魔方设置为动画开始状态
-    this.frontRubik.group.position.y += 200;
-    this.frontRubik.group.position.z -= 300;
+    this.frontRubik.group.position.y += this.originHeight/3;
+    this.frontRubik.group.position.z -= 350;
 
     var startStatus = {//开始状态
       rotateY: this.frontRubik.group.rotation.y,
