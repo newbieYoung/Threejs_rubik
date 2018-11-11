@@ -211,13 +211,13 @@ export default class Main {
     function animate(time) {
       if (!isAnimationEnd){
         requestAnimationFrame(animate);
-        TWEEN.update(time);
+        TWEEN.update();
       }
     }
 
     setTimeout(function(){
       tween.start();
-      animate();
+      requestAnimationFrame(animate);
     },500)
     var stepArr = this.frontRubik.randomRotate();
     this.endRubik.runMethodAtNo(stepArr, 0, function () {
