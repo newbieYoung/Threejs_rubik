@@ -9,7 +9,7 @@ export default class TouchLine {
     var self = this;
     //滑动条实际尺寸
     this.realWidth = 750;
-    this.realHeight = 68;
+    this.realHeight = 64;
 
     //滑动条逻辑尺寸
     this.width = this.main.originWidth;
