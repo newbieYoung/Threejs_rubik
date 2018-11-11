@@ -37,6 +37,6 @@ export default class RestoreBtn {
    */
   defaultPosition() {
     this.plane.position.x = -this.main.originWidth / 2 + this.width / 2 + 50 * this.radio;
-    this.plane.position.y = this.main.originHeight / 2 - this.height * 3 / 2 - 40 * this.radio;
+    this.plane.position.y = this.main.originHeight / 2 - this.height * 3 / 2 - 35 * this.radio;
   }
 }
