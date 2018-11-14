@@ -18,7 +18,6 @@ export default class Main {
     this.context = Context;//绘图上下文
     this.width = window.innerWidth;
     this.height = window.innerHeight;
-    this.devicePixelRatio = window.devicePixelRatio;
     this.viewCenter = new THREE.Vector3(0, 0, 0);//原点
     this.minPercent = 0.25;//正反视图至少占25%区域
     this.frontViewName = 'front-rubik';//正视图名称
@@ -51,9 +50,9 @@ export default class Main {
     });
     this.renderer.setSize(this.width, this.height);
     this.renderer.setClearColor(0xFFFFFF, 1.0);
-    canvas.width = this.width * this.devicePixelRatio;
-    canvas.height = this.height * this.devicePixelRatio;
-    this.renderer.setPixelRatio(this.devicePixelRatio);
+    canvas.width = this.width * window.devicePixelRatio;
+    canvas.height = this.height * window.devicePixelRatio;
+    this.renderer.setPixelRatio(window.devicePixelRatio);
   }
 
   /**
@@ -69,7 +68,7 @@ export default class Main {
     this.camera.up.set(0, 1, 0);//正方向
     this.camera.lookAt(this.viewCenter);
 
-    this.originWidth = 248;
+    this.originWidth = 750 / window.devicePixelRatio;
     this.originHeight = this.originWidth / this.camera.aspect;
   }
 
