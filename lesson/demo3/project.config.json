@@ -10,7 +10,7 @@
 	"compileType": "game",
 	"libVersion": "game",
 	"appid": "wx699b2fe2746f34f2",
-	"projectname": "StaticRubik",
+	"projectname": "MultipleView",
 	"isGameTourist": true,
 	"condition": {
 		"search": {
