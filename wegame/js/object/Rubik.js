@@ -2,12 +2,11 @@ import * as THREE from '../threejs/three.js'
 
 //基础模型参数
 const BasicParams = {
-  x: -75,
-  y: 75,
-  z: 75,
+  x: 0,
+  y: 0,
+  z: 0,
   num: 3,
   len: 50,
-  defaultColor: '#666666',
   //右、左、上、下、前、后
   colors: ['#ff6b02', '#dd422f',
     '#ffffff', '#fdcd02',
@@ -15,57 +14,41 @@ const BasicParams = {
 };
 
 /**
- * 魔方
- * x、y、z 魔方正面左上角坐标
- * num 魔方单位方向上数量
- * len 魔方单位正方体宽高
+ * 简易魔方
+ * x、y、z 魔方中心点坐标
+ * num 魔方阶数
+ * len 小方块宽高
  * colors 魔方六面体颜色
  */
 function SimpleCube(x, y, z, num, len, colors) {
+  //魔方左上角坐标
+  var leftUpX = x - num / 2 * len;
+  var leftUpY = y + num / 2 * len;
+  var leftUpZ = z + num / 2 * len;
+
   var cubes = [];
   for (var i = 0; i < num; i++) {
     for (var j = 0; j < num * num; j++) {
-      //小正方体六个面，每个面使用相同材质的纹理，但是颜色不一样，内面为默认色
+
       var myFaces = [];
-      var no = i * num * num + j;
-      if (no % 3 == 2) {//右
-        myFaces[0] = faces(colors[0]);
-      }
-      if (no % 3 == 0) {//左
-        myFaces[1] = faces(colors[1]);
-      }
-      if (no % 9 <= 2) {//上
-        myFaces[2] = faces(colors[2]);
-      }
-      if (no % 9 >= 6) {//下
-        myFaces[3] = faces(colors[3]);
-      }
-      if (parseInt(no / 9) == 0) {//前
-        myFaces[4] = faces(colors[4]);
-      }
-      if (parseInt(no / 9) == 2) {//后
-        myFaces[5] = faces(colors[5]);
-      }
       for (var k = 0; k < 6; k++) {
-        if (!myFaces[k]) {
-          myFaces[k] = faces(BasicParams.defaultColor);
-        }
+        myFaces[k] = faces(BasicParams.colors[k]);
       }
 
-      var cubegeo = new THREE.BoxGeometry(len, len, len);
       var materials = [];
       for (var k = 0; k < 6; k++) {
         var texture = new THREE.Texture(myFaces[k]);
         texture.needsUpdate = true;
-        materials.push(new THREE.MeshLambertMaterial({
-          map: texture
-        }));
+        materials.push(new THREE.MeshLambertMaterial({ map: texture }));
       }
+
+      var cubegeo = new THREE.BoxGeometry(len, len, len);
       var cube = new THREE.Mesh(cubegeo, materials);
-      //假设整个魔方的中心在坐标系原点，推出每个小正方体的中心
-      cube.position.x = (x + len / 2) + (j % 3) * len;
-      cube.position.y = (y - len / 2) - parseInt(j / 3) * len;
-      cube.position.z = (z - len / 2) - i * len;
+
+      //依次计算各个小方块中心点坐标
+      cube.position.x = (leftUpX + len / 2) + (j % num) * len;
+      cube.position.y = (leftUpY - len / 2) - parseInt(j / num) * len;
+      cube.position.z = (leftUpZ - len / 2) - i * len;
       cubes.push(cube)
     }
   }
