@@ -2,9 +2,9 @@ import * as THREE from '../threejs/three.js'
 
 //基础模型参数
 const BasicParams = {
-  x: -75,
-  y: 75,
-  z: 75,
+  x: 0,
+  y: 0,
+  z: 0,
   num: 3,
   len: 50,
   //右、左、上、下、前、后
@@ -15,12 +15,17 @@ const BasicParams = {
 
 /**
  * 简易魔方
- * x、y、z 魔方正面左上角坐标
- * num 魔方单位方向上数量
- * len 魔方单位正方体宽高
+ * x、y、z 魔方中心点坐标
+ * num 魔方阶数
+ * len 小方块宽高
  * colors 魔方六面体颜色
  */
 function SimpleCube(x, y, z, num, len, colors) {
+  //魔方左上角坐标
+  var leftUpX = x - num/2*len;
+  var leftUpY = y + num/2*len;
+  var leftUpZ = z + num/2*len;
+
   var cubes = [];
   for (var i = 0; i < num; i++) {
     for (var j = 0; j < num * num; j++) {
@@ -40,10 +45,10 @@ function SimpleCube(x, y, z, num, len, colors) {
       var cubegeo = new THREE.BoxGeometry(len, len, len);
       var cube = new THREE.Mesh(cubegeo, materials);
 
-      //假设整个魔方的中心在坐标系原点，推出每个小正方体的中心
-      cube.position.x = (x + len / 2) + (j % 3) * len;
-      cube.position.y = (y - len / 2) - parseInt(j / 3) * len;
-      cube.position.z = (z - len / 2) - i * len;
+      //依次计算各个小方块中心点坐标
+      cube.position.x = (leftUpX + len / 2) + (j % num) * len;
+      cube.position.y = (leftUpY - len / 2) - parseInt(j / num) * len;
+      cube.position.z = (leftUpZ - len / 2) - i * len;
       cubes.push(cube)
     }
   }
