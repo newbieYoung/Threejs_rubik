@@ -68,8 +68,9 @@ export default class Main {
     this.camera.up.set(0, 1, 0);//正方向
     this.camera.lookAt(this.viewCenter);
 
-    this.originWidth = 750 / window.devicePixelRatio;
-    this.originHeight = this.originWidth / this.camera.aspect;
+    //透视投影相机视角为垂直视角，根据视角可以求出原点所在裁切面的高度，然后已知高度和宽高比可以计算出宽度
+    this.originHeight = Math.tan(22.5/180*Math.PI)*this.camera.position.z*2;
+    this.originWidth = this.originHeight*this.camera.aspect;
   }
 
   /**
