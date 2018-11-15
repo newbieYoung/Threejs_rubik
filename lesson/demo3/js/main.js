@@ -51,6 +51,10 @@ export default class Main {
     this.camera.up.set(0, 1, 0);//正方向
     this.camera.lookAt(this.viewCenter);
 
+    //透视投影相机视角为垂直视角，根据视角可以求出原点所在裁切面的高度，然后已知高度和宽高比可以计算出宽度
+    this.originHeight = Math.tan(22.5 / 180 * Math.PI) * this.camera.position.z * 2;
+    this.originWidth = this.originHeight * this.camera.aspect;
+
     //轨道视角控制器
     this.orbitController = new THREE.OrbitControls(this.camera, this.renderer.domElement);
     this.orbitController.enableZoom = false;
@@ -80,10 +84,12 @@ export default class Main {
     //正视角
     this.frontRubik = new BasicRubik(this);
     this.frontRubik.model(this.frontViewName);
+    this.frontRubik.resizeHeight(0.5,1);
 
     //反视角
     this.endRubik = new BasicRubik(this);
     this.endRubik.model(this.endViewName);
+    this.endRubik.resizeHeight(0.5,-1);
   }
 
   /**
