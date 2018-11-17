@@ -1,6 +1,7 @@
 import * as THREE from 'threejs/three.js'
 require('threejs/OrbitControls.js')
 import BasicRubik from 'object/Rubik.js'
+import TouchLine from 'object/TouchLine.js'
 
 const Context = canvas.getContext('webgl');
 
@@ -24,6 +25,7 @@ export default class Main {
     this.initScene();
     this.initLight();
     this.initObject();
+    this.initEvent();
     this.render();
   }
 
@@ -90,6 +92,49 @@ export default class Main {
     this.endRubik = new BasicRubik(this);
     this.endRubik.model(this.endViewName);
     this.endRubik.resizeHeight(0.5,-1);
+
+    //滑动控制条
+    this.touchLine = new TouchLine(this);
+  }
+
+  /**
+   * 初始化事件
+   */
+  initEvent() {
+    wx.onTouchStart(this.touchStart.bind(this));
+    wx.onTouchMove(this.touchMove.bind(this));
+    wx.onTouchEnd(this.touchEnd.bind(this));
+  }
+
+  /**
+   * 触摸开始
+   */
+  touchStart(event){
+    var touch = event.touches[0];
+    this.startPoint = touch;
+    if (touch.clientY >= this.touchLine.screenRect.top && touch.clientY <= this.touchLine.screenRect.top + this.touchLine.screenRect.height) {
+      this.touchLine.enable();
+    }
+  }
+
+  /**
+   * 触摸移动
+   */
+  touchMove(event){
+    var touch = event.touches[0];
+    if (this.touchLine.isActive) {//滑动touchline
+      this.touchLine.move(touch.clientY);
+      var frontPercent = touch.clientY / window.innerHeight;
+      var endPercent = 1 - frontPercent;
+      this.rubikResize(frontPercent, endPercent);
+    }
+  }
+
+  /**
+   * 触摸结束
+   */
+  touchEnd(){
+
   }
 
   /**
@@ -99,5 +144,13 @@ export default class Main {
     this.renderer.clear();
     this.renderer.render(this.scene, this.camera);
     requestAnimationFrame(this.render.bind(this), canvas);
+  }
+
+  /**
+   * 正反魔方区域占比变化
+   */
+  rubikResize(frontPercent, endPercent) {
+    this.frontRubik.resizeHeight(frontPercent, 1);
+    this.endRubik.resizeHeight(endPercent, -1);
   }
 }
