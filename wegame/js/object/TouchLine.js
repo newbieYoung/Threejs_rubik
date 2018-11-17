@@ -68,10 +68,11 @@ export default class TouchLine {
       }
 
       var len = this.screenRect.top + this.screenRect.height / 2 - y;//屏幕移动距离
+      this.screenRect.top = y - this.screenRect.height / 2;
+
       var percent = len / window.innerHeight;
       var len2 = this.main.originHeight * percent;
       this.plane.position.y += len2;
-      this.screenRect.top = y - this.screenRect.height / 2;
     }
   }
 }
