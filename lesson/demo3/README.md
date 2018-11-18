@@ -1,14 +1,16 @@
-## 静态魔方
+## 正反视图
 
 ## 目录介绍
 ```
 ./adapter
+./images 
 ./js
 ├── threejs
 │   ├── three.js                           
-│   └── OrbitControls.js            
+│   └── OrbitControls.js           
 ├── object
-│   ├── Rubiks.js                          
+│   ├── Rubiks.js  
+│   └── TouchLine.js             
 └── main.js                                
 
 ```
