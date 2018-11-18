@@ -1,5 +1,4 @@
 import * as THREE from 'threejs/three.js'
-require('threejs/OrbitControls.js')
 import BasicRubik from 'object/Rubik.js'
 import TouchLine from 'object/TouchLine.js'
 
@@ -56,12 +55,6 @@ export default class Main {
     //透视投影相机视角为垂直视角，根据视角可以求出原点所在裁切面的高度，然后已知高度和宽高比可以计算出宽度
     this.originHeight = Math.tan(22.5 / 180 * Math.PI) * this.camera.position.z * 2;
     this.originWidth = this.originHeight * this.camera.aspect;
-
-    //轨道视角控制器
-    this.orbitController = new THREE.OrbitControls(this.camera, this.renderer.domElement);
-    this.orbitController.enableZoom = false;
-    this.orbitController.rotateSpeed = 2;
-    this.orbitController.target = this.viewCenter;//设置控制点
   }
 
   /**
@@ -86,15 +79,16 @@ export default class Main {
     //正视角
     this.frontRubik = new BasicRubik(this);
     this.frontRubik.model(this.frontViewName);
-    this.frontRubik.resizeHeight(0.5,1);
+    this.frontRubik.resizeHeight(0, 1);
 
     //反视角
     this.endRubik = new BasicRubik(this);
     this.endRubik.model(this.endViewName);
-    this.endRubik.resizeHeight(0.5,-1);
+    this.endRubik.resizeHeight(0, -1);
 
     //滑动控制条
     this.touchLine = new TouchLine(this);
+    this.rubikResize((1 - this.minPercent), this.minPercent);//默认正视图占85%区域，反视图占15%区域
   }
 
   /**
@@ -134,7 +128,7 @@ export default class Main {
    * 触摸结束
    */
   touchEnd(){
-
+    this.touchLine.disable();
   }
 
   /**

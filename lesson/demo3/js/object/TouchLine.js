@@ -32,11 +32,21 @@ export default class TouchLine {
       self.plane = new THREE.Mesh(geometry, material);
       self.plane.position.set(0, 0, 0);
       self.main.scene.add(self.plane);
+      self.defaultPosition();
     }, function (xhr) {
       console.log((xhr.loaded / xhr.total * 100) + '% loaded');
     }, function (xhr) {
       console.log('An error happened');
     });
+  }
+
+  /**
+   * 默认位置
+   */
+  defaultPosition() {
+    this.enable();
+    this.move(window.innerHeight * (1 - this.main.minPercent));
+    this.disable();
   }
 
   enable() {

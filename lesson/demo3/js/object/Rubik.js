@@ -98,6 +98,16 @@ export default class Rubik {
       //this.main.scene.add(item);
       this.group.add(item);
     }
+
+    //进行一定的旋转变换保证三个面可视
+    if (type == this.main.frontViewName) {
+      this.group.rotateY(45 / 180 * Math.PI);
+      this.group.rotateOnAxis(new THREE.Vector3(1, 0, 1), 25 / 180 * Math.PI);
+    } else {
+      this.group.rotateY((270 - 45) / 180 * Math.PI);
+      this.group.rotateOnAxis(new THREE.Vector3(1, 0, 1), 25 / 180 * Math.PI);
+    }
+
     this.main.scene.add(this.group);
   }
 
