@@ -59,7 +59,7 @@ export default class Main {
    * 初始化相机
    */
   initCamera() {
-    this.camera = new THREE.PerspectiveCamera(45, this.width / this.height, 1, 1000);
+    this.camera = new THREE.PerspectiveCamera(45, this.width / this.height, 1, 1500);
     /**
      * 相机放置在Z轴上方便计算；
      * Z轴坐标需要除以屏幕宽高比保证魔方在不同宽高比的屏幕中宽度所占的比例基本一致
