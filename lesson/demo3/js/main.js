@@ -79,12 +79,12 @@ export default class Main {
     //正视角
     this.frontRubik = new BasicRubik(this);
     this.frontRubik.model(this.frontViewName);
-    this.frontRubik.resizeHeight(0, 1);
+    this.frontRubik.resizeHeight(0.5, 1);
 
     //反视角
     this.endRubik = new BasicRubik(this);
     this.endRubik.model(this.endViewName);
-    this.endRubik.resizeHeight(0, -1);
+    this.endRubik.resizeHeight(0.5, -1);
 
     //滑动控制条
     this.touchLine = new TouchLine(this);
