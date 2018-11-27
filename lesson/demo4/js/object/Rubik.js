@@ -99,6 +99,19 @@ export default class Rubik {
       this.group.add(item);
     }
 
+    //外层透明正方体
+    var width = BasicParams.num * BasicParams.len;
+    var cubegeo = new THREE.BoxGeometry(width, width, width);
+    var hex = 0x000000;
+    for (var i = 0; i < cubegeo.faces.length; i += 2) {
+      cubegeo.faces[i].color.setHex(hex);
+      cubegeo.faces[i + 1].color.setHex(hex);
+    }
+    var cubemat = new THREE.MeshBasicMaterial({ vertexColors: THREE.FaceColors, opacity: 0, transparent: true });
+    this.container = new THREE.Mesh(cubegeo, cubemat);
+    this.container.cubeType = 'coverCube';
+    this.group.add(this.container);
+
     //进行一定的旋转变换保证三个面可见
     if (type == this.main.frontViewName) {
       this.group.rotateY(45 / 180 * Math.PI);

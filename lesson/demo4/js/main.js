@@ -19,6 +19,11 @@ export default class Main {
     this.endViewName = 'end-rubik';//反视图名称
     this.minPercent = 0.25;//正反视图至少占25%区域
 
+    this.raycaster = new THREE.Raycaster();//碰撞射线
+    this.intersect;//射线碰撞的元素
+    this.targetRubik;//目标魔方
+    this.anotherRubik;//非目标魔方
+
     this.initRender();
     this.initCamera();
     this.initScene();
@@ -108,6 +113,8 @@ export default class Main {
     this.startPoint = touch;
     if (touch.clientY >= this.touchLine.screenRect.top && touch.clientY <= this.touchLine.screenRect.top + this.touchLine.screenRect.height) {
       this.touchLine.enable();
+    }else{
+      this.getIntersects(event);
     }
   }
 
@@ -146,5 +153,48 @@ export default class Main {
   rubikResize(frontPercent, endPercent) {
     this.frontRubik.resizeHeight(frontPercent, 1);
     this.endRubik.resizeHeight(endPercent, -1);
+  }
+
+  /**
+   * 获取操作魔方时的触摸点坐标以及该触摸点所在平面的法向量
+   */
+  getIntersects(event) {
+    var touch = event.touches[0];
+    var mouse = new THREE.Vector2();
+    mouse.x = (touch.clientX / this.width) * 2 - 1;
+    mouse.y = -(touch.clientY / this.height) * 2 + 1;
+
+    this.raycaster.setFromCamera(mouse, this.camera);
+
+    var rubikTypeName;
+    if (this.touchLine.screenRect.top > touch.clientY) {//正视图
+      this.targetRubik = this.frontRubik;
+      this.anotherRubik = this.endRubik;
+      rubikTypeName = this.frontViewName;
+    } else if (this.touchLine.screenRect.top + this.touchLine.screenRect.height < touch.clientY) {//反视图
+      this.targetRubik = this.endRubik;
+      this.anotherRubik = this.frontRubik;
+      rubikTypeName = this.endViewName;
+    }
+    var targetIntersect;
+    for (var i = 0; i < this.scene.children.length; i++) {
+      if (this.scene.children[i].childType == rubikTypeName) {
+        targetIntersect = this.scene.children[i];
+        break;
+      }
+    }
+
+    if (targetIntersect) {
+      var intersects = this.raycaster.intersectObjects(targetIntersect.children);
+      if (intersects.length >= 2) {
+        if (intersects[0].object.cubeType === 'coverCube') {
+          this.intersect = intersects[1];
+          this.normalize = intersects[0].face.normal;
+        } else {
+          this.intersect = intersects[0];
+          this.normalize = intersects[1].face.normal;
+        }
+      }
+    }
   }
 }
