@@ -147,7 +147,8 @@ export default class Rubik {
     }
 
     //透明正方体
-    var cubegeo = new THREE.BoxGeometry(150, 150, 150);
+    var width = BasicParams.num * BasicParams.len;
+    var cubegeo = new THREE.BoxGeometry(width, width, width);
     var hex = 0x000000;
     for (var i = 0; i < cubegeo.faces.length; i += 2) {
       cubegeo.faces[i].color.setHex(hex);
