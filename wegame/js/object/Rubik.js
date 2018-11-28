@@ -317,16 +317,16 @@ export default class Rubik {
   /**
    * 获得旋转方向
    */
-  getDirection(vector3, normalize) {
+  getDirection(sub, normalize) {
     this.updateCurLocalAxisInWorld();
     var direction;
     //判断差向量和x、y、z轴的夹角
-    var xAngle = vector3.angleTo(this.xLine);
-    var xAngleAd = vector3.angleTo(this.xLineAd);
-    var yAngle = vector3.angleTo(this.yLine);
-    var yAngleAd = vector3.angleTo(this.yLineAd);
-    var zAngle = vector3.angleTo(this.zLine);
-    var zAngleAd = vector3.angleTo(this.zLineAd);
+    var xAngle = sub.angleTo(this.xLine);
+    var xAngleAd = sub.angleTo(this.xLineAd);
+    var yAngle = sub.angleTo(this.yLine);
+    var yAngleAd = sub.angleTo(this.yLineAd);
+    var zAngle = sub.angleTo(this.zLine);
+    var zAngleAd = sub.angleTo(this.zLineAd);
     var minAngle = Math.min.apply(null, [xAngle, xAngleAd, yAngle, yAngleAd, zAngle, zAngleAd]);//最小夹角
 
     var xLine = new THREE.Vector3(1, 0, 0);
