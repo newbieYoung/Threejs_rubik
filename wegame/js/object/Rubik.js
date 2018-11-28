@@ -83,6 +83,14 @@ export default class Rubik {
     this.main = main;
     this.initStatus = [];
     this.defaultTotalTime = 250;//默认转动动画时长
+
+    //魔方的六个转动方向
+    this.xLine = new THREE.Vector3(1, 0, 0);
+    this.xLineAd = new THREE.Vector3(-1, 0, 0);
+    this.yLine = new THREE.Vector3(0, 1, 0);
+    this.yLineAd = new THREE.Vector3(0, -1, 0);
+    this.zLine = new THREE.Vector3(0, 0, 1);
+    this.zLineAd = new THREE.Vector3(0, 0, -1);
   }
 
   /**
