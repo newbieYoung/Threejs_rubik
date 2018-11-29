@@ -104,7 +104,7 @@ export default class Rubik {
     var zPoint = new THREE.Vector3(0, 0, 1);
     var zPointAd = new THREE.Vector3(0, 0, -1);
 
-    var matrix = this.group.matrixWorld;
+    var matrix = this.group.matrixWorld;//魔方的在世界坐标系的变换矩阵
     center.applyMatrix4(matrix);
     xPoint.applyMatrix4(matrix);
     xPointAd.applyMatrix4(matrix);
