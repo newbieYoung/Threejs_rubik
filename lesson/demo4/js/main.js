@@ -23,6 +23,9 @@ export default class Main {
     this.intersect;//射线碰撞的元素
     this.targetRubik;//目标魔方
     this.anotherRubik;//非目标魔方
+    this.startPoint;//触摸点
+    this.movePoint;//滑动点
+    this.isRotating = false;//魔方是否正在转动
 
     this.initRender();
     this.initCamera();
@@ -115,6 +118,9 @@ export default class Main {
       this.touchLine.enable();
     }else{
       this.getIntersects(event);
+      if (!this.isRotating && this.intersect) {//触摸点在魔方上且魔方没有转动
+        this.startPoint = this.intersect.point;//开始转动，设置起始点
+      }
     }
   }
 
@@ -128,6 +134,14 @@ export default class Main {
       var frontPercent = touch.clientY / window.innerHeight;
       var endPercent = 1 - frontPercent;
       this.rubikResize(frontPercent, endPercent);
+    }else{
+      this.getIntersects(event);
+      if (!this.isRotating && this.startPoint && this.intersect) {//滑动点在魔方上且魔方没有转动
+        this.movePoint = this.intersect.point;
+        if (!this.movePoint.equals(this.startPoint)) {//触摸点和滑动点不一样则意味着可以得到滑动方向
+          this.rotateRubik();
+        }
+      }
     }
   }
 
@@ -145,6 +159,35 @@ export default class Main {
     this.renderer.clear();
     this.renderer.render(this.scene, this.camera);
     requestAnimationFrame(this.render.bind(this), canvas);
+  }
+
+  /**
+   * 转动魔方
+   */
+  rotateRubik() {
+    var self = this;
+    this.isRotating = true;//转动标识置为true
+    var sub = this.movePoint.sub(this.startPoint);//计算滑动方向
+    var direction = this.targetRubik.getDirection(sub, this.normalize);//计算转动方向
+    var cubeIndex = this.intersect.object.cubeIndex;
+    this.targetRubik.rotateMove(cubeIndex, direction);
+    var anotherIndex = cubeIndex - this.targetRubik.minCubeIndex + this.anotherRubik.minCubeIndex;
+    this.anotherRubik.rotateMove(anotherIndex, direction, function () {
+      self.resetRotateParams();
+    });
+  }
+
+  /**
+   * 重置魔方转动参数
+   */
+  resetRotateParams() {
+    this.isRotating = false;
+    this.targetRubik = null;
+    this.anotherRubik = null;
+    this.intersect = null;
+    this.normalize = null;
+    this.startPoint = null;
+    this.movePoint = null;
   }
 
   /**
