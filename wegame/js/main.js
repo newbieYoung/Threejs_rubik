@@ -171,7 +171,7 @@ export default class Main {
       this.getIntersects(event);
       if (!this.isRotating && this.startPoint && this.intersect) {//移动点在魔方上且魔方没有转动
         this.movePoint = this.intersect.point;
-        if (!this.movePoint.equals(this.startPoint)) {//触摸点和移动点不一样则意味着可以得到转动向量
+        if (!this.movePoint.equals(this.startPoint)) {//触摸点和移动点不一样则意味着可以得到滑动方向
           this.rotateRubik();
         }
       }
@@ -248,7 +248,7 @@ export default class Main {
   rotateRubik(){
     var self = this;
     this.isRotating = true;//转动标识置为true
-    var sub = this.movePoint.sub(this.startPoint);//计算转动向量
+    var sub = this.movePoint.sub(this.startPoint);//计算滑动方向
     var direction = this.targetRubik.getDirection(sub, this.normalize);//获得方向
     var cubeIndex = this.intersect.object.cubeIndex;
     this.targetRubik.rotateMove(cubeIndex, direction);
