@@ -211,7 +211,7 @@ export default class Rubik {
   }
 
   /**
-   * 旋转动画
+   * 转动动画
    * currentstamp 当前时间
    * startstamp   开始时间
    */
@@ -234,42 +234,36 @@ export default class Rubik {
     var zLine = new THREE.Vector3(0, 0, 1);
 
     switch (direction) {
-      //绕z轴顺时针
       case 0.1:
       case 1.2:
       case 2.4:
       case 3.3:
         rotateMatrix = this.rotateAroundWorldAxis(origin, zLine, -90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
         break;
-      //绕z轴逆时针
       case 0.2:
       case 1.1:
       case 2.3:
       case 3.4:
         rotateMatrix = this.rotateAroundWorldAxis(origin, zLine, 90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
         break;
-      //绕y轴顺时针
       case 0.4:
       case 1.3:
       case 4.3:
       case 5.4:
         rotateMatrix = this.rotateAroundWorldAxis(origin, yLine, -90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
         break;
-      //绕y轴逆时针
       case 1.4:
       case 0.3:
       case 4.4:
       case 5.3:
         rotateMatrix = this.rotateAroundWorldAxis(origin, yLine, 90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
         break;
-      //绕x轴顺时针
       case 2.2:
       case 3.1:
       case 4.1:
       case 5.2:
         rotateMatrix = this.rotateAroundWorldAxis(origin, xLine, 90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
         break;
-      //绕x轴逆时针
       case 2.1:
       case 3.2:
       case 4.2:
@@ -315,7 +309,7 @@ export default class Rubik {
   }
 
   /**
-   * 获得旋转方向
+   * 计算转动方向
    */
   getDirection(sub, normalize) {
     this.updateCurLocalAxisInWorld();
@@ -352,61 +346,61 @@ export default class Rubik {
       case xAngleAd:
         direction = 1;//向x轴反方向旋转90度
         if (normalize.equals(yLine)) {
-          direction = direction + 0.1;//绕z轴逆时针
+          direction = direction + 0.1;
         } else if (normalize.equals(yLineAd)) {
-          direction = direction + 0.2;//绕z轴顺时针
+          direction = direction + 0.2;
         } else if (normalize.equals(zLine)) {
-          direction = direction + 0.3;//绕y轴顺时针
+          direction = direction + 0.3;
         } else {
-          direction = direction + 0.4;//绕y轴逆时针
+          direction = direction + 0.4;
         }
         break;
       case yAngle:
         direction = 2;//向y轴正方向旋转90度
         if (normalize.equals(zLine)) {
-          direction = direction + 0.1;//绕x轴逆时针
+          direction = direction + 0.1;
         } else if (normalize.equals(zLineAd)) {
-          direction = direction + 0.2;//绕x轴顺时针
+          direction = direction + 0.2;
         } else if (normalize.equals(xLine)) {
-          direction = direction + 0.3;//绕z轴逆时针
+          direction = direction + 0.3;
         } else {
-          direction = direction + 0.4;//绕z轴顺时针
+          direction = direction + 0.4;
         }
         break;
       case yAngleAd:
         direction = 3;//向y轴反方向旋转90度
         if (normalize.equals(zLine)) {
-          direction = direction + 0.1;//绕x轴顺时针
+          direction = direction + 0.1;
         } else if (normalize.equals(zLineAd)) {
-          direction = direction + 0.2;//绕x轴逆时针
+          direction = direction + 0.2;
         } else if (normalize.equals(xLine)) {
-          direction = direction + 0.3;//绕z轴顺时针
+          direction = direction + 0.3;
         } else {
-          direction = direction + 0.4;//绕z轴逆时针
+          direction = direction + 0.4;
         }
         break;
       case zAngle:
         direction = 4;//向z轴正方向旋转90度
         if (normalize.equals(yLine)) {
-          direction = direction + 0.1;//绕x轴顺时针
+          direction = direction + 0.1;
         } else if (normalize.equals(yLineAd)) {
-          direction = direction + 0.2;//绕x轴逆时针
+          direction = direction + 0.2;
         } else if (normalize.equals(xLine)) {
-          direction = direction + 0.3;//绕y轴顺时针
+          direction = direction + 0.3;
         } else {
-          direction = direction + 0.4;//绕y轴逆时针
+          direction = direction + 0.4;
         }
         break;
       case zAngleAd:
         direction = 5;//向z轴反方向旋转90度
         if (normalize.equals(yLine)) {
-          direction = direction + 0.1;//绕x轴逆时针
+          direction = direction + 0.1;
         } else if (normalize.equals(yLineAd)) {
-          direction = direction + 0.2;//绕x轴顺时针
+          direction = direction + 0.2;
         } else if (normalize.equals(xLine)) {
-          direction = direction + 0.3;//绕y轴逆时针
+          direction = direction + 0.3;
         } else {
-          direction = direction + 0.4;//绕y轴顺时针
+          direction = direction + 0.4;
         }
         break;
       default:
