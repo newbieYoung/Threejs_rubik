@@ -21,6 +21,7 @@ export default class Main {
 
     this.raycaster = new THREE.Raycaster();//碰撞射线
     this.intersect;//射线碰撞的元素
+    this.normalize;//滑动平面法向量
     this.targetRubik;//目标魔方
     this.anotherRubik;//非目标魔方
     this.startPoint;//触摸点

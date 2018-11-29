@@ -28,7 +28,7 @@ export default class Main {
     this.anotherRubik;//非目标魔方
     this.isRotating = false;//魔方是否正在转动
     this.intersect;//碰撞光线穿过的元素
-    this.normalize;//触发平面法向量
+    this.normalize;//触摸平面法向量
     this.startPoint;//触摸点
     this.movePoint;//移动点
 
