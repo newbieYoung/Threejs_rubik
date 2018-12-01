@@ -303,7 +303,7 @@ export default class Main {
     var lenY = movePoint.y - startPoint.y;
     if(type==this.frontViewName){
       if(startPoint.x>window.innerWidth/2){
-        if (Math.abs(lenY) > Math.abs(lenX)){//纵向移动
+        if (Math.abs(lenY) > Math.abs(lenX) * Math.tan(30/180*Math.PI)){//纵向移动
           if(lenY<0){
             direction = 2.1;
           }else{
@@ -317,7 +317,7 @@ export default class Main {
           }
         }
       }else{
-        if (Math.abs(lenY) > Math.abs(lenX)) {//纵向移动
+        if (Math.abs(lenY) > Math.abs(lenX) * Math.tan(30 / 180 * Math.PI)) {//纵向移动
           if (lenY < 0) {
             direction = 2.4;
           } else {
@@ -333,7 +333,7 @@ export default class Main {
       }
     }else{
       if (startPoint.x > window.innerWidth / 2) {
-        if (Math.abs(lenY) > Math.abs(lenX)) {//纵向移动
+        if (Math.abs(lenY) > Math.abs(lenX) * Math.tan(30 / 180 * Math.PI)) {//纵向移动
           if (lenY < 0) {
             direction = 2.2;
           } else {
@@ -347,7 +347,7 @@ export default class Main {
           }
         }
       } else {
-        if (Math.abs(lenY) > Math.abs(lenX)) {//纵向移动
+        if (Math.abs(lenY) > Math.abs(lenX) * Math.tan(30 / 180 * Math.PI)) {//纵向移动
           if (lenY < 0) {
             direction = 2.3;
           } else {
