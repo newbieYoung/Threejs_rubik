@@ -299,17 +299,18 @@ export default class Main {
    */
   getViewDirection(type,startPoint,movePoint){
     var direction;
+    var rad = 30*Math.PI/180;
     var lenX = movePoint.x - startPoint.x;
     var lenY = movePoint.y - startPoint.y;
     if(type==this.frontViewName){
       if(startPoint.x>window.innerWidth/2){
-        if (Math.abs(lenY) > Math.abs(lenX) * Math.tan(30/180*Math.PI)){//纵向移动
+        if (Math.abs(lenY) > Math.abs(lenX) * Math.tan(rad)){
           if(lenY<0){
             direction = 2.1;
           }else{
             direction = 3.1;
           }
-        }else{//横行移动
+        }else{
           if(lenX>0){
             direction = 0.3;
           }else{
@@ -317,13 +318,13 @@ export default class Main {
           }
         }
       }else{
-        if (Math.abs(lenY) > Math.abs(lenX) * Math.tan(30 / 180 * Math.PI)) {//纵向移动
+        if (Math.abs(lenY) > Math.abs(lenX) * Math.tan(rad)) {
           if (lenY < 0) {
             direction = 2.4;
           } else {
             direction = 3.4;
           }
-        } else {//横行移动
+        } else {
           if (lenX > 0) {
             direction = 4.4;
           } else {
@@ -333,13 +334,13 @@ export default class Main {
       }
     }else{
       if (startPoint.x > window.innerWidth / 2) {
-        if (Math.abs(lenY) > Math.abs(lenX) * Math.tan(30 / 180 * Math.PI)) {//纵向移动
+        if (Math.abs(lenY) > Math.abs(lenX) * Math.tan(rad)) {
           if (lenY < 0) {
             direction = 2.2;
           } else {
             direction = 3.2;
           }
-        } else {//横行移动
+        } else {
           if (lenX > 0) {
             direction = 1.4;
           } else {
@@ -347,13 +348,13 @@ export default class Main {
           }
         }
       } else {
-        if (Math.abs(lenY) > Math.abs(lenX) * Math.tan(30 / 180 * Math.PI)) {//纵向移动
+        if (Math.abs(lenY) > Math.abs(lenX) * Math.tan(rad)) {
           if (lenY < 0) {
             direction = 2.3;
           } else {
             direction = 3.3;
           }
-        } else {//横行移动
+        } else {
           if (lenX > 0) {
             direction = 5.3;
           } else {
