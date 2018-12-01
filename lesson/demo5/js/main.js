@@ -15,8 +15,8 @@ export default class Main {
     this.height = window.innerHeight;
     this.devicePixelRatio = window.devicePixelRatio;
     this.viewCenter = new THREE.Vector3(0, 0, 0);//原点
-    this.frontViewName = 'front-rubik';//正视图名称
-    this.endViewName = 'end-rubik';//反视图名称
+    this.frontViewName = 'front-rubik';//正视角魔方名称
+    this.endViewName = 'end-rubik';//反视角魔方名称
     this.minPercent = 0.25;//正反视图至少占25%区域
 
     this.raycaster = new THREE.Raycaster();//碰撞射线
@@ -85,12 +85,12 @@ export default class Main {
    * 初始化物体
    */
   initObject() {
-    //正视角
+    //正视角魔方
     this.frontRubik = new BasicRubik(this);
     this.frontRubik.model(this.frontViewName);
     this.frontRubik.resizeHeight(0.5, 1);
 
-    //反视角
+    //反视角魔方
     this.endRubik = new BasicRubik(this);
     this.endRubik.model(this.endViewName);
     this.endRubik.resizeHeight(0.5, -1);
@@ -122,6 +122,9 @@ export default class Main {
       if (!this.isRotating && this.intersect) {//触摸点在魔方上且魔方没有转动
         this.startPoint = this.intersect.point;//开始转动，设置起始点
       }
+      if (!this.intersect) {//触摸点没在魔方上
+        this.startPoint = new THREE.Vector2(touch.clientX, touch.clientY);
+      }
     }
   }
 
@@ -141,6 +144,12 @@ export default class Main {
         this.movePoint = this.intersect.point;
         if (!this.movePoint.equals(this.startPoint)) {//触摸点和滑动点不一样则意味着可以得到滑动方向
           this.rotateRubik();
+        }
+      }
+      if (!this.isRotating && this.startPoint && !this.intersect) {//触摸点没在魔方上
+        this.movePoint = new THREE.Vector2(touch.clientX, touch.clientY);
+        if (!this.movePoint.equals(this.startPoint)) {
+          this.rotateView();
         }
       }
     }
@@ -179,6 +188,31 @@ export default class Main {
   }
 
   /**
+   * 转动视图
+   */
+  rotateView() {
+    var self = this;
+    if (this.startPoint.y < this.touchLine.screenRect.top) {
+      this.targetRubik = this.frontRubik;
+      this.anotherRubik = this.endRubik;
+    } else if (this.startPoint.y > this.touchLine.screenRect.top + this.touchLine.screenRect.height) {
+      this.targetRubik = this.endRubik;
+      this.anotherRubik = this.frontRubik;
+    }
+    if (this.targetRubik && this.anotherRubik) {
+      this.isRotating = true;//转动标识置为true
+      //计算整体转动方向
+      var targetType = this.targetRubik.group.childType;
+      var cubeIndex = this.getViewRotateCubeIndex(targetType);
+      var direction = this.getViewDirection(targetType, this.startPoint, this.movePoint);
+      this.targetRubik.rotateMoveWhole(cubeIndex, direction);
+      this.anotherRubik.rotateMoveWhole(cubeIndex, direction, function () {
+        self.resetRotateParams();
+      });
+    }
+  }
+
+  /**
    * 重置魔方转动参数
    */
   resetRotateParams() {
@@ -200,6 +234,89 @@ export default class Main {
   }
 
   /**
+   * 获得视图转动方块索引
+   */
+  getViewRotateCubeIndex(type) {
+    if (type == this.frontViewName) {
+      return 10;
+    } else {
+      return 65;
+    }
+  }
+
+  /**
+   * 获得视图转动方向
+   */
+  getViewDirection(type, startPoint, movePoint) {
+    var direction;
+    var rad = 30 * Math.PI / 180;
+    var lenX = movePoint.x - startPoint.x;
+    var lenY = movePoint.y - startPoint.y;
+    if (type == this.frontViewName) {
+      if (startPoint.x > window.innerWidth / 2) {
+        if (Math.abs(lenY) > Math.abs(lenX) * Math.tan(rad)) {
+          if (lenY < 0) {
+            direction = 2.1;
+          } else {
+            direction = 3.1;
+          }
+        } else {
+          if (lenX > 0) {
+            direction = 0.3;
+          } else {
+            direction = 1.3;
+          }
+        }
+      } else {
+        if (Math.abs(lenY) > Math.abs(lenX) * Math.tan(rad)) {
+          if (lenY < 0) {
+            direction = 2.4;
+          } else {
+            direction = 3.4;
+          }
+        } else {
+          if (lenX > 0) {
+            direction = 4.4;
+          } else {
+            direction = 5.4;
+          }
+        }
+      }
+    } else {
+      if (startPoint.x > window.innerWidth / 2) {
+        if (Math.abs(lenY) > Math.abs(lenX) * Math.tan(rad)) {
+          if (lenY < 0) {
+            direction = 2.2;
+          } else {
+            direction = 3.2;
+          }
+        } else {
+          if (lenX > 0) {
+            direction = 1.4;
+          } else {
+            direction = 0.4;
+          }
+        }
+      } else {
+        if (Math.abs(lenY) > Math.abs(lenX) * Math.tan(rad)) {
+          if (lenY < 0) {
+            direction = 2.3;
+          } else {
+            direction = 3.3;
+          }
+        } else {
+          if (lenX > 0) {
+            direction = 5.3;
+          } else {
+            direction = 4.3;
+          }
+        }
+      }
+    }
+    return direction;
+  }
+
+  /**
    * 获取操作魔方时的触摸点坐标以及该触摸点所在平面的法向量
    */
   getIntersects(event) {
@@ -211,11 +328,11 @@ export default class Main {
     this.raycaster.setFromCamera(mouse, this.camera);
 
     var rubikTypeName;
-    if (this.touchLine.screenRect.top > touch.clientY) {//正视图
+    if (this.touchLine.screenRect.top > touch.clientY) {
       this.targetRubik = this.frontRubik;
       this.anotherRubik = this.endRubik;
       rubikTypeName = this.frontViewName;
-    } else if (this.touchLine.screenRect.top + this.touchLine.screenRect.height < touch.clientY) {//反视图
+    } else if (this.touchLine.screenRect.top + this.touchLine.screenRect.height < touch.clientY) {
       this.targetRubik = this.endRubik;
       this.anotherRubik = this.frontRubik;
       rubikTypeName = this.endViewName;

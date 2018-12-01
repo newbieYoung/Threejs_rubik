@@ -15,8 +15,8 @@ export default class Main {
     this.height = window.innerHeight;
     this.devicePixelRatio = window.devicePixelRatio;
     this.viewCenter = new THREE.Vector3(0, 0, 0);//原点
-    this.frontViewName = 'front-rubik';//正视图名称
-    this.endViewName = 'end-rubik';//反视图名称
+    this.frontViewName = 'front-rubik';//正视角魔方名称
+    this.endViewName = 'end-rubik';//反视角魔方名称
     this.minPercent = 0.25;//正反视图至少占25%区域
 
     this.raycaster = new THREE.Raycaster();//碰撞射线
@@ -85,12 +85,12 @@ export default class Main {
    * 初始化物体
    */
   initObject() {
-    //正视角
+    //正视角魔方
     this.frontRubik = new BasicRubik(this);
     this.frontRubik.model(this.frontViewName);
     this.frontRubik.resizeHeight(0.5, 1);
 
-    //反视角
+    //反视角魔方
     this.endRubik = new BasicRubik(this);
     this.endRubik.model(this.endViewName);
     this.endRubik.resizeHeight(0.5, -1);
@@ -211,11 +211,11 @@ export default class Main {
     this.raycaster.setFromCamera(mouse, this.camera);
 
     var rubikTypeName;
-    if (this.touchLine.screenRect.top > touch.clientY) {//正视图
+    if (this.touchLine.screenRect.top > touch.clientY) {
       this.targetRubik = this.frontRubik;
       this.anotherRubik = this.endRubik;
       rubikTypeName = this.frontViewName;
-    } else if (this.touchLine.screenRect.top + this.touchLine.screenRect.height < touch.clientY) {//反视图
+    } else if (this.touchLine.screenRect.top + this.touchLine.screenRect.height < touch.clientY) {
       this.targetRubik = this.endRubik;
       this.anotherRubik = this.frontRubik;
       rubikTypeName = this.endViewName;
