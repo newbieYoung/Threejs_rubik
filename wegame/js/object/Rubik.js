@@ -535,40 +535,40 @@ export default class Rubik {
    * 魔方基本公式 U、R、F、D、L、B、u、r、f、d、l、b
    */
   U(next) {
-    this.rotateMove(this.minCubeIndex, 5.4, next, 100);
+    this.rotateMove(this.minCubeIndex, 1.3, next, 100);
   }
   R(next) {
-    this.rotateMove(this.minCubeIndex, 0.1, next, 100);
+    this.rotateMove(this.minCubeIndex, 2.4, next, 100);
   }
   F(next) {
-    this.rotateMove(this.minCubeIndex, 3.1, next, 100);
+    this.rotateMove(this.minCubeIndex, 4.1, next, 100);
   }
   D(next) {
-    this.rotateMove(this.minCubeIndex + 6, 0.3, next, 100);
+    this.rotateMove(this.minCubeIndex + 6, 4.4, next, 100);
   }
   L(next) {
-    this.rotateMove(this.minCubeIndex + 18, 3.4, next, 100);
+    this.rotateMove(this.minCubeIndex + 18, 1.1, next, 100);
   }
   B(next) {
-    this.rotateMove(this.minCubeIndex + 2, 5.1, next, 100);
+    this.rotateMove(this.minCubeIndex + 2, 2.1, next, 100);
   }
   u(next) {
-    this.rotateMove(this.minCubeIndex, 0.3, next, 100);
+    this.rotateMove(this.minCubeIndex, 4.4, next, 100);
   }
   r(next) {
-    this.rotateMove(this.minCubeIndex, 3.4, next, 100);
+    this.rotateMove(this.minCubeIndex, 1.1, next, 100);
   }
   f(next) {
-    this.rotateMove(this.minCubeIndex, 5.1, next, 100);
+    this.rotateMove(this.minCubeIndex, 2.1, next, 100);
   }
   d(next) {
-    this.rotateMove(this.minCubeIndex + 6, 5.4, next, 100);
+    this.rotateMove(this.minCubeIndex + 6, 1.3, next, 100);
   }
   l(next) {
-    this.rotateMove(this.minCubeIndex + 18, 0.1, next, 100);
+    this.rotateMove(this.minCubeIndex + 18, 2.4, next, 100);
   }
   b(next) {
-    this.rotateMove(this.minCubeIndex + 2, 3.1, next, 100);
+    this.rotateMove(this.minCubeIndex + 2, 4.1, next, 100);
   }
 
   /**
