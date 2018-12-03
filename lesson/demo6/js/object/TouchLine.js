@@ -75,4 +75,15 @@ export default class TouchLine {
       this.plane.position.y += len2;
     }
   }
+
+  /**
+   * 判断是否在范围内
+   */
+  isHover(touch) {
+    var isHover = false;
+    if (touch.clientY >= this.screenRect.top && touch.clientY <= this.screenRect.top + this.screenRect.height && touch.clientX >= this.screenRect.left && touch.clientX <= this.screenRect.left + this.screenRect.width) {
+      isHover = true;
+    }
+    return isHover;
+  }
 }
