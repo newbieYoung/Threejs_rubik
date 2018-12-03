@@ -15,8 +15,7 @@ export default class TouchLine {
     this.width = this.main.originWidth;
     this.height = this.realHeight * this.width / self.realWidth;
 
-    //屏幕尺寸
-    this.screenRect = {
+    this.screenRect = {//屏幕尺寸
       width: window.innerWidth,
       height: this.realHeight * window.innerWidth / self.realWidth
     }
@@ -56,17 +55,6 @@ export default class TouchLine {
     this.isActive = false;
   }
 
-  /**
-   * 判断是否在范围内
-   */
-  isHover(touch){
-    var isHover = false;
-    if (touch.clientY >= this.screenRect.top && touch.clientY <= this.screenRect.top + this.screenRect.height && touch.clientX >= this.screenRect.left && touch.clientX<= this.screenRect.left + this.screenRect.width){
-      isHover = true;
-    }
-    return isHover;
-  }
-
   move(y){
     if (this.isActive){
       var shouldHide = false;
@@ -86,5 +74,16 @@ export default class TouchLine {
       var len2 = this.main.originHeight * percent;
       this.plane.position.y += len2;
     }
+  }
+
+  /**
+   * 判断是否在范围内
+   */
+  isHover(touch) {
+    var isHover = false;
+    if (touch.clientY >= this.screenRect.top && touch.clientY <= this.screenRect.top + this.screenRect.height && touch.clientX >= this.screenRect.left && touch.clientX <= this.screenRect.left + this.screenRect.width) {
+      isHover = true;
+    }
+    return isHover;
   }
 }
