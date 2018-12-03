@@ -236,6 +236,7 @@ export default class Main {
       tween.start();
       requestAnimationFrame(animate);
     },500)
+    
     var stepArr = this.frontRubik.randomRotate();
     this.endRubik.runMethodAtNo(stepArr, 0, function () {
       self.initEvent();//进场动画结束之后才能进行手动操作
