@@ -15,7 +15,8 @@ export default class TouchLine {
     this.width = this.main.originWidth;
     this.height = this.realHeight * this.width / self.realWidth;
 
-    this.screenRect = {//屏幕尺寸
+    //屏幕尺寸
+    this.screenRect = {
       width: window.innerWidth,
       height: this.realHeight * window.innerWidth / self.realWidth
     }
