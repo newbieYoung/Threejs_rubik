@@ -606,4 +606,27 @@ export default class Rubik {
     this.runMethodAtNo(stepArr, 0, callback);
     return stepArr;
   }
+
+  /**
+   * 重置魔方
+   */
+  reset(){
+    for(var i=0;i<this.cubes.length;i++){
+      var matrix = this.cubes[i].matrix.clone();
+      matrix.getInverse(matrix);
+      var cube = this.cubes[i];
+      cube.applyMatrix(matrix);
+
+      for(var j=0;j<this.initStatus.length;j++){
+        var status = this.initStatus[j];
+        if (cube.id == status.cubeIndex){
+          cube.position.x = status.x;
+          cube.position.y = status.y;
+          cube.position.z = status.z;
+          cube.cubeIndex = cube.id;
+          continue;
+        }
+      }
+    }
+  }
 }

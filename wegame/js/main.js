@@ -149,12 +149,14 @@ export default class Main {
     this.startPoint = touch;
     if (this.touchLine.isHover(touch)) {
       this.touchLine.enable();
+    } else if (this.resetBtn.isHover(touch) && !this.isRotating){
+      this.resetRubik();
     } else {
       this.getIntersects(event);
       if (!this.isRotating && this.intersect) {//触摸点在魔方上且魔方没有转动
         this.startPoint = this.intersect.point;//开始转动，设置起始点
       }
-      if (!this.intersect){//触摸点没在魔方上
+      if (!this.isRotating && !this.intersect){//触摸点没在魔方上
         this.startPoint = new THREE.Vector2(touch.clientX, touch.clientY);
       }
     }
@@ -170,7 +172,7 @@ export default class Main {
       var frontPercent = touch.clientY / window.innerHeight;
       var endPercent = 1 - frontPercent;
       this.rubikResize(frontPercent, endPercent);
-    } else {
+    }else {
       this.getIntersects(event);
       if (!this.isRotating && this.startPoint && this.intersect) {//移动点在魔方上且魔方没有转动
         this.movePoint = this.intersect.point;
@@ -430,5 +432,13 @@ export default class Main {
   rubikResize(frontPercent, endPercent) {
     this.frontRubik.resizeHeight(frontPercent, 1);
     this.endRubik.resizeHeight(endPercent, -1);
+  }
+
+  /**
+   * 正反视图魔方初始化
+   */
+  resetRubik(){
+    this.frontRubik.reset();
+    this.endRubik.reset();
   }
 }
