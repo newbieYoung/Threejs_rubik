@@ -106,7 +106,7 @@ export default class Main {
   touchStart(event){
     var touch = event.touches[0];
     this.startPoint = touch;
-    if (touch.clientY >= this.touchLine.screenRect.top && touch.clientY <= this.touchLine.screenRect.top + this.touchLine.screenRect.height) {
+    if (this.touchLine.isHover(touch)) {
       this.touchLine.enable();
     }
   }
