@@ -151,6 +151,8 @@ export default class Main {
       this.touchLine.enable();
     } else if (this.resetBtn.isHover(touch) && !this.isRotating){
       this.resetRubik();
+    } else if (this.disorganizeBtn.isHover(touch) && !this.isRotating){
+      this.disorganizeRubik();
     } else {
       this.getIntersects(event);
       if (!this.isRotating && this.intersect) {//触摸点在魔方上且魔方没有转动
@@ -241,11 +243,10 @@ export default class Main {
       tween.start();
       requestAnimationFrame(animate);
     },500)
-    
-    var stepArr = this.frontRubik.randomRotate();
-    this.endRubik.runMethodAtNo(stepArr, 0, function () {
+
+    this.disorganizeRubik(function () {
       self.initEvent();//进场动画结束之后才能进行手动操作
-    });
+    })
   }
 
   /**
@@ -435,10 +436,27 @@ export default class Main {
   }
 
   /**
-   * 正反视图魔方初始化
+   * 重置正反视图魔方
    */
   resetRubik(){
     this.frontRubik.reset();
     this.endRubik.reset();
+  }
+
+  /**
+   * 扰乱正反视图魔方
+   */
+  disorganizeRubik(callback){
+    var self = this;
+    if(!this.isRotating){
+      this.isRotating = true;
+      var stepArr = this.frontRubik.randomRotate();
+      this.endRubik.runMethodAtNo(stepArr, 0, function(){
+        if (callback){
+          callback();
+        }
+        self.resetRotateParams();
+      });
+    }
   }
 }
