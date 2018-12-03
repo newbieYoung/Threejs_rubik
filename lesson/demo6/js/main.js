@@ -123,7 +123,7 @@ export default class Main {
       if (!this.isRotating && this.intersect) {//触摸点在魔方上且魔方没有转动
         this.startPoint = this.intersect.point;//开始转动，设置起始点
       }
-      if (!this.intersect) {//触摸点没在魔方上
+      if (!this.isRotating && !this.intersect) {//触摸点没在魔方上
         this.startPoint = new THREE.Vector2(touch.clientX, touch.clientY);
       }
     }
