@@ -629,4 +629,28 @@ export default class Rubik {
       }
     }
   }
+
+  /**
+   * 存储某个魔方的状态
+   */
+  save(rubik, position ,number) {
+    for (var i = 0; i < this.cubes.length; i++) {
+      var matrix = rubik.cubes[i].matrix.clone();
+      var selfMat = this.cubes[i].matrix.clone();
+      selfMat = selfMat.getInverse(selfMat);
+      this.cubes[i].applyMatrix(selfMat);
+      this.cubes[i].applyMatrix(matrix);
+      this.updateCubeIndex(this.cubes);
+    }
+
+    if (position){
+      this.group.position.x = position.x;
+      this.group.position.y = position.y;
+      this.group.position.z = position.z;
+    }
+
+    if (number!=null){
+      this.group.scale.set(number, number, number);
+    }
+  }
 }

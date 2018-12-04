@@ -43,7 +43,7 @@ export default class DisorganizeBtn {
    */
   defaultPosition() {
     this.plane.position.x = -this.main.originWidth / 2 + this.width / 2 + 50 * this.radio;
-    this.plane.position.y = this.main.originHeight / 2 - this.height * 7 / 2 - 65 * this.radio;
+    this.plane.position.y = this.main.originHeight / 2 - this.height * 3 / 2 - 35 * this.radio;
 
     this.screenRect.left = (this.main.originWidth / 2 + this.plane.position.x - this.width / 2) / this.main.uiRadio;
     this.screenRect.top = (this.main.originHeight / 2 - this.plane.position.y - this.height / 2) / this.main.uiRadio;

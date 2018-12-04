@@ -10,6 +10,44 @@ import RestoreBtn from 'object/RestoreBtn.js'
 const Context = canvas.getContext('webgl');
 
 /**
+ * 圆角矩形
+ */
+function radiusRect(context, options) {
+  var min = options.width > options.height ? options.height : options.width;
+  if (options.radius * 2 > min) {
+    options.radius = min / 2;
+  }
+  context.moveTo(options.x + options.radius, options.y);
+  context.lineTo(options.x + options.width - options.radius, options.y);
+  context.quadraticCurveTo(options.x + options.width, options.y, options.x + options.width, options.y + options.radius);//quadraticCurveTo二次贝塞尔曲线
+  context.lineTo(options.x + options.width, options.y + options.height - options.radius);
+  context.quadraticCurveTo(options.x + options.width, options.y + options.height, options.x + options.width - options.radius, options.y + options.height);
+  context.lineTo(options.x + options.radius, options.y + options.height);
+  context.quadraticCurveTo(options.x, options.y + options.height, options.x, options.y + options.height - options.radius);
+  context.lineTo(options.x, options.y + options.radius);
+  context.quadraticCurveTo(options.x, options.y, options.x + options.radius, options.y);
+  context.strokeStyle = options.backgroundColor;
+  context.stroke();
+  context.fillStyle = options.backgroundColor;
+  context.fill();
+}
+
+/**
+ * 生成半透明背景素材
+ */
+function background() {
+  var color = 'rgba(0,0,0,0.1)';
+  var canvas = document.createElement('canvas');
+  canvas.width = 80;
+  canvas.height = 64;
+  var context = canvas.getContext('2d');
+  context.beginPath();
+  radiusRect(context, { radius: 8, width: 80, height: 64, x: 0, y: 0, backgroundColor: color });
+  context.closePath();
+  return canvas;
+}
+
+/**
  * 游戏主函数
  */
 export default class Main {
@@ -128,6 +166,12 @@ export default class Main {
    */
   render() {
     this.renderer.clear();
+
+    if(this.tagRubik){
+      this.tagRubik.group.rotation.x += 0.005;
+      this.tagRubik.group.rotation.y += 0.005;
+    }
+
     this.renderer.render(this.scene, this.camera);
     requestAnimationFrame(this.render.bind(this), canvas);
   }
@@ -153,6 +197,10 @@ export default class Main {
       this.resetRubik();
     } else if (this.disorganizeBtn.isHover(touch) && !this.isRotating){
       this.disorganizeRubik();
+    } else if (this.saveBtn.isHover(touch) && !this.isRotating){
+      this.saveRubik();
+    } else if (this.restoreBtn.isHover(touch) && !this.isRotating){
+      this.restoreRubik();
     } else {
       this.getIntersects(event);
       if (!this.isRotating && this.intersect) {//触摸点在魔方上且魔方没有转动
@@ -457,6 +505,61 @@ export default class Main {
         }
         self.resetRotateParams();
       });
+    }
+  }
+
+  /**
+   * 存储魔方
+   */
+  saveRubik(){
+    if(this.tagRubik){
+      this.scene.remove(this.tagRubik.group);
+      this.tagRubik = null;
+    }
+    if(this.tagRubikBg){
+      this.scene.remove(this.tagRubikBg);
+      this.tagRubikBg = null;
+    }
+
+    var bgCanvas = background();
+    var radio = this.originWidth / 750;
+
+    this.tagRubik = new BasicRubik(this);
+    this.tagRubik.model();
+    var tagPosition = this.saveBtn.getPosition();
+    tagPosition.y -= this.saveBtn.height/2+15;
+    tagPosition.x += (this.saveBtn.width - bgCanvas.width) / 2 * radio;
+    this.tagRubik.save(this.frontRubik, tagPosition, 0.05);
+
+    //添加灰色半透明背景
+    var bgWidth = bgCanvas.width * radio;
+    var bgHeight = bgCanvas.height * radio;
+    var geometry = new THREE.PlaneGeometry(bgWidth, bgHeight);
+    var texture = new THREE.CanvasTexture(bgCanvas);
+    var material = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
+    this.tagRubikBg = new THREE.Mesh(geometry, material);
+    this.tagRubikBg.position.x = tagPosition.x;
+    this.tagRubikBg.position.y = tagPosition.y;
+    this.tagRubikBg.position.z = tagPosition.z;
+    this.scene.add(this.tagRubikBg);
+  }
+
+  /**
+   * 读取魔方
+   */
+  restoreRubik(){
+    if (this.tagRubik){
+      this.frontRubik.save(this.tagRubik);
+      this.endRubik.save(this.tagRubik);
+
+      if (this.tagRubik) {
+        this.scene.remove(this.tagRubik.group);
+        this.tagRubik = null;
+      }
+      if (this.tagRubikBg) {
+        this.scene.remove(this.tagRubikBg);
+        this.tagRubikBg = null;
+      }
     }
   }
 }
