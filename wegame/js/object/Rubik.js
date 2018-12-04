@@ -624,7 +624,7 @@ export default class Rubik {
           cube.position.y = status.y;
           cube.position.z = status.z;
           cube.cubeIndex = cube.id;
-          continue;
+          break;
         }
       }
     }
