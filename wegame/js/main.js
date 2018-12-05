@@ -168,8 +168,8 @@ export default class Main {
     this.renderer.clear();
 
     if(this.tagRubik){
-      this.tagRubik.group.rotation.x += 0.005;
-      this.tagRubik.group.rotation.y += 0.005;
+      this.tagRubik.group.rotation.x += 0.01;
+      this.tagRubik.group.rotation.y += 0.01;
     }
 
     this.renderer.render(this.scene, this.camera);
@@ -194,12 +194,16 @@ export default class Main {
     if (this.touchLine.isHover(touch)) {
       this.touchLine.enable();
     } else if (this.resetBtn.isHover(touch) && !this.isRotating){
+      this.resetBtn.enable();
       this.resetRubik();
     } else if (this.disorganizeBtn.isHover(touch) && !this.isRotating){
+      this.disorganizeBtn.enable();
       this.disorganizeRubik();
     } else if (this.saveBtn.isHover(touch) && !this.isRotating){
+      this.saveBtn.enable();
       this.saveRubik();
     } else if (this.restoreBtn.isHover(touch) && !this.isRotating){
+      this.restoreBtn.enable();
       this.restoreRubik();
     } else {
       this.getIntersects(event);
@@ -222,7 +226,7 @@ export default class Main {
       var frontPercent = touch.clientY / window.innerHeight;
       var endPercent = 1 - frontPercent;
       this.rubikResize(frontPercent, endPercent);
-    }else {
+    } else if(!this.resetBtn.isActive && !this.disorganizeBtn.isActive && !this.saveBtn.isActive && !this.restoreBtn.isActive) {
       this.getIntersects(event);
       if (!this.isRotating && this.startPoint && this.intersect) {//移动点在魔方上且魔方没有转动
         this.movePoint = this.intersect.point;
@@ -244,6 +248,10 @@ export default class Main {
    */
   touchEnd() {
     this.touchLine.disable();
+    this.resetBtn.disable();
+    this.disorganizeBtn.disable();
+    this.saveBtn.disable();
+    this.restoreBtn.disable();
   }
 
   /**
@@ -514,30 +522,33 @@ export default class Main {
   saveRubik(){
     if(this.tagRubik){
       this.scene.remove(this.tagRubik.group);
-      this.tagRubik = null;
     }
     if(this.tagRubikBg){
       this.scene.remove(this.tagRubikBg);
-      this.tagRubikBg = null;
     }
 
     var bgCanvas = background();
     var radio = this.originWidth / 750;
 
-    this.tagRubik = new BasicRubik(this);
-    this.tagRubik.model();
+    if (!this.tagRubik){
+      this.tagRubik = new BasicRubik(this);
+      this.tagRubik.model();
+    }
     var tagPosition = this.saveBtn.getPosition();
     tagPosition.y -= this.saveBtn.height/2+15;
     tagPosition.x += (this.saveBtn.width - bgCanvas.width) / 2 * radio;
     this.tagRubik.save(this.frontRubik, tagPosition, 0.05);
+    this.scene.add(this.tagRubik.group);
 
     //添加灰色半透明背景
-    var bgWidth = bgCanvas.width * radio;
-    var bgHeight = bgCanvas.height * radio;
-    var geometry = new THREE.PlaneGeometry(bgWidth, bgHeight);
-    var texture = new THREE.CanvasTexture(bgCanvas);
-    var material = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
-    this.tagRubikBg = new THREE.Mesh(geometry, material);
+    if (!this.tagRubikBg){
+      var bgWidth = bgCanvas.width * radio;
+      var bgHeight = bgCanvas.height * radio;
+      var geometry = new THREE.PlaneGeometry(bgWidth, bgHeight);
+      var texture = new THREE.CanvasTexture(bgCanvas);
+      var material = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
+      this.tagRubikBg = new THREE.Mesh(geometry, material);
+    }
     this.tagRubikBg.position.x = tagPosition.x;
     this.tagRubikBg.position.y = tagPosition.y;
     this.tagRubikBg.position.z = tagPosition.z;
@@ -554,11 +565,9 @@ export default class Main {
 
       if (this.tagRubik) {
         this.scene.remove(this.tagRubik.group);
-        this.tagRubik = null;
       }
       if (this.tagRubikBg) {
         this.scene.remove(this.tagRubikBg);
-        this.tagRubikBg = null;
       }
     }
   }

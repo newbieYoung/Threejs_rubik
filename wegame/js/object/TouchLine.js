@@ -51,7 +51,6 @@ export default class TouchLine {
   enable(){
     this.isActive = true;
   }
-
   disable(){
     this.isActive = false;
   }

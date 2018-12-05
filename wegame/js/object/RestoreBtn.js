@@ -4,8 +4,9 @@ export default class RestoreBtn {
 
   constructor(main) {
     this.main = main;
-    var self = this;
+    this.isActive = false;
 
+    var self = this;
     //实际尺寸
     this.realWidth = 129;
     this.realHeight = 64;
@@ -58,5 +59,12 @@ export default class RestoreBtn {
       isHover = true;
     }
     return isHover;
+  }
+
+  enable() {
+    this.isActive = true;
+  }
+  disable() {
+    this.isActive = false;
   }
 }

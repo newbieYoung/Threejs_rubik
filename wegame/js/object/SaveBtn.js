@@ -4,8 +4,9 @@ export default class SaveBtn {
 
   constructor(main) {
     this.main = main;
-    var self = this;
+    this.isActive = false;
 
+    var self = this;
     //实际尺寸
     this.realWidth = 129;
     this.realHeight = 64;
@@ -65,5 +66,12 @@ export default class SaveBtn {
    */
   getPosition(){
     return this.plane.position.clone();
+  }
+
+  enable() {
+    this.isActive = true;
+  }
+  disable() {
+    this.isActive = false;
   }
 }

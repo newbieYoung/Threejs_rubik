@@ -4,6 +4,7 @@ export default class DisorganizeBtn {
 
   constructor(main) {
     this.main = main;
+    this.isActive = false;
 
     var self = this;
     //实际尺寸
@@ -58,5 +59,12 @@ export default class DisorganizeBtn {
       isHover = true;
     }
     return isHover;
+  }
+
+  enable() {
+    this.isActive = true;
+  }
+  disable() {
+    this.isActive = false;
   }
 }
