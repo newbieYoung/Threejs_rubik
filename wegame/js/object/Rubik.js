@@ -640,8 +640,8 @@ export default class Rubik {
       selfMat = selfMat.getInverse(selfMat);
       this.cubes[i].applyMatrix(selfMat);
       this.cubes[i].applyMatrix(matrix);
-      this.updateCubeIndex(this.cubes);
     }
+    this.updateCubeIndex(this.cubes);
 
     if (position){
       this.group.position.x = position.x;
