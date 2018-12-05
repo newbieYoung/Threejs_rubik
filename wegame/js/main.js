@@ -520,6 +520,11 @@ export default class Main {
    * 存储魔方
    */
   saveRubik(){
+    wx.showLoading({
+      title: '存档中...',
+      mask:true
+    })
+
     if(this.tagRubik){
       this.scene.remove(this.tagRubik.group);
     }
@@ -553,6 +558,10 @@ export default class Main {
     this.tagRubikBg.position.y = tagPosition.y;
     this.tagRubikBg.position.z = tagPosition.z;
     this.scene.add(this.tagRubikBg);
+
+    setTimeout(function(){
+      wx.hideLoading()
+    },500)
   }
 
   /**
