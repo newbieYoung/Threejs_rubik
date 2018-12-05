@@ -524,14 +524,7 @@ export default class Main {
       title: '存档中...',
       mask:true
     })
-
-    if(this.tagRubik){
-      this.scene.remove(this.tagRubik.group);
-    }
-    if(this.tagRubikBg){
-      this.scene.remove(this.tagRubikBg);
-    }
-
+    
     var bgCanvas = background();
     var radio = this.originWidth / 750;
 
