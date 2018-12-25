@@ -7,6 +7,7 @@ const BasicParams = {
   z: 0,
   num: 3,
   len: 50,
+  defaultColor: '#666666',
   //右、左、上、下、前、后
   colors: ['#ff6b02', '#dd422f',
     '#ffffff', '#fdcd02',
@@ -30,13 +31,33 @@ function SimpleCube(x, y, z, num, len, colors) {
   for (var i = 0; i < num; i++) {
     for (var j = 0; j < num * num; j++) {
 
+      //小方块外部面才有颜色，内部面默认为灰色
       var myFaces = [];
-      for (var k = 0; k < 6; k++) {
-        myFaces[k] = faces(BasicParams.colors[k]);
+      var no = i * num * num + j;
+      if (no % 3 == 2) {//右
+        myFaces[0] = faces(BasicParams.colors[0]);
+      }
+      if (no % 3 == 0) {//左
+        myFaces[1] = faces(BasicParams.colors[1]);
+      }
+      if (no % 9 <= 2) {//上
+        myFaces[2] = faces(BasicParams.colors[2]);
+      }
+      if (no % 9 >= 6) {//下
+        myFaces[3] = faces(BasicParams.colors[3]);
+      }
+      if (parseInt(no / 9) == 0) {//前
+        myFaces[4] = faces(BasicParams.colors[4]);
+      }
+      if (parseInt(no / 9) == 2) {//后
+        myFaces[5] = faces(BasicParams.colors[5]);
       }
 
       var materials = [];
       for (var k = 0; k < 6; k++) {
+        if (!myFaces[k]) {
+          myFaces[k] = faces(BasicParams.defaultColor);
+        }
         var texture = new THREE.Texture(myFaces[k]);
         texture.needsUpdate = true;
         materials.push(new THREE.MeshLambertMaterial({ map: texture }));
