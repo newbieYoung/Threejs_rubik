@@ -1,7 +1,7 @@
 import * as THREE from '../threejs/three.js'
-import Button from './Button.js'
+import UIComponent from './UIComponent.js'
 
-export default class RestoreBtn extends Button {
+export default class RestoreBtn extends UIComponent {
 
   constructor(main) {
     super(main);
