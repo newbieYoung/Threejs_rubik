@@ -1,8 +1,22 @@
 import * as THREE from '../threejs/three.js'
 import UIBase from './UIBase.js'
 
-export default class UIComponent extends UIBase {
+/**
+ * main
+ * radio
+ * uiRadio
+ * radius
+ * bgColor
+ * plane
+ * realWidth
+ * realHeight
+ * width
+ * height
+ * screenRect : {width,height,left,top}
+ */
 
+export default class UIComponent extends UIBase {
+  
   constructor(main) {
     super(main);
     this.radio = this.main.originWidth / 750;
@@ -14,7 +28,7 @@ export default class UIComponent extends UIBase {
     this.bgColor = color;
     this.setSize(width,height);
     var geometry = new THREE.PlaneGeometry(this.width, this.height);
-    var texture = new THREE.CanvasTexture(this.background());
+    var texture = new THREE.CanvasTexture(this._background());
     var material = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
     this.plane = new THREE.Mesh(geometry, material);
     this.main.scene.add(this.plane);
@@ -98,9 +112,9 @@ export default class UIComponent extends UIBase {
   }
 
   /**
-   * 圆角矩形
+   * 创建圆角矩形
    */
-  radiusRect(context, options) {
+  _radiusRect(context, options) {
     var min = options.width > options.height ? options.height : options.width;
     if (options.radius * 2 > min) {
       options.radius = min / 2;
@@ -121,15 +135,15 @@ export default class UIComponent extends UIBase {
   }
 
   /**
-   * 生成半透明背景素材
+   * 生成背景素材
    */
-  background() {
+  _background() {
     var canvas = document.createElement('canvas');
     canvas.width = this.realWidth;
     canvas.height = this.realHeight;
     var context = canvas.getContext('2d');
     context.beginPath();
-    this.radiusRect(context, { radius: this.radius, width: this.realWidth, height: this.realHeight, x: 0, y: 0, backgroundColor: this.bgColor });
+    this._radiusRect(context, { radius: this.radius, width: this.realWidth, height: this.realHeight, x: 0, y: 0, backgroundColor: this.bgColor });
     context.closePath();
     return canvas;
   }
