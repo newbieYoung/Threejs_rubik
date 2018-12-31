@@ -8,7 +8,7 @@ export default class DisorganizeBtn extends Button {
     this.setSize(64,64);
     
     var self = this;
-    this.loadBackground('images/disorganize-btn.png',function(){
+    this.loadBackground('images/disorganize-btn.jpg',function(){
       self.defaultPosition();
     });
   }
@@ -17,7 +17,7 @@ export default class DisorganizeBtn extends Button {
    * 默认位置
    */
   defaultPosition() {
-    this.plane.position.x = -this.main.originWidth / 2 + this.width / 2 + 50 * this.radio;
+    this.plane.position.x = -this.main.originWidth / 2 + this.width * 3 / 2 + 60 * this.radio;
     this.plane.position.y = this.main.originHeight / 2 - this.height * 3 / 2 - 35 * this.radio;
 
     this.screenRect.left = (this.main.originWidth / 2 + this.plane.position.x - this.width / 2) / this.main.uiRadio;

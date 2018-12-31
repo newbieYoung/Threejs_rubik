@@ -6,6 +6,7 @@ import ResetBtn from 'object/ResetBtn.js'
 import DisorganizeBtn from 'object/DisorganizeBtn.js'
 import SaveBtn from 'object/SaveBtn.js'
 import RestoreBtn from 'object/RestoreBtn.js'
+import ChangeBtn from 'object/ChangeBtn.js'
 
 const Context = canvas.getContext('webgl');
 
@@ -38,11 +39,11 @@ function radiusRect(context, options) {
 function background() {
   var color = 'rgba(0,0,0,0.1)';
   var canvas = document.createElement('canvas');
-  canvas.width = 80;
+  canvas.width = 64;
   canvas.height = 64;
   var context = canvas.getContext('2d');
   context.beginPath();
-  radiusRect(context, { radius: 8, width: 80, height: 64, x: 0, y: 0, backgroundColor: color });
+  radiusRect(context, { radius: 8, width: 64, height: 64, x: 0, y: 0, backgroundColor: color });
   context.closePath();
   return canvas;
 }
@@ -147,6 +148,9 @@ export default class Main {
     this.touchLine = new TouchLine(this);
     this.rubikResize((1 - this.minPercent), this.minPercent);//默认正视图占85%区域，反视图占15%区域
     this.enterAnimation();
+
+    //变阶按钮
+    this.changeBtn = new ChangeBtn(this);
 
     //重置按钮
     this.resetBtn = new ResetBtn(this);
@@ -534,7 +538,6 @@ export default class Main {
     }
     var tagPosition = this.saveBtn.getPosition();
     tagPosition.y -= this.saveBtn.height/2+15;
-    tagPosition.x += (this.saveBtn.width - bgCanvas.width) / 2 * radio;
     this.tagRubik.save(this.frontRubik, tagPosition, 0.05);
     this.scene.add(this.tagRubik.group);
 
