@@ -506,7 +506,7 @@ export default class Main {
       this.tagRubikBg = new UIComponent(this);
       this.tagRubikBg.create(64,64,'rgba(0,0,0,0.1)',8);
     }else{
-      this.scene.add(this.tagRubikBg.plane);
+      this.tagRubikBg.showInScene();
     }
     this.tagRubikBg.setPosition(tagPosition.x, tagPosition.y, tagPosition.z);
 
@@ -527,7 +527,7 @@ export default class Main {
         this.scene.remove(this.tagRubik.group);
       }
       if (this.tagRubikBg) {
-        this.scene.remove(this.tagRubikBg.plane);
+        this.tagRubikBg.hideInScene();
       }
     }
   }

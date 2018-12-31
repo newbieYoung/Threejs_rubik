@@ -1,3 +1,8 @@
+/**
+ * main
+ * isActive
+ */
+
 export default class UIBase {
 
   constructor(main) {

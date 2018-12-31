@@ -2,7 +2,6 @@ import * as THREE from '../threejs/three.js'
 import UIBase from './UIBase.js'
 
 /**
- * main
  * radio
  * uiRadio
  * radius
@@ -23,6 +22,23 @@ export default class UIComponent extends UIBase {
     this.uiRadio = this.main.uiRadio;
   }
 
+  /**
+   * 在场景中显示
+   */
+  showInScene(){
+    this.main.scene.add(this.plane);
+  }
+
+  /**
+   * 在场景中隐藏
+   */
+  hideInScene(){
+    this.main.scene.remove(this.plane);
+  }
+
+  /**
+   * 创建UI元素
+   */
   create(width, height, color, radius){
     this.radius = radius;
     this.bgColor = color;
@@ -31,7 +47,7 @@ export default class UIComponent extends UIBase {
     var texture = new THREE.CanvasTexture(this._background());
     var material = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
     this.plane = new THREE.Mesh(geometry, material);
-    this.main.scene.add(this.plane);
+    this.showInScene();
   }
 
   /**
@@ -75,7 +91,7 @@ export default class UIComponent extends UIBase {
       var material = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
       self.plane = new THREE.Mesh(geometry, material);
       self.plane.position.set(0, 0, 0);
-      self.main.scene.add(self.plane)
+      self.showInScene();
       if (callback){
         callback();
       }
@@ -111,9 +127,7 @@ export default class UIComponent extends UIBase {
     return this.plane.position.clone();
   }
 
-  /**
-   * 创建圆角矩形
-   */
+  //创建圆角矩形
   _radiusRect(context, options) {
     var min = options.width > options.height ? options.height : options.width;
     if (options.radius * 2 > min) {
@@ -134,9 +148,7 @@ export default class UIComponent extends UIBase {
     context.fill();
   }
 
-  /**
-   * 生成背景素材
-   */
+  //生成背景素材
   _background() {
     var canvas = document.createElement('canvas');
     canvas.width = this.realWidth;
