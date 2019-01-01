@@ -119,16 +119,16 @@ export default class Main {
     //阶数选择器
     this.numSelector = new UISelector(this);
 
-    //重置按钮
+    //还原按钮
     this.resetBtn = new ResetBtn(this);
 
-    //混乱按钮
+    //打乱按钮
     this.disorganizeBtn = new DisorganizeBtn(this);
 
     //保存按钮
     this.saveBtn = new SaveBtn(this);
 
-    //还原按钮
+    //读取按钮
     this.restoreBtn = new RestoreBtn(this);
   }
 
