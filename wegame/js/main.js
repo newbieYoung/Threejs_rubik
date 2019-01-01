@@ -8,6 +8,7 @@ import SaveBtn from 'object/SaveBtn.js'
 import RestoreBtn from 'object/RestoreBtn.js'
 import ChangeBtn from 'object/ChangeBtn.js'
 import UIComponent from 'object/UIComponent.js'
+import UISelector from 'object/UISelector.js'
 
 const Context = canvas.getContext('webgl');
 
@@ -114,6 +115,9 @@ export default class Main {
 
     //变阶按钮
     this.changeBtn = new ChangeBtn(this);
+
+    //阶数选择器
+    this.numSelector = new UISelector(this);
 
     //重置按钮
     this.resetBtn = new ResetBtn(this);
@@ -504,7 +508,12 @@ export default class Main {
     //灰色半透明背景
     if (!this.tagRubikBg){
       this.tagRubikBg = new UIComponent(this);
-      this.tagRubikBg.create(64,64,'rgba(0,0,0,0.1)',8);
+      this.tagRubikBg.create({
+        width:64,
+        height:64,
+        backgroundColor:'rgba(0,0,0,0.1)',
+        radius:8
+      });
     }else{
       this.tagRubikBg.showInScene();
     }

@@ -4,8 +4,7 @@ import UIBase from './UIBase.js'
 /**
  * radio
  * uiRadio
- * radius
- * bgColor
+ * uiParams : {width,height,radius,backgroundColor,borderTop,borderRight,borderBottom,borderLeft,borderColor,fontSize,fontColor,fontFamily,content}
  * plane
  * realWidth
  * realHeight
@@ -39,10 +38,9 @@ export default class UIComponent extends UIBase {
   /**
    * 创建UI元素
    */
-  create(width, height, color, radius){
-    this.radius = radius;
-    this.bgColor = color;
-    this.setSize(width,height);
+  create(uiParams){
+    this.uiParams = uiParams;
+    this.setSize(this.uiParams.width,this.uiParams.height);
     var geometry = new THREE.PlaneGeometry(this.width, this.height);
     var texture = new THREE.CanvasTexture(this._background());
     var material = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
@@ -128,24 +126,74 @@ export default class UIComponent extends UIBase {
   }
 
   //创建圆角矩形
-  _radiusRect(context, options) {
-    var min = options.width > options.height ? options.height : options.width;
-    if (options.radius * 2 > min) {
-      options.radius = min / 2;
+  _radiusRect(canvas, radius, width, height, backgroundColor) {
+    radius = radius ? radius : 0;
+    var min = width > height ? height : width;
+    if (radius * 2 > min) {
+      radius = min / 2;
     }
-    context.moveTo(options.x + options.radius, options.y);
-    context.lineTo(options.x + options.width - options.radius, options.y);
-    context.quadraticCurveTo(options.x + options.width, options.y, options.x + options.width, options.y + options.radius);//quadraticCurveTo二次贝塞尔曲线
-    context.lineTo(options.x + options.width, options.y + options.height - options.radius);
-    context.quadraticCurveTo(options.x + options.width, options.y + options.height, options.x + options.width - options.radius, options.y + options.height);
-    context.lineTo(options.x + options.radius, options.y + options.height);
-    context.quadraticCurveTo(options.x, options.y + options.height, options.x, options.y + options.height - options.radius);
-    context.lineTo(options.x, options.y + options.radius);
-    context.quadraticCurveTo(options.x, options.y, options.x + options.radius, options.y);
-    context.strokeStyle = options.backgroundColor;
+    //暂时不考虑padding、margin，所以起始位置为左上角
+    var x = 0;
+    var y = 0;
+
+    var context = canvas.getContext('2d');
+    context.beginPath();
+    context.moveTo(x + radius, y);
+    context.lineTo(x + width - radius, y);
+    context.quadraticCurveTo(x + width, y, x + width, y + radius);//quadraticCurveTo二次贝塞尔曲线
+    context.lineTo(x + width, y + height - radius);
+    context.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    context.lineTo(x + radius, y + height);
+    context.quadraticCurveTo(x, y + height, x, y + height - radius);
+    context.lineTo(x, y + radius);
+    context.quadraticCurveTo(x, y, x + radius, y);
+    context.strokeStyle = backgroundColor;
     context.stroke();
-    context.fillStyle = options.backgroundColor;
+    context.fillStyle = backgroundColor;
     context.fill();
+    context.closePath();
+  }
+
+  //文字
+  _text(canvas, fontSize, fontFamily, fontColor, content){
+    var context = canvas.getContext('2d');
+    var fontStyle = fontSize + ' ' + fontFamily;
+    //context.font = fontStyle;
+    console.log(fontStyle);
+    //context.fillStyle = fontColor;
+    //context.fillText(content, 0, 0, canvas.width);
+
+    context.font = '50px serif';
+    context.fillText('Hello world', 50, 90);
+  }
+
+  //边框
+  _border(canvas,top,right,bottom,left,color){
+    var context = canvas.getContext('2d');
+    context.beginPath();
+    context.strokeStyle = color;
+    if(top>0){
+      context.lineWidth = top;
+      context.moveTo(0, 0);
+      context.lineTo(canvas.width, 0);
+    }
+    if(right>0){
+      context.lineWidth = right;
+      context.moveTo(canvas.width, 0);
+      context.lineTo(canvas.width, canvas.height);
+    }
+    if(bottom>0){
+      context.lineWidth = bottom;
+      context.moveTo(canvas.width, canvas.height);
+      context.lineTo(0, canvas.height);
+    }
+    if(left>0){
+      context.lineWidth = left;
+      context.moveTo(0, canvas.height);
+      context.lineTo(0, 0);
+    }
+    context.closePath();
+    context.stroke()
   }
 
   //生成背景素材
@@ -153,10 +201,13 @@ export default class UIComponent extends UIBase {
     var canvas = document.createElement('canvas');
     canvas.width = this.realWidth;
     canvas.height = this.realHeight;
-    var context = canvas.getContext('2d');
-    context.beginPath();
-    this._radiusRect(context, { radius: this.radius, width: this.realWidth, height: this.realHeight, x: 0, y: 0, backgroundColor: this.bgColor });
-    context.closePath();
+    this._radiusRect(canvas, this.uiParams.radius, this.realWidth, this.realHeight, this.uiParams.backgroundColor);
+    if (!this.uiParams.radius){//暂时不支持圆角边框
+      this._border(canvas, this.uiParams.borderTop, this.uiParams.borderRight, this.uiParams.borderBottom, this.uiParams.borderLeft, this.uiParams.borderColor)
+    }
+    if (this.uiParams.content){
+      this._text(canvas, this.uiParams.fontSize, this.uiParams.fontFamily, this.uiParams.fontColor, this.uiParams.content);
+    }
     return canvas;
   }
 }
