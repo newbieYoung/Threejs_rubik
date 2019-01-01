@@ -4,7 +4,7 @@ import UIBase from './UIBase.js'
 /**
  * radio
  * uiRadio
- * uiParams : {width,height,radius,backgroundColor,borderTop,borderRight,borderBottom,borderLeft,borderColor,fontSize,fontColor,fontFamily,content}
+ * uiParams : {width,height,radius,backgroundColor,borderTop,borderRight,borderBottom,borderLeft,borderColor,fontSize,fontColor,fontFamily,fontWeight,content}
  * plane
  * realWidth
  * realHeight
@@ -155,16 +155,14 @@ export default class UIComponent extends UIBase {
   }
 
   //文字
-  _text(canvas, fontSize, fontFamily, fontColor, content){
+  _text(canvas, fontSize, fontFamily, fontColor, content, fontWeight){
     var context = canvas.getContext('2d');
-    var fontStyle = fontSize + ' ' + fontFamily;
-    //context.font = fontStyle;
-    console.log(fontStyle);
-    //context.fillStyle = fontColor;
-    //context.fillText(content, 0, 0, canvas.width);
-
-    context.font = '50px serif';
-    context.fillText('Hello world', 50, 90);
+    var fontStyle = fontWeight+' '+fontSize + ' ' + fontFamily;
+    context.font = fontStyle;
+    context.fillStyle = fontColor;
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillText(content, canvas.width/2, canvas.height/2, canvas.width);
   }
 
   //边框
@@ -206,7 +204,7 @@ export default class UIComponent extends UIBase {
       this._border(canvas, this.uiParams.borderTop, this.uiParams.borderRight, this.uiParams.borderBottom, this.uiParams.borderLeft, this.uiParams.borderColor)
     }
     if (this.uiParams.content){
-      this._text(canvas, this.uiParams.fontSize, this.uiParams.fontFamily, this.uiParams.fontColor, this.uiParams.content);
+      this._text(canvas, this.uiParams.fontSize, this.uiParams.fontFamily, this.uiParams.fontColor, this.uiParams.content, this.uiParams.fontWeight);
     }
     return canvas;
   }

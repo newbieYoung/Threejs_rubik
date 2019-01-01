@@ -76,9 +76,10 @@ export default class UISelector extends UIComponent {
         width: this.coverWidth / 2,
         height: this.optionHeight,
         backgroundColor: 'rgba(255,255,255,1)',
-        fontSize:'50px',
+        fontWeight:'400',
+        fontSize:'25px',
         fontColor:'rgba(0,0,0,1)',
-        fontFamily:'Arial',
+        fontFamily:'sans-serif',
         content: this.options[i].text
       };
       if (i!=0){
