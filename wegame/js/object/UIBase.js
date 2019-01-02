@@ -11,10 +11,10 @@ export default class UIBase {
   }
 
   //状态切换
-  enable() {
+  enable(touch) {
     this.isActive = true;
   }
-  disable() {
+  disable(touch) {
     this.isActive = false;
   }
 }

@@ -9,6 +9,7 @@ import UIComponent from './UIComponent.js'
  * cover
  * content
  * items
+ * hoveredItem
  */
 
 export default class UISelector extends UIComponent {
@@ -19,20 +20,48 @@ export default class UISelector extends UIComponent {
     this.coverWidth = 750;
     this.coverHeight = this.coverWidth * window.innerHeight / window.innerWidth;
     this.optionHeight = 80;
-
-    this._createCover();
-
     this.options = [{
       text: '2阶',
       num: 2
-    },{
+    }, {
       text: '3阶',
       num: 3
-    },{
+    }, {
       text: '4阶',
       num: 4
     }]
+    
+    this._createCover();
     this._createOptions();
+  }
+
+  /**
+   * 判断是否在范围内
+   */
+  isHover(touch) {
+    var hoveredItem = null;
+    for(var i=0;i<this.items.length;i++){
+      var item = this.items[i];
+      if(item.isHover(touch)){
+        hoveredItem = i;
+        break;
+      }
+    }
+    console.log(hoveredItem);
+    if (hoveredItem){
+      this.hoveredItem = hoveredItem;
+      return true;
+    }else{
+      return false;
+    }
+  }
+
+  //状态切换
+  enable(touch) {
+    this.isActive = true;
+  }
+  disable(touch) {
+    this.isActive = false;
   }
 
   /**
