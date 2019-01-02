@@ -28,46 +28,46 @@ function SimpleCube(x, y, z, num, len, colors) {
   var leftUpZ = z + num / 2 * len;
 
   //根据颜色生成材质
-  var textureArr = [];
+  var materialArr = [];
   for (var i = 0; i < BasicParams.colors.length; i++){
-    textureArr[i] = new THREE.Texture(faces(BasicParams.colors[i]));
-    textureArr[i].needsUpdate = true;
+    var texture = new THREE.Texture(faces(BasicParams.colors[i]));
+    texture.needsUpdate = true;
+    var material = new THREE.MeshLambertMaterial({ map: texture });
+    materialArr.push(material);
   }
   var defaultTexture = new THREE.Texture(faces(BasicParams.defaultColor));
   defaultTexture.needsUpdate = true;
+  var defaultMaterial = new THREE.MeshLambertMaterial({ map: defaultTexture });
 
   var cubes = [];
   for (var i = 0; i < num; i++) {
     for (var j = 0; j < num * num; j++) {
 
       //小方块外部面才有颜色，内部面默认为灰色
-      var textures = [];
+      var materials = [];
       var no = i * num * num + j;
       if (no % 3 == 2) {//右
-        textures[0] = textureArr[0];
+        materials[0] = materialArr[0];
       }
       if (no % 3 == 0) {//左
-        textures[1] = textureArr[1];
+        materials[1] = materialArr[1];
       }
       if (no % 9 <= 2) {//上
-        textures[2] = textureArr[2];
+        materials[2] = materialArr[2];
       }
       if (no % 9 >= 6) {//下
-        textures[3] = textureArr[3];
+        materials[3] = materialArr[3];
       }
       if (parseInt(no / 9) == 0) {//前
-        textures[4] = textureArr[4];
+        materials[4] = materialArr[4];
       }
       if (parseInt(no / 9) == 2) {//后
-        textures[5] = textureArr[5];
+        materials[5] = materialArr[5];
       }
-      
-      var materials = [];
       for (var k = 0; k < 6; k++) {
-        if (!textures[k]) {
-          textures[k] = defaultTexture;
+        if (!materials[k]) {
+          materials[k] = defaultTexture;
         }
-        materials.push(new THREE.MeshLambertMaterial({ map: textures[k] }));
       }
 
       var cubegeo = new THREE.BoxGeometry(len, len, len);
