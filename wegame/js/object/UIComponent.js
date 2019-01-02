@@ -1,7 +1,8 @@
 import * as THREE from '../threejs/three.js'
-import UIBase from './UIBase.js'
 
 /**
+ * main
+ * isActive
  * radio
  * uiRadio
  * uiParams : {pixelRatio,width,height,radius,backgroundColor,borderTop,borderRight,borderBottom,borderLeft,borderColor,fontSize,fontColor,fontFamily,fontWeight,content}
@@ -13,10 +14,11 @@ import UIBase from './UIBase.js'
  * screenRect : {width,height,left,top}
  */
 
-export default class UIComponent extends UIBase {
+export default class UIComponent {
   
   constructor(main) {
-    super(main);
+    this.main = main;
+    this.isActive = false;
     this.radio = this.main.originWidth / 750;
     this.uiRadio = this.main.uiRadio;
   }
@@ -66,6 +68,14 @@ export default class UIComponent extends UIBase {
       width: this.width / this.main.uiRadio,
       height: this.height / this.main.uiRadio
     }
+  }
+
+  //状态切换
+  enable(touch) {
+    this.isActive = true;
+  }
+  disable(touch) {
+    this.isActive = false;
   }
 
   /**
