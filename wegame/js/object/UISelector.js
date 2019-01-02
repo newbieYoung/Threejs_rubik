@@ -77,10 +77,11 @@ export default class UISelector extends UIComponent {
         height: this.optionHeight,
         backgroundColor: 'rgba(255,255,255,1)',
         fontWeight:'400',
-        fontSize:'25px',
+        fontSize:'25',
         fontColor:'rgba(0,0,0,1)',
         fontFamily:'sans-serif',
-        content: this.options[i].text
+        content: this.options[i].text,
+        pixelRatio:2
       };
       if (i!=0){
         uiParams.borderTop = 1;

@@ -4,7 +4,7 @@ import UIBase from './UIBase.js'
 /**
  * radio
  * uiRadio
- * uiParams : {width,height,radius,backgroundColor,borderTop,borderRight,borderBottom,borderLeft,borderColor,fontSize,fontColor,fontFamily,fontWeight,content}
+ * uiParams : {pixelRatio,width,height,radius,backgroundColor,borderTop,borderRight,borderBottom,borderLeft,borderColor,fontSize,fontColor,fontFamily,fontWeight,content}
  * plane
  * realWidth
  * realHeight
@@ -40,6 +40,7 @@ export default class UIComponent extends UIBase {
    */
   create(uiParams){
     this.uiParams = uiParams;
+    this.uiParams.pixelRatio = this.uiParams.pixelRatio ? this.uiParams.pixelRatio : 1;//设备像素比默认为1
     this.setSize(this.uiParams.width,this.uiParams.height);
     var geometry = new THREE.PlaneGeometry(this.width, this.height);
     var texture = new THREE.CanvasTexture(this._background());
@@ -157,7 +158,7 @@ export default class UIComponent extends UIBase {
   //文字
   _text(canvas, fontSize, fontFamily, fontColor, content, fontWeight){
     var context = canvas.getContext('2d');
-    var fontStyle = fontWeight+' '+fontSize + ' ' + fontFamily;
+    var fontStyle = fontWeight+' '+fontSize + 'px ' + fontFamily;
     context.font = fontStyle;
     context.fillStyle = fontColor;
     context.textAlign = 'center';
@@ -197,14 +198,14 @@ export default class UIComponent extends UIBase {
   //生成背景素材
   _background() {
     var canvas = document.createElement('canvas');
-    canvas.width = this.realWidth;
-    canvas.height = this.realHeight;
-    this._radiusRect(canvas, this.uiParams.radius, this.realWidth, this.realHeight, this.uiParams.backgroundColor);
+    canvas.width = this.realWidth * this.uiParams.pixelRatio;
+    canvas.height = this.realHeight * this.uiParams.pixelRatio;
+    this._radiusRect(canvas, this.uiParams.radius * this.uiParams.pixelRatio, canvas.width, canvas.height, this.uiParams.backgroundColor);
     if (!this.uiParams.radius){//暂时不支持圆角边框
-      this._border(canvas, this.uiParams.borderTop, this.uiParams.borderRight, this.uiParams.borderBottom, this.uiParams.borderLeft, this.uiParams.borderColor)
+      this._border(canvas, this.uiParams.borderTop * this.uiParams.pixelRatio, this.uiParams.borderRight * this.uiParams.pixelRatio, this.uiParams.borderBottom * this.uiParams.pixelRatio, this.uiParams.borderLeft * this.uiParams.pixelRatio, this.uiParams.borderColor)
     }
     if (this.uiParams.content){
-      this._text(canvas, this.uiParams.fontSize, this.uiParams.fontFamily, this.uiParams.fontColor, this.uiParams.content, this.uiParams.fontWeight);
+      this._text(canvas, this.uiParams.fontSize * this.uiParams.pixelRatio, this.uiParams.fontFamily, this.uiParams.fontColor, this.uiParams.content, this.uiParams.fontWeight);
     }
     return canvas;
   }
