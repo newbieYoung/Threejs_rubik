@@ -38,9 +38,9 @@ export default class UIComponent {
   }
 
   /**
-   * 创建UI元素
+   * 加载样式
    */
-  create(uiParams){
+  loadStyle(uiParams){
     this.uiParams = uiParams;
     this.uiParams.pixelRatio = this.uiParams.pixelRatio ? this.uiParams.pixelRatio : 1;//设备像素比默认为1
     this.setSize(this.uiParams.width,this.uiParams.height);
@@ -49,6 +49,28 @@ export default class UIComponent {
     var material = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
     this.plane = new THREE.Mesh(geometry, material);
     this.showInScene();
+  }
+
+  /**
+   * 加载纹理背景
+   */
+  loadBackground(url, callback) {
+    var self = this;
+    var loader = new THREE.TextureLoader();
+    loader.load(url, function (texture) {
+      var geometry = new THREE.PlaneBufferGeometry(self.width, self.height);
+      var material = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
+      self.plane = new THREE.Mesh(geometry, material);
+      self.plane.position.set(0, 0, 0);
+      self.showInScene();
+      if (callback) {
+        callback();
+      }
+    }, function (xhr) {
+      console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+    }, function (xhr) {
+      console.log('An error happened');
+    });
   }
 
   /**
@@ -87,28 +109,6 @@ export default class UIComponent {
       isHover = true;
     }
     return isHover;
-  }
-
-  /**
-   * 加载纹理背景
-   */
-  loadBackground(url,callback){
-    var self = this;
-    var loader = new THREE.TextureLoader();
-    loader.load(url, function (texture) {
-      var geometry = new THREE.PlaneBufferGeometry(self.width, self.height);
-      var material = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
-      self.plane = new THREE.Mesh(geometry, material);
-      self.plane.position.set(0, 0, 0);
-      self.showInScene();
-      if (callback){
-        callback();
-      }
-    }, function (xhr) {
-      console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-    }, function (xhr) {
-      console.log('An error happened');
-    });
   }
 
   /**

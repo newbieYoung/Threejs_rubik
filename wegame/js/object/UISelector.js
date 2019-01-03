@@ -87,7 +87,7 @@ export default class UISelector extends UIComponent {
   //创建遮罩
   _createCover(){
     this.cover = new UIComponent(this.main);
-    this.cover.create({
+    this.cover.loadStyle({
       width:this.coverWidth,
       height:this.coverHeight,
       backgroundColor: 'rgba(0,0,0,.4)',
@@ -116,7 +116,7 @@ export default class UISelector extends UIComponent {
         uiParams.borderTop = 1;
         uiParams.borderColor = 'rgba(153,153,153,1)';
       }
-      item.create(uiParams);
+      item.loadStyle(uiParams);
       item.plane.position.y += (center - i - 1) * this.optionHeight * this.radio;
       item.plane.position.z += 100;
       this.items.push(item);

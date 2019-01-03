@@ -510,7 +510,7 @@ export default class Main {
     //灰色半透明背景
     if (!this.tagRubikBg){
       this.tagRubikBg = new UIComponent(this);
-      this.tagRubikBg.create({
+      this.tagRubikBg.loadStyle({
         width:64,
         height:64,
         backgroundColor:'rgba(0,0,0,0.1)',
