@@ -6,46 +6,10 @@ import ResetBtn from 'object/ResetBtn.js'
 import DisorganizeBtn from 'object/DisorganizeBtn.js'
 import SaveBtn from 'object/SaveBtn.js'
 import RestoreBtn from 'object/RestoreBtn.js'
+import ChangeBtn from 'object/ChangeBtn.js'
+import UIComponent from 'object/UIComponent.js'
 
 const Context = canvas.getContext('webgl');
-
-/**
- * 圆角矩形
- */
-function radiusRect(context, options) {
-  var min = options.width > options.height ? options.height : options.width;
-  if (options.radius * 2 > min) {
-    options.radius = min / 2;
-  }
-  context.moveTo(options.x + options.radius, options.y);
-  context.lineTo(options.x + options.width - options.radius, options.y);
-  context.quadraticCurveTo(options.x + options.width, options.y, options.x + options.width, options.y + options.radius);//quadraticCurveTo二次贝塞尔曲线
-  context.lineTo(options.x + options.width, options.y + options.height - options.radius);
-  context.quadraticCurveTo(options.x + options.width, options.y + options.height, options.x + options.width - options.radius, options.y + options.height);
-  context.lineTo(options.x + options.radius, options.y + options.height);
-  context.quadraticCurveTo(options.x, options.y + options.height, options.x, options.y + options.height - options.radius);
-  context.lineTo(options.x, options.y + options.radius);
-  context.quadraticCurveTo(options.x, options.y, options.x + options.radius, options.y);
-  context.strokeStyle = options.backgroundColor;
-  context.stroke();
-  context.fillStyle = options.backgroundColor;
-  context.fill();
-}
-
-/**
- * 生成半透明背景素材
- */
-function background() {
-  var color = 'rgba(0,0,0,0.1)';
-  var canvas = document.createElement('canvas');
-  canvas.width = 80;
-  canvas.height = 64;
-  var context = canvas.getContext('2d');
-  context.beginPath();
-  radiusRect(context, { radius: 8, width: 80, height: 64, x: 0, y: 0, backgroundColor: color });
-  context.closePath();
-  return canvas;
-}
 
 /**
  * 游戏主函数
@@ -148,17 +112,20 @@ export default class Main {
     this.rubikResize((1 - this.minPercent), this.minPercent);//默认正视图占85%区域，反视图占15%区域
     this.enterAnimation();
 
-    //重置按钮
+    //还原按钮
     this.resetBtn = new ResetBtn(this);
 
-    //混乱按钮
+    //打乱按钮
     this.disorganizeBtn = new DisorganizeBtn(this);
 
     //保存按钮
     this.saveBtn = new SaveBtn(this);
 
-    //还原按钮
+    //读取按钮
     this.restoreBtn = new RestoreBtn(this);
+
+    //变阶按钮
+    this.changeBtn = new ChangeBtn(this);
   }
 
   /**
@@ -524,33 +491,29 @@ export default class Main {
       title: '存档中...',
       mask:true
     })
-    
-    var bgCanvas = background();
-    var radio = this.originWidth / 750;
 
-    if (!this.tagRubik){
+    if (!this.tagRubik) {
       this.tagRubik = new BasicRubik(this);
       this.tagRubik.model();
     }
     var tagPosition = this.saveBtn.getPosition();
-    tagPosition.y -= this.saveBtn.height/2+15;
-    tagPosition.x += (this.saveBtn.width - bgCanvas.width) / 2 * radio;
+    tagPosition.y -= this.saveBtn.height / 2 + 15;
     this.tagRubik.save(this.frontRubik, tagPosition, 0.05);
     this.scene.add(this.tagRubik.group);
 
     //添加灰色半透明背景
-    if (!this.tagRubikBg){
-      var bgWidth = bgCanvas.width * radio;
-      var bgHeight = bgCanvas.height * radio;
-      var geometry = new THREE.PlaneGeometry(bgWidth, bgHeight);
-      var texture = new THREE.CanvasTexture(bgCanvas);
-      var material = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
-      this.tagRubikBg = new THREE.Mesh(geometry, material);
+    if (!this.tagRubikBg) {
+      this.tagRubikBg = new UIComponent(this);
+      this.tagRubikBg.loadStyle({
+        width: 64,
+        height: 64,
+        backgroundColor: 'rgba(0,0,0,0.1)',
+        radius: 8
+      });
+    } else {
+      this.tagRubikBg.showInScene();
     }
-    this.tagRubikBg.position.x = tagPosition.x;
-    this.tagRubikBg.position.y = tagPosition.y;
-    this.tagRubikBg.position.z = tagPosition.z;
-    this.scene.add(this.tagRubikBg);
+    this.tagRubikBg.setPosition(tagPosition.x, tagPosition.y, tagPosition.z);
 
     setTimeout(function(){
       wx.hideLoading()
@@ -569,7 +532,7 @@ export default class Main {
         this.scene.remove(this.tagRubik.group);
       }
       if (this.tagRubikBg) {
-        this.scene.remove(this.tagRubikBg);
+        this.tagRubikBg.hideInScene();
       }
     }
   }
