@@ -48,7 +48,6 @@ export default class UIComponent {
     var texture = new THREE.CanvasTexture(this._background());
     var material = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
     this.plane = new THREE.Mesh(geometry, material);
-    this.showInScene();
   }
 
   /**
@@ -62,7 +61,6 @@ export default class UIComponent {
       var material = new THREE.MeshBasicMaterial({ map: texture, transparent: true });
       self.plane = new THREE.Mesh(geometry, material);
       self.plane.position.set(0, 0, 0);
-      self.showInScene();
       if (callback) {
         callback();
       }

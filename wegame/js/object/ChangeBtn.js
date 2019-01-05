@@ -10,6 +10,7 @@ export default class ChangeBtn extends UIComponent {
     var self = this;
     this.loadBackground('images/change-btn.jpg', function () {
       self.defaultPosition();
+      self.showInScene();
     });
   }
 

@@ -10,6 +10,7 @@ export default class SaveBtn extends UIComponent {
     var self = this;
     this.loadBackground('images/save-btn.jpg',function(){
       self.defaultPosition();
+      self.showInScene();
     });
   }
 

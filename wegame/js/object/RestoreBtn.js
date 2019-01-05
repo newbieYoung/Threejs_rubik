@@ -10,6 +10,7 @@ export default class RestoreBtn extends UIComponent {
     var self = this;
     this.loadBackground('images/restore-btn.jpg',function(){
       self.defaultPosition();
+      self.showInScene();
     });
   }
 

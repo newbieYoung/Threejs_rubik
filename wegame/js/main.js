@@ -516,10 +516,9 @@ export default class Main {
         backgroundColor:'rgba(0,0,0,0.1)',
         radius:8
       });
-    }else{
-      this.tagRubikBg.showInScene();
     }
     this.tagRubikBg.setPosition(tagPosition.x, tagPosition.y, tagPosition.z);
+    this.tagRubikBg.showInScene();
 
     setTimeout(function(){
       wx.hideLoading()

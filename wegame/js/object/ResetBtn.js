@@ -10,6 +10,7 @@ export default class ResetBtn extends UIComponent {
     var self = this;
     this.loadBackground('images/reset-btn.jpg',function(){
       self.defaultPosition();
+      self.showInScene();
     });
   }
 

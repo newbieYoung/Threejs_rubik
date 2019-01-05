@@ -10,6 +10,7 @@ export default class TouchLine extends UIComponent {
     var self = this;
     this.loadBackground('images/touch-line.png', function () {
       self.defaultPosition();
+      self.showInScene();
     });
   }
 

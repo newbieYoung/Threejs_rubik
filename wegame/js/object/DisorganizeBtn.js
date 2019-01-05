@@ -10,6 +10,7 @@ export default class DisorganizeBtn extends UIComponent {
     var self = this;
     this.loadBackground('images/disorganize-btn.jpg',function(){
       self.defaultPosition();
+      self.showInScene();
     });
   }
 
