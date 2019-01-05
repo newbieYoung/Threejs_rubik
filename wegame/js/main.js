@@ -163,7 +163,6 @@ export default class Main {
     var touch = event.touches[0];
     this.startPoint = touch;
     if(this.numSelector.isHover(touch)){
-      console.log(touch);
     }else if(this.touchLine.isHover(touch)) {
       this.touchLine.enable();
     } else if (this.resetBtn.isHover(touch) && !this.isRotating){
@@ -220,6 +219,7 @@ export default class Main {
    * 触摸结束
    */
   touchEnd() {
+    this.numSelector.disable();
     this.touchLine.disable();
     this.resetBtn.disable();
     this.disorganizeBtn.disable();

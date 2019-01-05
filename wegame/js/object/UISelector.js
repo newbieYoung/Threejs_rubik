@@ -47,9 +47,9 @@ export default class UISelector extends UIComponent {
         break;
       }
     }
-    console.log(hoveredItem);
-    if (hoveredItem){
+    if (hoveredItem!=null){
       this.hoveredItem = hoveredItem;
+      this.enable();
       return true;
     }else{
       return false;
@@ -57,11 +57,15 @@ export default class UISelector extends UIComponent {
   }
 
   //状态切换
-  enable(touch) {
+  enable() {
     this.isActive = true;
+    this.items[this.hoveredItem].plane.material.color.setHex(0xeeeeee);
   }
-  disable(touch) {
+  disable() {
     this.isActive = false;
+    for(var i=0;i<this.items.length;i++){
+      this.items[i].plane.material.color.setHex(0xffffff);
+    }
   }
 
   /**
@@ -117,8 +121,9 @@ export default class UISelector extends UIComponent {
         uiParams.borderColor = 'rgba(153,153,153,1)';
       }
       item.loadStyle(uiParams);
-      item.plane.position.y += (center - i - 1) * this.optionHeight * this.radio;
-      item.plane.position.z += 100;
+      var y = item.plane.position.y + (center - i - 1) * this.optionHeight * this.radio;
+      var z = item.plane.position.z + 100;
+      item.setPosition(null, y, z);
       this.items.push(item);
     }
   }
