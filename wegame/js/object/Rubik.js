@@ -5,8 +5,6 @@ const BasicParams = {
   x: 0,
   y: 0,
   z: 0,
-  num: 3,
-  len: 50,
   defaultColor: '#666666',
   //右、左、上、下、前、后
   colors: ['#ff6b02', '#dd422f',
@@ -17,8 +15,6 @@ const BasicParams = {
 /**
  * 简易魔方
  * x、y、z 魔方中心点坐标
- * num 魔方阶数
- * len 小方块宽高
  * colors 魔方六面体颜色
  */
 function SimpleCube(x, y, z, num, len, colors) {
@@ -66,7 +62,7 @@ function SimpleCube(x, y, z, num, len, colors) {
       }
       for (var k = 0; k < 6; k++) {
         if (!materials[k]) {
-          materials[k] = defaultTexture;
+          materials[k] = defaultMaterial;
         }
       }
 
@@ -111,6 +107,8 @@ export default class Rubik {
     this.main = main;
     this.initStatus = [];
     this.defaultTotalTime = 250;//默认转动动画时长
+    this.orderNum = 3;//默认三阶魔方
+    this.cubeLen = 50;//默认小方块尺寸
 
     //魔方的六个转动方向
     this.xLine = new THREE.Vector3(1, 0, 0);
@@ -152,6 +150,12 @@ export default class Rubik {
   }
 
   /**
+   * 改变魔方阶数
+   */
+  changeOrder(num){
+  }
+
+  /**
    * 生成模型并加入到场景中
    * type 视角类型，front表示正视角、back表示反视角
    */
@@ -161,7 +165,7 @@ export default class Rubik {
     this.group.childType = type;
 
     //生成魔方小正方体
-    this.cubes = SimpleCube(BasicParams.x, BasicParams.y, BasicParams.z, BasicParams.num, BasicParams.len, BasicParams.colors);
+    this.cubes = SimpleCube(BasicParams.x, BasicParams.y, BasicParams.z, this.orderNum, this.cubeLen, BasicParams.colors);
     for (var i = 0; i < this.cubes.length; i++) {
       var item = this.cubes[i];
       /**
@@ -183,7 +187,7 @@ export default class Rubik {
     }
 
     //透明正方体
-    var width = BasicParams.num * BasicParams.len;
+    var width = this.orderNum * this.cubeLen;
     var cubegeo = new THREE.BoxGeometry(width, width, width);
     var hex = 0x000000;
     for (var i = 0; i < cubegeo.faces.length; i += 2) {
@@ -228,9 +232,9 @@ export default class Rubik {
       var temp1 = elements[i];
       for (var j = 0; j < this.initStatus.length; j++) {
         var temp2 = this.initStatus[j];
-        if (Math.abs(temp1.position.x - temp2.x) <= BasicParams.len / 2 &&
-          Math.abs(temp1.position.y - temp2.y) <= BasicParams.len / 2 &&
-          Math.abs(temp1.position.z - temp2.z) <= BasicParams.len / 2) {
+        if (Math.abs(temp1.position.x - temp2.x) <= this.cubeLen / 2 &&
+          Math.abs(temp1.position.y - temp2.y) <= this.cubeLen / 2 &&
+          Math.abs(temp1.position.z - temp2.z) <= this.cubeLen / 2) {
           temp1.cubeIndex = temp2.cubeIndex;
           break;
         }
