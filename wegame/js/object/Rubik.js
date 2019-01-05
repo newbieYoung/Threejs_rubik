@@ -42,22 +42,22 @@ function SimpleCube(x, y, z, num, len, colors) {
       //小方块外部面才有颜色，内部面默认为灰色
       var materials = [];
       var no = i * num * num + j;
-      if (no % 3 == 2) {//右
+      if (no % num == (num-1)) {//右
         materials[0] = materialArr[0];
       }
-      if (no % 3 == 0) {//左
+      if (no % num == 0) {//左
         materials[1] = materialArr[1];
       }
-      if (no % 9 <= 2) {//上
+      if (no % Math.pow(num,2) <= (num-1)) {//上
         materials[2] = materialArr[2];
       }
-      if (no % 9 >= 6) {//下
+      if (no % Math.pow(num, 2) >= (num-1)*num) {//下
         materials[3] = materialArr[3];
       }
-      if (parseInt(no / 9) == 0) {//前
+      if (parseInt(no / Math.pow(num, 2)) == 0) {//前
         materials[4] = materialArr[4];
       }
-      if (parseInt(no / 9) == 2) {//后
+      if (parseInt(no / Math.pow(num, 2)) == (num-1)) {//后
         materials[5] = materialArr[5];
       }
       for (var k = 0; k < 6; k++) {
@@ -152,17 +152,26 @@ export default class Rubik {
   /**
    * 改变魔方阶数
    */
-  changeOrder(num){
+  changeOrder(num,len){
+    this.orderNum = num;
+    this.cubeLen = len;
+    this.createCube();
   }
 
   /**
-   * 生成模型并加入到场景中
-   * type 视角类型，front表示正视角、back表示反视角
+   * 创建方块
    */
-  model(type) {
-    //网格元素直接放入到一个集合里边，方便整体进行矩阵变换，比如缩放等。
-    this.group = new THREE.Group();
-    this.group.childType = type;
+  createCube(){
+    //删除以前的物体
+    this.initStatus = [];
+    if(this.container){
+      this.group.remove(this.container);
+    }
+    if (this.cubes && this.cubes.length>0){
+      for (var i = 0; i < this.cubes.length; i++) {
+        this.group.remove(this.cubes[i]);
+      }
+    }
 
     //生成魔方小正方体
     this.cubes = SimpleCube(BasicParams.x, BasicParams.y, BasicParams.z, this.orderNum, this.cubeLen, BasicParams.colors);
@@ -185,20 +194,28 @@ export default class Rubik {
       item.cubeIndex = item.id;
       this.group.add(item);
     }
-
     //透明正方体
     var width = this.orderNum * this.cubeLen;
     var cubegeo = new THREE.BoxGeometry(width, width, width);
-    var hex = 0x000000;
-    for (var i = 0; i < cubegeo.faces.length; i += 2) {
-      cubegeo.faces[i].color.setHex(hex);
-      cubegeo.faces[i + 1].color.setHex(hex);
-    }
-    var cubemat = new THREE.MeshBasicMaterial({ vertexColors: THREE.FaceColors, opacity: 0, transparent: true });
+    var cubemat = new THREE.MeshBasicMaterial({ opacity: 0, transparent: true });
     this.container = new THREE.Mesh(cubegeo, cubemat);
     this.container.cubeType = 'coverCube';
     this.group.add(this.container);
 
+    this.getMinCubeIndex();
+  }
+
+  /**
+   * 生成模型并加入到场景中
+   * type 视角类型，front表示正视角、back表示反视角
+   */
+  model(type) {
+    //网格元素直接放入到一个集合里边，方便整体进行矩阵变换，比如缩放等。
+    this.group = new THREE.Group();
+    this.group.childType = type;
+
+    this.createCube();
+    
     //进行一定的旋转变换保证三个面可视
     if(type==this.main.frontViewName){
       this.group.rotateY(45/180*Math.PI);
@@ -207,7 +224,6 @@ export default class Rubik {
     }
     this.group.rotateOnAxis(new THREE.Vector3(1, 0, 1), 25 / 180 * Math.PI);
     this.main.scene.add(this.group);
-    this.getMinCubeIndex();
   }
 
   /**
@@ -507,10 +523,10 @@ export default class Rubik {
   getBoxs(cubeIndex, direction) {
     var targetIndex = cubeIndex;
     targetIndex = targetIndex - this.minCubeIndex;
-    var numI = parseInt(targetIndex / 9);
-    var numJ = targetIndex % 9;
+    var numI = parseInt(targetIndex / Math.pow(this.orderNum,2));
+    var numJ = targetIndex % Math.pow(this.orderNum, 2);
     var boxs = [];
-    //根据绘制时的规律判断 no = i*9+j
+    //根据绘制时的规律判断 no = i * Math.pow(this.orderNum, 2)+j
     switch (direction) {
       case 0.1:
       case 0.2:
@@ -522,7 +538,7 @@ export default class Rubik {
       case 3.4:
         for (var i = 0; i < this.cubes.length; i++) {
           var tempId = this.cubes[i].cubeIndex - this.minCubeIndex;
-          if (numI === parseInt(tempId / 9)) {
+          if (numI === parseInt(tempId / Math.pow(this.orderNum, 2))) {
             boxs.push(this.cubes[i]);
           }
         }
@@ -537,7 +553,7 @@ export default class Rubik {
       case 5.4:
         for (var i = 0; i < this.cubes.length; i++) {
           var tempId = this.cubes[i].cubeIndex - this.minCubeIndex;
-          if (parseInt(numJ / 3) === parseInt(tempId % 9 / 3)) {
+          if (parseInt(numJ / this.orderNum) === parseInt(tempId % Math.pow(this.orderNum, 2) / this.orderNum)) {
             boxs.push(this.cubes[i]);
           }
         }
@@ -552,7 +568,7 @@ export default class Rubik {
       case 5.2:
         for (var i = 0; i < this.cubes.length; i++) {
           var tempId = this.cubes[i].cubeIndex - this.minCubeIndex;
-          if (tempId % 9 % 3 === numJ % 3) {
+          if (tempId % Math.pow(this.orderNum, 2) % this.orderNum === numJ % this.orderNum) {
             boxs.push(this.cubes[i]);
           }
         }

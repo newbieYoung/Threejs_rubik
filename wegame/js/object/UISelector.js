@@ -5,6 +5,7 @@ import UIComponent from './UIComponent.js'
  * coverWidth
  * coverHeight
  * optionHeight
+ * offsetZ
  * options
  * cover
  * content
@@ -21,15 +22,16 @@ export default class UISelector extends UIComponent {
     this.coverWidth = 750;
     this.coverHeight = this.coverWidth * window.innerHeight / window.innerWidth;
     this.optionHeight = 80;
+    this.offsetZ = 110;//UI平面Z轴偏移
     this.options = [{
       text: '2阶',
-      num: 2
+      data: { orderNum: 2, cubeLen: 60 }
     }, {
       text: '3阶',
-      num: 3
+      data: { orderNum: 3, cubeLen: 50 }
     }, {
       text: '4阶',
-      num: 4
+      data: { orderNum: 4, cubeLen: 40 }
     }]
     
     this._createCover();
@@ -93,7 +95,7 @@ export default class UISelector extends UIComponent {
       height:this.coverHeight,
       backgroundColor: 'rgba(0,0,0,.4)',
     });
-    this.cover.setPosition(null,null,this.cover.plane.position.z+100);
+    this.cover.setPosition(null,null,this.cover.plane.position.z+this.offsetZ);
   }
 
   //创建选项
@@ -120,7 +122,7 @@ export default class UISelector extends UIComponent {
       }
       item.loadStyle(uiParams);
       var y = item.plane.position.y + (center - i - 1) * this.optionHeight * this.radio;
-      var z = item.plane.position.z + 100;
+      var z = item.plane.position.z + this.offsetZ;
       item.setPosition(null, y, z);
       this.optionGroup.add(item.plane);
       this.items.push(item);

@@ -168,8 +168,11 @@ export default class Main {
     }else if(this.changeBtn.isHover(touch)){
       this.changeBtn.enable();
       this.numSelector.showInScene();
-    } else if (this.numSelector.isHover(touch) && !this.isRotating){
-      console.log(this.numSelector.hoveredItem);
+    } else if (this.numSelector.isHover(touch) && !this.isRotating && this.changeBtn.isActive){
+      var selectedData = this.numSelector.options[this.numSelector.hoveredItem].data;
+      this.frontRubik.changeOrder(selectedData.orderNum, selectedData.cubeLen);
+      this.changeBtn.disable();
+      this.numSelector.hideInScene();
     }else if(this.touchLine.isHover(touch)) {
       this.touchLine.enable();
     } else if (this.resetBtn.isHover(touch) && !this.isRotating){
