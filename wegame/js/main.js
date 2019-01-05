@@ -168,8 +168,8 @@ export default class Main {
     }else if(this.changeBtn.isHover(touch)){
       this.changeBtn.enable();
       this.numSelector.showInScene();
-    }else if(this.numSelector.isHover(touch)){
-
+    } else if (this.numSelector.isHover(touch) && !this.isRotating){
+      console.log(this.numSelector.hoveredItem);
     }else if(this.touchLine.isHover(touch)) {
       this.touchLine.enable();
     } else if (this.resetBtn.isHover(touch) && !this.isRotating){
