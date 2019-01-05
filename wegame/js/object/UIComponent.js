@@ -119,12 +119,19 @@ export default class UIComponent {
     if(y){
       this.plane.position.y = y;
     }
-    if(z){
-      this.plane.position.z = z;
-    }
 
     this.screenRect.left = (this.main.originWidth / 2 + this.plane.position.x - this.width / 2) / this.main.uiRadio;
     this.screenRect.top = (this.main.originHeight / 2 - this.plane.position.y - this.height / 2) / this.main.uiRadio;
+
+    //z轴坐标的变化意味着UI元素不在初始平面了，其屏幕投影尺寸及坐标会随之变化
+    if (z) {
+      this.plane.position.z = z;
+      var scale = (this.main.camera.position.z - this.plane.position.z) / this.main.camera.position.z;
+      this.screenRect.width = this.screenRect.width / scale;
+      this.screenRect.height = this.screenRect.height / scale;
+      this.screenRect.left -= this.screenRect.width * (1 - scale) / 2;
+      this.screenRect.top -= this.screenRect.height * (1 - scale) / 2;
+    }
   }
 
   /**

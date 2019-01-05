@@ -162,7 +162,14 @@ export default class Main {
   touchStart(event) {
     var touch = event.touches[0];
     this.startPoint = touch;
-    if(this.numSelector.isHover(touch)){
+    if (this.changeBtn.isActive && !this.numSelector.isHover(touch)){
+      this.changeBtn.disable();
+      this.numSelector.hideInScene();
+    }else if(this.changeBtn.isHover(touch)){
+      this.changeBtn.enable();
+      this.numSelector.showInScene();
+    }else if(this.numSelector.isHover(touch)){
+
     }else if(this.touchLine.isHover(touch)) {
       this.touchLine.enable();
     } else if (this.resetBtn.isHover(touch) && !this.isRotating){

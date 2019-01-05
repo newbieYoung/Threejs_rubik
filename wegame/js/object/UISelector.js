@@ -9,6 +9,7 @@ import UIComponent from './UIComponent.js'
  * cover
  * content
  * items
+ * optionGroup
  * hoveredItem
  */
 
@@ -73,9 +74,7 @@ export default class UISelector extends UIComponent {
    */
   showInScene() {
     this.cover.showInScene();
-    for(var i=0;i<this.items.length;i++){
-      this.items[i].showInScene();
-    }
+    this.main.scene.add(this.optionGroup);
   }
 
   /**
@@ -83,9 +82,7 @@ export default class UISelector extends UIComponent {
    */
   hideInScene(){
     this.cover.hideInScene();
-    for(var i=0;i<this.items.length;i++){
-      this.items[i].hideInScene();
-    }
+    this.main.scene.remove(this.optionGroup);
   }
 
   //创建遮罩
@@ -96,13 +93,14 @@ export default class UISelector extends UIComponent {
       height:this.coverHeight,
       backgroundColor: 'rgba(0,0,0,.4)',
     });
-    this.cover.setPosition(null,null,this.cover.plane.position.z+100)
+    this.cover.setPosition(null,null,this.cover.plane.position.z+100);
   }
 
   //创建选项
   _createOptions(){
     var center = (this.options.length+1)/2;
     this.items = [];
+    this.optionGroup = new THREE.Group();
     for(var i=0;i<this.options.length;i++){
       var item = new UIComponent(this.main);
       var uiParams = {
@@ -124,6 +122,7 @@ export default class UISelector extends UIComponent {
       var y = item.plane.position.y + (center - i - 1) * this.optionHeight * this.radio;
       var z = item.plane.position.z + 100;
       item.setPosition(null, y, z);
+      this.optionGroup.add(item.plane);
       this.items.push(item);
     }
   }
