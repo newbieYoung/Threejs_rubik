@@ -232,16 +232,18 @@ export default class Main {
    * 触摸结束
    */
   touchEnd() {
-    var touch = {
-      clientX:this.startPoint.x,
-      clientY:this.startPoint.y
-    };
-    if (this.changeBtn.isActive && !this.numSelector.isHover(touch)) {
-      this.changeBtn.disable();
-      this.numSelector.hideInScene();
-    } else if (this.changeBtn.isHover(touch)) {
-      this.changeBtn.enable();
-      this.numSelector.showInScene();
+    if (!this.startPoint.z){//触摸点坐标必须是屏幕坐标
+      var touch = {
+        clientX: this.startPoint.x,
+        clientY: this.startPoint.y
+      };
+      if (this.changeBtn.isActive && !this.numSelector.isHover(touch)) {
+        this.changeBtn.disable();
+        this.numSelector.hideInScene();
+      } else if (this.changeBtn.isHover(touch)) {
+        this.changeBtn.enable();
+        this.numSelector.showInScene();
+      }
     }
     this.numSelector.disable();
     this.touchLine.disable();
