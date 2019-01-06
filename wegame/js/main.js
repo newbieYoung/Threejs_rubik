@@ -513,6 +513,8 @@ export default class Main {
       this.tagRubik = new BasicRubik(this);
       this.tagRubik.model();
     }
+    this.tagRubik.changeOrder(this.frontRubik.orderNum,this.frontRubik.cubeLen);
+
     var tagPosition = this.saveBtn.getPosition();
     tagPosition.y -= this.saveBtn.height/2+15;
     this.tagRubik.save(this.frontRubik, tagPosition, 0.05);
