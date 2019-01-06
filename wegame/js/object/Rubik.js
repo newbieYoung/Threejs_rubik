@@ -582,41 +582,65 @@ export default class Rubik {
    * 以正视角魔方为基准
    * 魔方基本公式 U、R、F、D、L、B、u、r、f、d、l、b
    */
-  U(next) {
-    this.rotateMove(this.minCubeIndex, 1.3, next, 100);
+  U(next,num) {
+    num = num?num:0;
+    var cubeIndex = this.minCubeIndex + num*this.orderNum;
+    this.rotateMove(cubeIndex, 1.3, next, 100);
   }
-  R(next) {
-    this.rotateMove(this.minCubeIndex, 2.4, next, 100);
+  R(next,num) {
+    num = num?num:0;
+    var cubeIndex = this.minCubeIndex + num*Math.pow(this.orderNum,2);
+    this.rotateMove(cubeIndex, 2.4, next, 100);
   }
-  F(next) {
-    this.rotateMove(this.minCubeIndex, 4.1, next, 100);
+  F(next,num) {
+    num = num ? num : 0;
+    var cubeIndex = this.minCubeIndex + num;
+    this.rotateMove(cubeIndex, 4.1, next, 100);
   }
-  D(next) {
-    this.rotateMove(this.minCubeIndex + 6, 4.4, next, 100);
+  D(next,num) {
+    num = num ? num : 0;
+    var cubeIndex = this.minCubeIndex + (this.orderNum-1)*this.orderNum - num*this.orderNum;
+    this.rotateMove(cubeIndex, 4.4, next, 100);
   }
-  L(next) {
-    this.rotateMove(this.minCubeIndex + 18, 1.1, next, 100);
+  L(next,num) {
+    num = num ? num : 0;
+    var cubeIndex = this.minCubeIndex + (this.orderNum - 1) * Math.pow(this.orderNum, 2) - num * Math.pow(this.orderNum, 2);
+    this.rotateMove(cubeIndex, 1.1, next, 100);
   }
-  B(next) {
-    this.rotateMove(this.minCubeIndex + 2, 2.1, next, 100);
+  B(next,num) {
+    num = num?num:0;
+    var cubeIndex = this.minCubeIndex + (this.orderNum-1) - num;
+    this.rotateMove(cubeIndex, 2.1, next, 100);
   }
-  u(next) {
-    this.rotateMove(this.minCubeIndex, 4.4, next, 100);
+  u(next,num) {
+    num = num ? num : 0;
+    var cubeIndex = this.minCubeIndex + num * this.orderNum;
+    this.rotateMove(cubeIndex, 4.4, next, 100);
   }
-  r(next) {
-    this.rotateMove(this.minCubeIndex, 1.1, next, 100);
+  r(next,num) {
+    num = num ? num : 0;
+    var cubeIndex = this.minCubeIndex + num * Math.pow(this.orderNum, 2);
+    this.rotateMove(cubeIndex, 1.1, next, 100);
   }
-  f(next) {
-    this.rotateMove(this.minCubeIndex, 2.1, next, 100);
+  f(next,num) {
+    num = num ? num : 0;
+    var cubeIndex = this.minCubeIndex + num;
+    this.rotateMove(cubeIndex, 2.1, next, 100);
   }
-  d(next) {
-    this.rotateMove(this.minCubeIndex + 6, 1.3, next, 100);
+  d(next,num) {
+    num = num ? num : 0;
+    var cubeIndex = this.minCubeIndex + (this.orderNum - 1) * this.orderNum - num * this.orderNum;
+    this.rotateMove(cubeIndex, 1.3, next, 100);
   }
-  l(next) {
-    this.rotateMove(this.minCubeIndex + 18, 2.4, next, 100);
+  l(next,num) {
+    num = num ? num : 0;
+    var cubeIndex = this.minCubeIndex + (this.orderNum - 1) * Math.pow(this.orderNum, 2) - num * Math.pow(this.orderNum, 2);
+    this.rotateMove(cubeIndex, 2.4, next, 100);
   }
-  b(next) {
-    this.rotateMove(this.minCubeIndex + 2, 4.1, next, 100);
+  b(next,num) {
+    num = num ? num : 0;
+    var cubeIndex = this.minCubeIndex + (this.orderNum - 1) - num;
+    this.rotateMove(cubeIndex, 4.1, next, 100);
   }
 
   /**
@@ -624,11 +648,13 @@ export default class Rubik {
    */
   runMethodAtNo(arr, no, next) {
     var self = this;
+    var len = parseInt(this.orderNum / 2) - 1;
+    var num = Math.round(Math.random() * len);
     if (no >= arr.length - 1) {
       if (next) {
-        this[arr[no]](next);
+        this[arr[no]](next, num);
       } else {
-        this[arr[no]]();
+        this[arr[no]](function(){},num);
       }
     } else {
       this[arr[no]](function () {
@@ -636,7 +662,7 @@ export default class Rubik {
           no++
           self.runMethodAtNo(arr, no, next);
         }
-      })
+      },num);
     }
   }
 

@@ -171,6 +171,7 @@ export default class Main {
     } else if (this.numSelector.isHover(touch) && !this.isRotating && this.changeBtn.isActive){
       var selectedData = this.numSelector.options[this.numSelector.hoveredItem].data;
       this.frontRubik.changeOrder(selectedData.orderNum, selectedData.cubeLen);
+      this.endRubik.changeOrder(selectedData.orderNum, selectedData.cubeLen);
       this.changeBtn.disable();
       this.numSelector.hideInScene();
     }else if(this.touchLine.isHover(touch)) {
