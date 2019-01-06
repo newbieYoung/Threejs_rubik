@@ -162,39 +162,41 @@ export default class Main {
   touchStart(event) {
     var touch = event.touches[0];
     this.startPoint = touch;
-    if (this.changeBtn.isActive && !this.numSelector.isHover(touch)){
-      this.changeBtn.disable();
-      this.numSelector.hideInScene();
-    }else if(this.changeBtn.isHover(touch)){
-      this.changeBtn.enable();
-      this.numSelector.showInScene();
-    } else if (this.numSelector.isHover(touch) && !this.isRotating && this.changeBtn.isActive){
-      var selectedData = this.numSelector.options[this.numSelector.hoveredItem].data;
-      this.frontRubik.changeOrder(selectedData.orderNum, selectedData.cubeLen);
-      this.endRubik.changeOrder(selectedData.orderNum, selectedData.cubeLen);
-      this.changeBtn.disable();
-      this.numSelector.hideInScene();
-    }else if(this.touchLine.isHover(touch)) {
-      this.touchLine.enable();
-    } else if (this.resetBtn.isHover(touch) && !this.isRotating){
-      this.resetBtn.enable();
-      this.resetRubik();
-    } else if (this.disorganizeBtn.isHover(touch) && !this.isRotating){
-      this.disorganizeBtn.enable();
-      this.disorganizeRubik();
-    } else if (this.saveBtn.isHover(touch) && !this.isRotating){
-      this.saveBtn.enable();
-      this.saveRubik();
-    } else if (this.restoreBtn.isHover(touch) && !this.isRotating){
-      this.restoreBtn.enable();
-      this.restoreRubik();
-    } else {
-      this.getIntersects(event);
-      if (!this.isRotating && this.intersect) {//触摸点在魔方上且魔方没有转动
-        this.startPoint = this.intersect.point;//开始转动，设置起始点
-      }
-      if (!this.isRotating && !this.intersect){//触摸点没在魔方上
-        this.startPoint = new THREE.Vector2(touch.clientX, touch.clientY);
+
+    if (!this.isRotating){//魔方转动时不能进行其它操作
+      if (this.changeBtn.isActive){//存在遮罩层
+        if (this.numSelector.isHover(touch)){
+          var selectedData = this.numSelector.options[this.numSelector.hoveredItem].data;
+          this.frontRubik.changeOrder(selectedData.orderNum, selectedData.cubeLen);
+          this.endRubik.changeOrder(selectedData.orderNum, selectedData.cubeLen);
+          this.changeBtn.disable();
+          this.numSelector.hideInScene();
+          this.clearTagRubik();
+        }
+      }else{
+        if (this.touchLine.isHover(touch)) {
+          this.touchLine.enable();
+        } else if (this.resetBtn.isHover(touch)) {
+          this.resetBtn.enable();
+          this.resetRubik();
+        } else if (this.disorganizeBtn.isHover(touch)) {
+          this.disorganizeBtn.enable();
+          this.disorganizeRubik();
+        } else if (this.saveBtn.isHover(touch)) {
+          this.saveBtn.enable();
+          this.saveRubik();
+        } else if (this.restoreBtn.isHover(touch)) {
+          this.restoreBtn.enable();
+          this.restoreRubik();
+        } else {
+          this.getIntersects(event);
+          if (!this.isRotating && this.intersect) {//触摸点在魔方上且魔方没有转动
+            this.startPoint = this.intersect.point;//开始转动，设置起始点
+          }
+          if (!this.isRotating && !this.intersect) {//触摸点没在魔方上
+            this.startPoint = new THREE.Vector2(touch.clientX, touch.clientY);
+          }
+        }
       }
     }
   }
@@ -209,7 +211,7 @@ export default class Main {
       var frontPercent = touch.clientY / window.innerHeight;
       var endPercent = 1 - frontPercent;
       this.rubikResize(frontPercent, endPercent);
-    } else if(!this.resetBtn.isActive && !this.disorganizeBtn.isActive && !this.saveBtn.isActive && !this.restoreBtn.isActive) {
+    } else if(!this.resetBtn.isActive && !this.disorganizeBtn.isActive && !this.saveBtn.isActive && !this.restoreBtn.isActive && !this.changeBtn.isActive) {
       this.getIntersects(event);
       if (!this.isRotating && this.startPoint && this.intersect) {//移动点在魔方上且魔方没有转动
         this.movePoint = this.intersect.point;
@@ -230,6 +232,17 @@ export default class Main {
    * 触摸结束
    */
   touchEnd() {
+    var touch = {
+      clientX:this.startPoint.x,
+      clientY:this.startPoint.y
+    };
+    if (this.changeBtn.isActive && !this.numSelector.isHover(touch)) {
+      this.changeBtn.disable();
+      this.numSelector.hideInScene();
+    } else if (this.changeBtn.isHover(touch)) {
+      this.changeBtn.enable();
+      this.numSelector.showInScene();
+    }
     this.numSelector.disable();
     this.touchLine.disable();
     this.resetBtn.disable();
@@ -518,7 +531,7 @@ export default class Main {
     var tagPosition = this.saveBtn.getPosition();
     tagPosition.y -= this.saveBtn.height/2+15;
     this.tagRubik.save(this.frontRubik, tagPosition, 0.05);
-    this.scene.add(this.tagRubik.group);
+    this.tagRubik.showInScene();
 
     //灰色半透明背景
     if (!this.tagRubikBg){
@@ -542,16 +555,22 @@ export default class Main {
    * 读取魔方
    */
   restoreRubik(){
-    if (this.tagRubik){
+    if (this.tagRubik.isVisible){
       this.frontRubik.save(this.tagRubik);
       this.endRubik.save(this.tagRubik);
+      this.clearTagRubik();
+    }
+  }
 
-      if (this.tagRubik) {
-        this.scene.remove(this.tagRubik.group);
-      }
-      if (this.tagRubikBg) {
-        this.tagRubikBg.hideInScene();
-      }
+  /**
+   * 清除状态存储魔方
+   */
+  clearTagRubik(){
+    if (this.tagRubik) {
+      this.tagRubik.hideInScene();
+    }
+    if (this.tagRubikBg) {
+      this.tagRubikBg.hideInScene();
     }
   }
 }

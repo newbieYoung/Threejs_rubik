@@ -109,6 +109,7 @@ export default class Rubik {
     this.defaultTotalTime = 250;//默认转动动画时长
     this.orderNum = 3;//默认三阶魔方
     this.cubeLen = 50;//默认小方块尺寸
+    this.isVisible = false;//在场景中是否可见
 
     //魔方的六个转动方向
     this.xLine = new THREE.Vector3(1, 0, 0);
@@ -223,7 +224,23 @@ export default class Rubik {
       this.group.rotateY((270-45) / 180 * Math.PI);
     }
     this.group.rotateOnAxis(new THREE.Vector3(1, 0, 1), 25 / 180 * Math.PI);
+    this.showInScene();
+  }
+
+  /**
+   * 显示在场景中
+   */
+  showInScene(){
+    this.isVisible = true;
     this.main.scene.add(this.group);
+  }
+
+  /**
+   * 隐藏
+   */
+  hideInScene(){
+    this.isVisible = false;
+    this.main.scene.remove(this.group);
   }
 
   /**
