@@ -9,8 +9,24 @@ const BasicParams = {
   //右、左、上、下、前、后
   colors: ['#ff6b02', '#dd422f',
     '#ffffff', '#fdcd02',
-    '#3d81f7', '#019d53']
+    '#3d81f7', '#019d53'],
+  sequences: ['R', 'L', 'U', 'D', 'F', 'B']//默认序列名
 };
+
+/**
+ * 获取数组最小值
+ */
+function min(arr){
+  var min = arr[0];
+  var no = 0;
+  for (var i = 1; i < arr.length; i++) {
+    if (arr[i] < min) {
+      min = arr[i];
+      no = i;
+    }
+  }
+  return { no: no, value: min };
+}
 
 /**
  * 简易魔方
@@ -111,13 +127,144 @@ export default class Rubik {
     this.cubeLen = 50;//默认小方块尺寸
     this.isVisible = false;//在场景中是否可见
 
-    //魔方的六个转动方向
+    //魔方的六个转动方向（世界坐标系，默认为自身坐标系，魔方创建完成之后会进行转换）
     this.xLine = new THREE.Vector3(1, 0, 0);
     this.xLineAd = new THREE.Vector3(-1, 0, 0);
     this.yLine = new THREE.Vector3(0, 1, 0);
     this.yLineAd = new THREE.Vector3(0, -1, 0);
     this.zLine = new THREE.Vector3(0, 0, 1);
     this.zLineAd = new THREE.Vector3(0, 0, -1);
+
+    //魔方的六个转动方向（自身坐标系）
+    this.wXLine = new THREE.Vector3(1, 0, 0);
+    this.wXLineAd = new THREE.Vector3(-1, 0, 0);
+    this.wYLine = new THREE.Vector3(0, 1, 0);
+    this.wYLineAd = new THREE.Vector3(0, -1, 0);
+    this.wZLine = new THREE.Vector3(0, 0, 1);
+    this.wZLineAd = new THREE.Vector3(0, 0, -1);
+  }
+
+  /**
+   * 把魔方当前状态用字符串序列表示
+   */
+  toSequences() {
+    var sequences = [];
+    for (var i = 0; i < this.UCubeIndex.length; i++) {
+      var cube = this.getCubeByIndex(this.UCubeIndex[i]);
+      sequences.push(this.getFaceColorByVector(cube, this.wYLine));
+    }
+  }
+
+  /**
+   * 获取法向量和已知向量方向相同的面的颜色序号
+   */
+  getFaceColorByVector(cube,vector){
+    var materials = cube.material.materials;
+    var faces = cube.geometry.faces;
+    var normalMatrix = cube.normalMatrix;
+
+    /**
+     * 转换视角时摄像机位置发生了变动，模型开始上表面的法向量是世界坐标系的Y轴，现在依然是世界坐标系的Y轴；
+     * 但是小方块面的法向量乘以其法向量矩阵得到的是视图坐标系中的向量；
+     * 世界坐标系转换成视图坐标系需要乘以视图矩阵的逆反矩阵。
+     */
+    var viewMatrix = new THREE.Matrix4();
+    var camera = this.main.camera;
+    viewMatrix.lookAt(camera.position, this.main.viewCenter, camera.up);
+    viewMatrix.getInverse(viewMatrix);
+    var tempVector = vector.clone();
+    tempVector.applyMatrix4(viewMatrix);
+    var angles = [];
+    for (var i = 0; i < faces.length; i++) {
+      var tempNormal = faces[i].normal.clone();
+      tempNormal.applyMatrix3(normalMatrix);
+      /**
+       * 按道理这里应该判断两向量夹角是否等于0，但是因为存在精度问题；
+       * 有可能得到的角度很接近0，但却不等于0，另外不确定到底保留几位小数合适；
+       * 因此使用判断最小值的方式。
+       */
+      angles.push(tempNormal.angleTo(tempVector));
+    }
+    var minNo = min(angles).no;
+    return faces[minNo].materialIndex;
+  }
+
+  /**
+   * 获取顶部索引值
+   */
+  getUCubeIndex() {
+    this.UCubeIndex = [];
+    for (var i = 0; i < this.orderNum; i++) {
+      var start = (this.orderNum - i - 1) * Math.pow(this.orderNum, 2);
+      for (var j = 0; j < this.orderNum; j++) {
+        this.UCubeIndex.push(start + j);
+      }
+    }
+  }
+
+  /**
+   * 获取右部索引值
+   */
+  getRCubeIndex(){
+    this.RCubeIndex = [];
+    for (var i = 0; i < this.orderNum; i++) {
+      var start = (i + 1) * this.orderNum - 1;
+      for (var j = 0; j < this.orderNum; j++) {
+        this.RCubeIndex.push(start + j * Math.pow(this.orderNum, 2));
+      }
+    }
+  }
+
+  /**
+   * 获取前部索引值
+   */
+  getFCubeIndex(){
+    this.FCubeIndex = [];
+    for (var i = 0; i < this.orderNum; i++) {
+      var start = i * this.orderNum;
+      for (var j = 0; j < this.orderNum; j++) {
+        this.FCubeIndex.push(start + j);
+      }
+    }
+  }
+
+  /**
+   * 获取底部索引值
+   */
+  getDCubeIndex(){
+    this.DCubeIndex = [];
+    for (var i = 0; i < this.orderNum; i++) {
+      var start = Math.pow(this.orderNum, 2) * (i + 1) - this.orderNum;
+      for (var j = 0; j < this.orderNum; j++) {
+        this.DCubeIndex.push(start + j);
+      }
+    }
+  }
+
+  /**
+   * 获取左部索引值
+   */
+  getLCubeIndex(){
+    this.LCubeIndex = [];
+    for (var i = 0; i < this.orderNum; i++) {
+      var start = (Math.pow(this.orderNum, 2) - this.orderNum + i) * this.orderNum;
+      for (var j = 0; j < this.orderNum; j++) {
+        this.LCubeIndex.push(start - Math.pow(this.orderNum, 2) * j);
+      }
+    }
+  }
+
+  /**
+   * 获取后部索引值
+   */
+  getBCubeIndex(){
+    this.BCubeIndex = [];
+    for (var i = 0; i < this.orderNum; i++) {
+      var start = (Math.pow(this.orderNum, 2) - this.orderNum + i) * this.orderNum + (this.orderNum - 1);
+      for (var j = 0; j < this.orderNum; j++) {
+        this.BCubeIndex.push(start - j);
+      }
+    }
   }
 
   /**
@@ -204,6 +351,13 @@ export default class Rubik {
     this.group.add(this.container);
 
     this.getMinCubeIndex();
+    this.getBCubeIndex();
+    this.getDCubeIndex();
+    this.getRCubeIndex();
+    this.getFCubeIndex();
+    this.getUCubeIndex();
+    this.getLCubeIndex();
+    //this.toSequences();
   }
 
   /**
@@ -225,6 +379,8 @@ export default class Rubik {
     }
     this.group.rotateOnAxis(new THREE.Vector3(1, 0, 1), 25 / 180 * Math.PI);
     this.showInScene();
+    this.main.render();
+    this.updateCurLocalAxisInWorld();
   }
 
   /**
@@ -255,6 +411,8 @@ export default class Rubik {
     }
     this.group.scale.set(percent, percent, percent);
     this.group.position.y = this.main.originHeight * (0.5 - percent / 2) * transformTag;
+    this.main.render();
+    this.updateCurLocalAxisInWorld();
   }
 
   /**
@@ -294,46 +452,43 @@ export default class Rubik {
     }
     var rotateMatrix = new THREE.Matrix4();//旋转矩阵
     var origin = new THREE.Vector3(0, 0, 0);
-    var xLine = new THREE.Vector3(1, 0, 0);
-    var yLine = new THREE.Vector3(0, 1, 0);
-    var zLine = new THREE.Vector3(0, 0, 1);
 
     switch (direction) {
       case 0.1:
       case 1.2:
       case 2.4:
       case 3.3:
-        rotateMatrix = this.rotateAroundWorldAxis(origin, zLine, -90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
+        rotateMatrix = this.rotateAroundWorldAxis(origin, this.wZLine, -90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
         break;
       case 0.2:
       case 1.1:
       case 2.3:
       case 3.4:
-        rotateMatrix = this.rotateAroundWorldAxis(origin, zLine, 90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
+        rotateMatrix = this.rotateAroundWorldAxis(origin, this.wZLine, 90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
         break;
       case 0.4:
       case 1.3:
       case 4.3:
       case 5.4:
-        rotateMatrix = this.rotateAroundWorldAxis(origin, yLine, -90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
+        rotateMatrix = this.rotateAroundWorldAxis(origin, this.wYLine, -90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
         break;
       case 1.4:
       case 0.3:
       case 4.4:
       case 5.3:
-        rotateMatrix = this.rotateAroundWorldAxis(origin, yLine, 90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
+        rotateMatrix = this.rotateAroundWorldAxis(origin, this.wYLine, 90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
         break;
       case 2.2:
       case 3.1:
       case 4.1:
       case 5.2:
-        rotateMatrix = this.rotateAroundWorldAxis(origin, xLine, 90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
+        rotateMatrix = this.rotateAroundWorldAxis(origin, this.wXLine, 90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
         break;
       case 2.1:
       case 3.2:
       case 4.2:
       case 5.1:
-        rotateMatrix = this.rotateAroundWorldAxis(origin, xLine, -90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
+        rotateMatrix = this.rotateAroundWorldAxis(origin, this.wXLine, -90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
         break;
       default:
         break;
@@ -377,7 +532,6 @@ export default class Rubik {
    * 计算转动方向
    */
   getDirection(sub, normalize) {
-    this.updateCurLocalAxisInWorld();
     var direction;
     //判断差向量和x、y、z轴的夹角
     var xAngle = sub.angleTo(this.xLine);
@@ -388,21 +542,14 @@ export default class Rubik {
     var zAngleAd = sub.angleTo(this.zLineAd);
     var minAngle = Math.min.apply(null, [xAngle, xAngleAd, yAngle, yAngleAd, zAngle, zAngleAd]);//最小夹角
 
-    var xLine = new THREE.Vector3(1, 0, 0);
-    var xLineAd = new THREE.Vector3(-1, 0, 0);
-    var yLine = new THREE.Vector3(0, 1, 0);
-    var yLineAd = new THREE.Vector3(0, -1, 0);
-    var zLine = new THREE.Vector3(0, 0, 1);
-    var zLineAd = new THREE.Vector3(0, 0, -1);
-
     switch (minAngle) {
       case xAngle:
         direction = 0;//向x轴正方向旋转90度（还要区分是绕z轴还是绕y轴）
-        if (normalize.equals(yLine)) {
+        if (normalize.equals(this.wYLine)) {
           direction = direction + 0.1;//绕z轴顺时针
-        } else if (normalize.equals(yLineAd)) {
+        } else if (normalize.equals(this.wYLineAd)) {
           direction = direction + 0.2;//绕z轴逆时针
-        } else if (normalize.equals(zLine)) {
+        } else if (normalize.equals(this.wZLine)) {
           direction = direction + 0.3;//绕y轴逆时针
         } else {
           direction = direction + 0.4;//绕y轴顺时针
@@ -410,11 +557,11 @@ export default class Rubik {
         break;
       case xAngleAd:
         direction = 1;//向x轴反方向旋转90度
-        if (normalize.equals(yLine)) {
+        if (normalize.equals(this.wYLine)) {
           direction = direction + 0.1;
-        } else if (normalize.equals(yLineAd)) {
+        } else if (normalize.equals(this.wYLineAd)) {
           direction = direction + 0.2;
-        } else if (normalize.equals(zLine)) {
+        } else if (normalize.equals(this.wZLine)) {
           direction = direction + 0.3;
         } else {
           direction = direction + 0.4;
@@ -422,11 +569,11 @@ export default class Rubik {
         break;
       case yAngle:
         direction = 2;//向y轴正方向旋转90度
-        if (normalize.equals(zLine)) {
+        if (normalize.equals(this.wZLine)) {
           direction = direction + 0.1;
-        } else if (normalize.equals(zLineAd)) {
+        } else if (normalize.equals(this.wZLineAd)) {
           direction = direction + 0.2;
-        } else if (normalize.equals(xLine)) {
+        } else if (normalize.equals(this.wXLine)) {
           direction = direction + 0.3;
         } else {
           direction = direction + 0.4;
@@ -434,11 +581,11 @@ export default class Rubik {
         break;
       case yAngleAd:
         direction = 3;//向y轴反方向旋转90度
-        if (normalize.equals(zLine)) {
+        if (normalize.equals(this.wZLine)) {
           direction = direction + 0.1;
-        } else if (normalize.equals(zLineAd)) {
+        } else if (normalize.equals(this.wZLineAd)) {
           direction = direction + 0.2;
-        } else if (normalize.equals(xLine)) {
+        } else if (normalize.equals(this.wXLine)) {
           direction = direction + 0.3;
         } else {
           direction = direction + 0.4;
@@ -446,11 +593,11 @@ export default class Rubik {
         break;
       case zAngle:
         direction = 4;//向z轴正方向旋转90度
-        if (normalize.equals(yLine)) {
+        if (normalize.equals(this.wYLine)) {
           direction = direction + 0.1;
-        } else if (normalize.equals(yLineAd)) {
+        } else if (normalize.equals(this.wYLineAd)) {
           direction = direction + 0.2;
-        } else if (normalize.equals(xLine)) {
+        } else if (normalize.equals(this.wXLine)) {
           direction = direction + 0.3;
         } else {
           direction = direction + 0.4;
@@ -458,11 +605,11 @@ export default class Rubik {
         break;
       case zAngleAd:
         direction = 5;//向z轴反方向旋转90度
-        if (normalize.equals(yLine)) {
+        if (normalize.equals(this.wYLine)) {
           direction = direction + 0.1;
-        } else if (normalize.equals(yLineAd)) {
+        } else if (normalize.equals(this.wYLineAd)) {
           direction = direction + 0.2;
-        } else if (normalize.equals(xLine)) {
+        } else if (normalize.equals(this.wXLine)) {
           direction = direction + 0.3;
         } else {
           direction = direction + 0.4;
@@ -479,9 +626,9 @@ export default class Rubik {
    */
   getCubeByIndex(index) {
     var cube;
-    for (var i = 0; i < cubes.length; i++) {
-      if (cubes[i].cubeIndex == index + this.minCubeIndex) {
-        cube = cubes[i];
+    for (var i = 0; i < this.cubes.length; i++) {
+      if (this.cubes[i].cubeIndex == index + this.minCubeIndex) {
+        cube = this.cubes[i];
       }
     }
     return cube;
@@ -743,5 +890,8 @@ export default class Rubik {
     if (number!=null){
       this.group.scale.set(number, number, number);
     }
+    this.main.render();
+    this.updateCurLocalAxisInWorld();
+    this.toSequences();
   }
 }
