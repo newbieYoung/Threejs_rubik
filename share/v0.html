@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>分享示例v0</title>
+        <script type="text/javascript" src="../threejs/three.js"></script>
+        <link rel="stylesheet" href="../reset.import.css">
+        <style type="text/css">
+            div#canvas-frame {
+                cursor: pointer;
+                width:100%;
+                height:100%;
+                background-color: #EEEEEE;
+            }
+        </style>
+    </head>
+    <body onload="threeStart();">
+        <div id="canvas-frame"></div>
+        <script>
+            const width = window.innerWidth;//页面宽度
+            const height = window.innerHeight;//页面高度
+            const viewCenter = new THREE.Vector3(0, 0, 0);//原点
+            const orderNum = 3;
+            const cubeLen = 50;
+            const BasicParams = {
+				x: 0,
+				y: 0,
+				z: 0,
+				defaultColor: '#666666',
+				//右、左、上、下、前、后
+				colors: ['#ff6b02', '#dd422f',
+					'#ffffff', '#fdcd02',
+					'#3d81f7', '#019d53'],
+				sequences: ['R', 'L', 'U', 'D', 'F', 'B']//默认序列名
+			};
+
+			var renderer;//渲染器
+
+			/**
+			 * 简易魔方
+			 * x、y、z 魔方中心点坐标
+			 * colors 魔方六面体颜色
+			 */
+			function SimpleCube(x, y, z, num, len, colors) {
+			  //魔方左上角坐标
+			  var leftUpX = x - num / 2 * len;
+			  var leftUpY = y + num / 2 * len;
+			  var leftUpZ = z + num / 2 * len;
+
+			  //根据颜色生成材质
+			  var materialArr = [];
+			  for (var i = 0; i < BasicParams.colors.length; i++){
+			    var texture = new THREE.Texture(faces(BasicParams.colors[i]));
+			    texture.needsUpdate = true;
+			    var material = new THREE.MeshLambertMaterial({ map: texture });
+			    materialArr.push(material);
+			  }
+			  var defaultTexture = new THREE.Texture(faces(BasicParams.defaultColor));
+			  defaultTexture.needsUpdate = true;
+			  var defaultMaterial = new THREE.MeshLambertMaterial({ map: defaultTexture });
+
+			  var cubes = [];
+			  for (var i = 0; i < num; i++) {
+			    for (var j = 0; j < num * num; j++) {
+
+			      //小方块外部面才有颜色，内部面默认为灰色
+			      var materials = [];
+			      var no = i * num * num + j;
+			      if (no % num == (num-1)) {//右
+			        materials[0] = materialArr[0];
+			      }
+			      if (no % num == 0) {//左
+			        materials[1] = materialArr[1];
+			      }
+			      if (no % Math.pow(num,2) <= (num-1)) {//上
+			        materials[2] = materialArr[2];
+			      }
+			      if (no % Math.pow(num, 2) >= (num-1)*num) {//下
+			        materials[3] = materialArr[3];
+			      }
+			      if (parseInt(no / Math.pow(num, 2)) == 0) {//前
+			        materials[4] = materialArr[4];
+			      }
+			      if (parseInt(no / Math.pow(num, 2)) == (num-1)) {//后
+			        materials[5] = materialArr[5];
+			      }
+			      for (var k = 0; k < 6; k++) {
+			        if (!materials[k]) {
+			          materials[k] = defaultMaterial;
+			        }
+			      }
+
+			      var cubegeo = new THREE.BoxGeometry(len, len, len);
+			      var cube = new THREE.Mesh(cubegeo, materials);
+
+			      //依次计算各个小方块中心点坐标
+			      cube.position.x = (leftUpX + len / 2) + (j % num) * len;
+			      cube.position.y = (leftUpY - len / 2) - parseInt(j / num) * len;
+			      cube.position.z = (leftUpZ - len / 2) - i * len;
+			      cubes.push(cube)
+			    }
+			  }
+			  return cubes;
+			}
+
+			/**
+			 * 生成canvas素材
+			 */
+			function faces(rgbaColor) {
+				var canvas = document.createElement('canvas');
+				canvas.width = 256;
+				canvas.height = 256;
+				var context = canvas.getContext('2d');
+				//画一个宽高都是256的黑色正方形
+				context.fillStyle = 'rgba(0,0,0,1)';
+				context.fillRect(0, 0, 256, 256);
+				//在内部用某颜色的16px宽的线再画一个宽高为224的圆角正方形并用改颜色填充
+				context.rect(16, 16, 224, 224);
+				context.lineJoin = 'round';
+				context.lineWidth = 16;
+				context.fillStyle = rgbaColor;
+				context.strokeStyle = rgbaColor;
+				context.stroke();
+				context.fill();
+				return canvas;
+			}
+
+            window.requestAnimFrame = (function() {//如果有变化则可能还需要requestAnimationFrame刷新
+                return window.requestAnimationFrame ||
+                       window.mozRequestAnimationFrame ||
+                       window.webkitRequestAnimationFrame ||
+                       window.msRequestAnimationFrame ||
+                       window.webkitRequestAnimationFrame;
+            })();
+
+            //根据页面宽度和高度创建渲染器，并添加容器中
+            function initThree() {
+                renderer = new THREE.WebGLRenderer({
+                    antialias : true
+                });
+                renderer.setSize(width, height);
+                renderer.setClearColor(0xFFFFFF, 1.0);
+                renderer.setPixelRatio(window.devicePixelRatio);
+                document.getElementById('canvas-frame').appendChild(renderer.domElement);
+            }
+
+            //创建相机，并设置正方向和中心点
+            var camera;
+            function initCamera() {
+                camera = new THREE.PerspectiveCamera(45, width / height, 1, 1500);
+                camera.position.set(0, 0, 500 / camera.aspect);
+    			camera.up.set(0, 1, 0);//正方向
+    			camera.lookAt(viewCenter);
+            }
+
+            //创建场景，后续元素需要加入到场景中才会显示出来
+            var scene;
+            function initScene() {
+                scene = new THREE.Scene();
+            }
+
+            //创建光线
+            var light;
+            function initLight() {
+            	light = new THREE.AmbientLight(0xfefefe);
+				scene.add(light);
+            }
+
+            //创建展示场景所需的各种元素
+            var group;
+            var cubes;
+            function initObject() {
+            	group = new THREE.Group();
+            	cubes = SimpleCube(BasicParams.x, BasicParams.y, BasicParams.z, orderNum, cubeLen, BasicParams.colors);
+            	for(var i=0;i<cubes.length;i++){
+            		var item = cubes[i];
+            		group.add(cubes[i]);//并依次加入到场景中
+            	}
+
+	      		group.rotateY(45/180*Math.PI);
+			    group.rotateOnAxis(new THREE.Vector3(1, 0, 1), 25 / 180 * Math.PI);
+
+            	scene.add(group);
+            }
+
+            //渲染
+            function render(){
+                renderer.clear();
+                renderer.render(scene, camera);
+                window.requestAnimFrame(render);
+            }
+
+            //开始
+            function threeStart() {
+                initThree();
+                initCamera();
+                initScene();
+                initLight();
+                initObject();
+                render();
+            }
+        </script>
+    </body>
+</html>
