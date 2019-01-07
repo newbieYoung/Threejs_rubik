@@ -177,8 +177,7 @@ export default class Main {
           var selectedData = this.numSelector.options[this.numSelector.hoveredItem].data;
           this.frontRubik.changeOrder(selectedData.orderNum, selectedData.cubeLen);
           this.endRubik.changeOrder(selectedData.orderNum, selectedData.cubeLen);
-          this.changeBtn.disable();
-          this.numSelector.hideInScene();
+          this.disorganizeRubik();
           this.clearTagRubik();
         }
       }else{
@@ -198,7 +197,7 @@ export default class Main {
           this.restoreRubik();
         } else {
           this.getIntersects(event);
-          if (!this.isRotating && this.intersect) {//触摸点在魔方上且魔方没有转动
+          if (!this.isRotating && this.intersect) {//触摸点在魔方上
             this.startPoint = this.intersect.point;//开始转动，设置起始点
           }
           if (!this.isRotating && !this.intersect) {//触摸点没在魔方上
@@ -214,23 +213,25 @@ export default class Main {
    */
   touchMove(event) {
     var touch = event.touches[0];
-    if (this.touchLine.isActive) {//滑动touchline
-      this.touchLine.move(touch.clientY);
-      var frontPercent = touch.clientY / window.innerHeight;
-      var endPercent = 1 - frontPercent;
-      this.rubikResize(frontPercent, endPercent);
-    } else if(!this.resetBtn.isActive && !this.disorganizeBtn.isActive && !this.saveBtn.isActive && !this.restoreBtn.isActive && !this.changeBtn.isActive) {
-      this.getIntersects(event);
-      if (!this.isRotating && this.startPoint && this.intersect) {//移动点在魔方上且魔方没有转动
-        this.movePoint = this.intersect.point;
-        if (!this.movePoint.equals(this.startPoint)) {//触摸点和移动点不一样则意味着可以得到滑动方向
-          this.rotateRubik();
+    if (!this.isRotating && !this.changeBtn.isActive){
+      if (this.touchLine.isActive) {//滑动touchline
+        this.touchLine.move(touch.clientY);
+        var frontPercent = touch.clientY / window.innerHeight;
+        var endPercent = 1 - frontPercent;
+        this.rubikResize(frontPercent, endPercent);
+      } else if (!this.resetBtn.isActive && !this.disorganizeBtn.isActive && !this.saveBtn.isActive && !this.restoreBtn.isActive && !this.changeBtn.isActive) {
+        this.getIntersects(event);
+        if (this.startPoint && this.intersect) {//移动点在魔方上
+          this.movePoint = this.intersect.point;
+          if (!this.movePoint.equals(this.startPoint)) {//触摸点和移动点不一样则意味着可以得到滑动方向
+            this.rotateRubik();
+          }
         }
-      }
-      if (!this.isRotating && this.startPoint && !this.intersect){//触摸点没在魔方上
-        this.movePoint = new THREE.Vector2(touch.clientX, touch.clientY);
-        if (!this.movePoint.equals(this.startPoint)) {
-          this.rotateView();
+        if (this.startPoint && !this.intersect) {//触摸点没在魔方上
+          this.movePoint = new THREE.Vector2(touch.clientX, touch.clientY);
+          if (!this.movePoint.equals(this.startPoint)) {
+            this.rotateView();
+          }
         }
       }
     }
