@@ -325,6 +325,7 @@ export default class Main {
     var anotherIndex = cubeIndex - this.targetRubik.minCubeIndex + this.anotherRubik.minCubeIndex;
     this.anotherRubik.rotateMove(anotherIndex, direction, function () {
       self.resetRotateParams();
+      
     });
   }
 
@@ -499,7 +500,7 @@ export default class Main {
   }
 
   /**
-   * 重置正反视图魔方
+   * 重置魔方
    */
   resetRubik(){
     this.frontRubik.reset();
@@ -507,7 +508,7 @@ export default class Main {
   }
 
   /**
-   * 扰乱正反视图魔方
+   * 扰乱魔方
    */
   disorganizeRubik(callback){
     var self = this;
@@ -560,6 +561,12 @@ export default class Main {
     setTimeout(function(){
       wx.hideLoading()
     },500)
+
+    if (this.frontRubik.startTime > 0) {
+      console.log(this.frontRubik.startTime);
+      console.log(this.frontRubik.startSequences);
+      console.log(this.frontRubik.resetProcess);
+    }
   }
 
   /**

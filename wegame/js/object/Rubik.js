@@ -127,10 +127,10 @@ export default class Rubik {
     this.cubeLen = 50;//默认小方块尺寸
     this.isVisible = false;//在场景中是否可见
 
-    this.startTime;//魔方还原开始时间
-    this.startSequences;//魔方还原开始序列
-    this.endTime;//魔方还原完成时间
-    this.stepNum;//魔方还原步数
+    this.startTime = 0;//魔方还原开始时间
+    this.endTime = 0;//魔方还原完成时间
+    this.startSequences = [];//魔方还原开始序列
+    this.resetProcess = [];//魔方还原过程
 
     //魔方的六个转动方向（世界坐标系，默认为自身坐标系，魔方创建完成之后会进行转换）
     this.xLine = new THREE.Vector3(1, 0, 0);
@@ -671,6 +671,12 @@ export default class Rubik {
     requestAnimationFrame(function (timestamp) {
       self.rotateAnimation(elements, direction, timestamp, 0, 0,function(){
         self.updateCubeIndex(elements);
+        if(self.startTime>0){//记录
+          self.resetProcess.push({
+            func: 'rotateMove',
+            params: [cubeIndex, direction, callback, totalTime]
+          });
+        }
         if (callback){
           callback();
         }
@@ -689,6 +695,12 @@ export default class Rubik {
       requestAnimationFrame(function (timestamp) {
         self.rotateAnimation(elements, direction, timestamp, 0, 0, function () {
           self.updateCubeIndex(elements);
+          if (self.startTime > 0) {//记录
+            self.resetProcess.push({
+              func: 'rotateMoveWhole',
+              params: [cubeIndex, direction, callback, totalTime]
+            });
+          }
           if (callback) {
             callback();
           }
@@ -862,8 +874,16 @@ export default class Rubik {
    */
   startReset(){
     this.startTime = new Date().getTime();
-    this.stepNum = 0;
     this.startSequences = this.toSequences();
+    this.endTime = 0;
+    this.resetProcess = [];
+  }
+
+  /**
+   * 判断是否还原完成
+   */
+  isReset(){
+    
   }
 
   /**
@@ -902,6 +922,10 @@ export default class Rubik {
         }
       }
     }
+    this.startTime = 0;
+    this.endTime = 0;
+    this.startSequences = [];
+    this.rotateSteps = [];
   }
 
   /**
