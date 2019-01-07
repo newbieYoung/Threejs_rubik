@@ -145,18 +145,40 @@ export default class Rubik {
   }
 
   /**
-   * 把魔方当前状态用字符串序列表示
+   * 获取魔方状态序列
    */
   toSequences() {
     var sequences = [];
     for (var i = 0; i < this.UCubeIndex.length; i++) {
       var cube = this.getCubeByIndex(this.UCubeIndex[i]);
-      sequences.push(this.getFaceColorByVector(cube, this.wYLine));
+      sequences.push(BasicParams.sequences[this.getFaceColorByVector(cube, this.yLine)]);
     }
+    for (var i = 0; i < this.RCubeIndex.length; i++) {
+      var cube = this.getCubeByIndex(this.RCubeIndex[i]);
+      sequences.push(BasicParams.sequences[this.getFaceColorByVector(cube, this.xLine)]);
+    }
+    for (var i = 0; i < this.FCubeIndex.length; i++) {
+      var cube = this.getCubeByIndex(this.FCubeIndex[i]);
+      sequences.push(BasicParams.sequences[this.getFaceColorByVector(cube, this.zLine)]);
+    }
+    for (var i = 0; i < this.DCubeIndex.length; i++) {
+      var cube = this.getCubeByIndex(this.DCubeIndex[i]);
+      sequences.push(BasicParams.sequences[this.getFaceColorByVector(cube, this.yLineAd)]);
+    }
+    for (var i = 0; i < this.LCubeIndex.length; i++) {
+      var cube = this.getCubeByIndex(this.LCubeIndex[i]);
+      sequences.push(BasicParams.sequences[this.getFaceColorByVector(cube, this.xLineAd)]);
+    }
+    for (var i = 0; i < this.BCubeIndex.length; i++) {
+      var cube = this.getCubeByIndex(this.BCubeIndex[i]);
+      sequences.push(BasicParams.sequences[this.getFaceColorByVector(cube, this.zLineAd)]);
+    }
+    return sequences;
   }
 
   /**
    * 获取法向量和已知向量方向相同的面的颜色序号
+   * vector 为世界坐标系向量
    */
   getFaceColorByVector(cube,vector){
     var materials = cube.material.materials;
@@ -351,13 +373,12 @@ export default class Rubik {
     this.group.add(this.container);
 
     this.getMinCubeIndex();
-    this.getBCubeIndex();
-    this.getDCubeIndex();
+    this.getUCubeIndex();
     this.getRCubeIndex();
     this.getFCubeIndex();
-    this.getUCubeIndex();
+    this.getDCubeIndex();
     this.getLCubeIndex();
-    //this.toSequences();
+    this.getBCubeIndex();
   }
 
   /**
@@ -629,6 +650,7 @@ export default class Rubik {
     for (var i = 0; i < this.cubes.length; i++) {
       if (this.cubes[i].cubeIndex == index + this.minCubeIndex) {
         cube = this.cubes[i];
+        break;
       }
     }
     return cube;
@@ -892,6 +914,5 @@ export default class Rubik {
     }
     this.main.renderOnce();
     this.updateCurLocalAxisInWorld();
-    this.toSequences();
   }
 }
