@@ -17,7 +17,6 @@ const Context = canvas.getContext('webgl');
  */
 export default class Main {
   constructor() {
-
     this.context = Context;//绘图上下文
     this.width = window.innerWidth;
     this.height = window.innerHeight;
@@ -520,6 +519,7 @@ export default class Main {
           callback();
         }
         self.resetRotateParams();
+        self.frontRubik.startReset();
       });
     }
   }

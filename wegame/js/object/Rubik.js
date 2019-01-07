@@ -127,6 +127,11 @@ export default class Rubik {
     this.cubeLen = 50;//默认小方块尺寸
     this.isVisible = false;//在场景中是否可见
 
+    this.startTime;//魔方还原开始时间
+    this.startSequences;//魔方还原开始序列
+    this.endTime;//魔方还原完成时间
+    this.stepNum;//魔方还原步数
+
     //魔方的六个转动方向（世界坐标系，默认为自身坐标系，魔方创建完成之后会进行转换）
     this.xLine = new THREE.Vector3(1, 0, 0);
     this.xLineAd = new THREE.Vector3(-1, 0, 0);
@@ -850,6 +855,15 @@ export default class Rubik {
         }
       },num);
     }
+  }
+
+  /**
+   * 开始还原
+   */
+  startReset(){
+    this.startTime = new Date().getTime();
+    this.stepNum = 0;
+    this.startSequences = this.toSequences();
   }
 
   /**
