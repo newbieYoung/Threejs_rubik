@@ -883,7 +883,21 @@ export default class Rubik {
    * 判断是否还原完成
    */
   isReset(){
-    
+    var sequences = this.toSequences();
+    var faceLen = Math.pow(this.orderNum, 2);
+    if (sequences.length == faceLen*6){
+      for (var i = 0; i < sequences.length; i += faceLen) {
+        var item = sequences[i];
+        for (var j = 1; j < faceLen;j++){
+          if (item != sequences[i+j]){
+            return false;
+          }
+        }
+      }
+      return true;
+    }else{
+      return false;
+    }
   }
 
   /**
