@@ -148,6 +148,14 @@ export default class Main {
   }
 
   /**
+   * 立即渲染一次
+   */
+  renderOnce(){
+    this.renderer.clear();
+    this.renderer.render(this.scene, this.camera);
+  }
+
+  /**
    * 初始化事件
    */
   initEvent() {
