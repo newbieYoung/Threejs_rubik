@@ -48,13 +48,12 @@ export default class Main {
   initThree() {
     this.renderer = new THREE.WebGLRenderer({
       antialias: true,
-      context: this.context
+      context: this.context,
+      canvas:canvas
     });
+    this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(this.width, this.height);
     this.renderer.setClearColor(0xFFFFFF, 1.0);
-    canvas.width = this.width * window.devicePixelRatio;
-    canvas.height = this.height * window.devicePixelRatio;
-    this.renderer.setPixelRatio(window.devicePixelRatio);
   }
 
   /**
