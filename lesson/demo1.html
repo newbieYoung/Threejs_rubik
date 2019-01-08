@@ -60,8 +60,6 @@
         g_near:1.0,
         g_far:1000.0
     };
-    var width = window.innerWidth*window.devicePixelRatio;
-    var height = window.innerHeight*window.devicePixelRatio;
 
     window.onload = function(){
         createWorld();
@@ -76,6 +74,8 @@
         render(gl,num,shaderProgram,cameraMatrix);//渲染
     }
 
+    var width = window.innerWidth * window.devicePixelRatio;//实际尺寸为显示尺寸乘以设备像素比
+    var height = window.innerHeight * window.devicePixelRatio;
     function initRender(){
         var canvas = document.querySelector('#retina');
         canvas.width = width;
