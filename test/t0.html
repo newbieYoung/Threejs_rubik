@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>普通正方体</title>
+        <script type="text/javascript" src="../threejs/three.js"></script>
+        <link rel="stylesheet" href="../reset.import.css">
+        <style type="text/css">
+            div#canvas-frame {
+                cursor: pointer;
+                width:100%;
+                height:100%;
+                background-color: #EEEEEE;
+            }
+        </style>
+    </head>
+    <body onload="threeStart();">
+        <div id="canvas-frame"></div>
+        <script>
+            const width = window.innerWidth;//页面宽度
+            const height = window.innerHeight;//页面高度
+            const viewCenter = new THREE.Vector3(0, 0, 0);//原点
+
+			var renderer;//渲染器
+
+            window.requestAnimFrame = (function() {//如果有变化则可能还需要requestAnimationFrame刷新
+                return window.requestAnimationFrame ||
+                       window.mozRequestAnimationFrame ||
+                       window.webkitRequestAnimationFrame ||
+                       window.msRequestAnimationFrame ||
+                       window.webkitRequestAnimationFrame;
+            })();
+
+            //根据页面宽度和高度创建渲染器，并添加容器中
+            function initThree() {
+                renderer = new THREE.WebGLRenderer({
+                    antialias : true
+                });
+                renderer.setSize(width, height);
+                renderer.setClearColor(0xFFFFFF, 1.0);
+                renderer.setPixelRatio(window.devicePixelRatio);
+                document.getElementById('canvas-frame').appendChild(renderer.domElement);
+            }
+
+            //创建相机，并设置正方向和中心点
+            var camera;
+            function initCamera() {
+                camera = new THREE.PerspectiveCamera(45, width / height, 1, 1500);
+                camera.position.set(0, 0, 500 / camera.aspect);
+    			camera.up.set(0, 1, 0);//正方向
+    			camera.lookAt(viewCenter);
+            }
+
+            //创建场景，后续元素需要加入到场景中才会显示出来
+            var scene;
+            function initScene() {
+                scene = new THREE.Scene();
+            }
+
+            //创建光线
+            var light;
+            function initLight() {
+            	light = new THREE.AmbientLight(0xfefefe);
+				scene.add(light);
+            }
+
+            //创建展示场景所需的各种元素
+            var cube;
+            function initObject() {
+            	var geometry = new THREE.BoxGeometry( 150, 150, 150);
+                var material = new THREE.MeshLambertMaterial( {color: 0xff0000} );
+                cube = new THREE.Mesh( geometry, material );
+
+                cube.rotateY(45/180*Math.PI);
+			    cube.rotateOnAxis(new THREE.Vector3(1, 0, 1), 25 / 180 * Math.PI);
+
+            	scene.add(cube);
+            }
+
+            //渲染
+            function render(){
+                renderer.clear();
+                renderer.render(scene, camera);
+                window.requestAnimFrame(render);
+            }
+
+            //开始
+            function threeStart() {
+                initThree();
+                initCamera();
+                initScene();
+                initLight();
+                initObject();
+                render();
+            }
+        </script>
+    </body>
+</html>
