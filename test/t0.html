@@ -73,8 +73,8 @@
                 var material = new THREE.MeshLambertMaterial( {color: 0xff0000} );
                 cube = new THREE.Mesh( geometry, material );
 
-                //cube.rotateY(45/180*Math.PI);
-			    //cube.rotateOnAxis(new THREE.Vector3(1, 0, 1), 25 / 180 * Math.PI);
+                cube.rotateY(45/180*Math.PI);
+			    cube.rotateOnAxis(new THREE.Vector3(1, 0, 1), 25 / 180 * Math.PI);
 
             	scene.add(cube);
             }
