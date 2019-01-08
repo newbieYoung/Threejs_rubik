@@ -35,6 +35,7 @@
                 });
                 renderer.setSize(width, height);//设置渲染器宽度和高度
                 renderer.setClearColor('#ffffff', 1.0);//设置背景颜色
+                renderer.setPixelRatio(window.devicePixelRatio);//设置设备像素比
                 document.getElementById('retina').appendChild(renderer.domElement);//把渲染器放置到页面中
             }
 
