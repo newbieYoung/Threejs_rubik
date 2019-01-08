@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="../reset.import.css">
 </head>
 <body>
-<canvas id="retina"></canvas>
+<canvas id="retina" style="width:100%;"></canvas>
 <script src="../lib/compile.js"></script>
 <script src="../lib/matrix4.js"></script>
 
@@ -51,17 +51,19 @@
 
 <script type="text/javascript">
     var EyePoint = {//视点以及默认位置
-        x:8.0,
-        y:16.0,
-        z:24.0
+        x:4.0,
+        y:8.0,
+        z:12.0
     };
     var PerspParams = {//透视投影参数
         fovy:45.0,
         g_near:1.0,
         g_far:1000.0
     };
-    var width = window.innerWidth;
-    var height = window.innerHeight;
+    var width = window.innerWidth*2;
+    var height = window.innerHeight*2;
+
+    console.log(window.innerWidth);
 
     window.onload = function(){
         createWorld();
@@ -120,12 +122,12 @@
 
         //顶点
         var vertices = new Float32Array([
-            2.0, 2.0, 2.0,  -2.0, 2.0, 2.0,  -2.0,-2.0, 2.0,   2.0,-2.0, 2.0, // v0-v1-v2-v3 front
-            2.0, 2.0, 2.0,   2.0,-2.0, 2.0,   2.0,-2.0,-2.0,   2.0, 2.0,-2.0, // v0-v3-v4-v5 right
-            2.0, 2.0, 2.0,   2.0, 2.0,-2.0,  -2.0, 2.0,-2.0,  -2.0, 2.0, 2.0, // v0-v5-v6-v1 up
-            -2.0, 2.0, 2.0,  -2.0, 2.0,-2.0,  -2.0,-2.0,-2.0,  -2.0,-2.0, 2.0, // v1-v6-v7-v2 left
-            -2.0,-2.0,-2.0,   2.0,-2.0,-2.0,   2.0,-2.0, 2.0,  -2.0,-2.0, 2.0, // v7-v4-v3-v2 down
-            2.0,-2.0,-2.0,  -2.0,-2.0,-2.0,  -2.0, 2.0,-2.0,   2.0, 2.0,-2.0  // v4-v7-v6-v5 back
+            1.0, 1.0, 1.0,  -1.0, 1.0, 1.0,  -1.0,-1.0, 1.0,   1.0,-1.0, 1.0, // v0-v1-v2-v3 front
+            1.0, 1.0, 1.0,   1.0,-1.0, 1.0,   1.0,-1.0,-1.0,   1.0, 1.0,-1.0, // v0-v3-v4-v5 right
+            1.0, 1.0, 1.0,   1.0, 1.0,-1.0,  -1.0, 1.0,-1.0,  -1.0, 1.0, 1.0, // v0-v5-v6-v1 up
+            -1.0, 1.0, 1.0,  -1.0, 1.0,-1.0,  -1.0,-1.0,-1.0,  -1.0,-1.0, 1.0, // v1-v6-v7-v2 left
+            -1.0,-1.0,-1.0,   1.0,-1.0,-1.0,   1.0,-1.0, 1.0,  -1.0,-1.0, 1.0, // v7-v4-v3-v2 down
+            1.0,-1.0,-1.0,  -1.0,-1.0,-1.0,  -1.0, 1.0,-1.0,   1.0, 1.0,-1.0  // v4-v7-v6-v5 back
         ]);
 
         //颜色
