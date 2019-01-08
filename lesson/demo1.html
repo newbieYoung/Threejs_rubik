@@ -60,10 +60,8 @@
         g_near:1.0,
         g_far:1000.0
     };
-    var width = window.innerWidth*2;
-    var height = window.innerHeight*2;
-
-    console.log(window.innerWidth);
+    var width = window.innerWidth*window.devicePixelRatio;
+    var height = window.innerHeight*window.devicePixelRatio;
 
     window.onload = function(){
         createWorld();
