@@ -10,14 +10,12 @@ import ChangeBtn from 'object/ChangeBtn.js'
 import UIComponent from 'object/UIComponent.js'
 import UISelector from 'object/UISelector.js'
 
-const Context = canvas.getContext('webgl');
-
 /**
  * 游戏主函数
  */
 export default class Main {
   constructor() {
-    this.context = Context;//绘图上下文
+    this.canvas = canvas;//画布
     this.width = window.innerWidth;
     this.height = window.innerHeight;
     this.viewCenter = new THREE.Vector3(0, 0, 0);//原点
@@ -48,7 +46,6 @@ export default class Main {
   initThree() {
     this.renderer = new THREE.WebGLRenderer({
       antialias: true,
-      context: this.context,
       canvas:canvas
     });
     this.renderer.setPixelRatio(window.devicePixelRatio);
@@ -589,5 +586,12 @@ export default class Main {
     if (this.tagRubikBg) {
       this.tagRubikBg.hideInScene();
     }
+  }
+
+  /**
+   * 抗锯齿
+   */
+  fxaa(){
+
   }
 }
