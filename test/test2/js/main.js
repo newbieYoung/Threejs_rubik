@@ -1,14 +1,10 @@
 import * as THREE from 'threejs/three.js'
 
-const Context = canvas.getContext('webgl');
-
 /**
  * 游戏主函数
  */
 export default class Main {
   constructor() {
-
-    this.context = Context;//绘图上下文
     this.width = window.innerWidth;
     this.height = window.innerHeight;
     this.devicePixelRatio = window.devicePixelRatio;
@@ -28,7 +24,6 @@ export default class Main {
   initRender() {
     this.renderer = new THREE.WebGLRenderer({
       antialias: true,
-      context: this.context,
       canvas:canvas
     });
     this.renderer.setSize(this.width, this.height);
