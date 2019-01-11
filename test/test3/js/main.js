@@ -96,7 +96,6 @@ export default class Main {
 
   constructor() {
     var faGL = canvas.getContext('webgl');
-    faGL.clearColor(1.0, 1.0, 1.0, 1.0);//设置背景颜色
 
     //canvas.width = window.innerWidth * window.devicePixelRatio;
     //canvas.height = window.innerHeight * window.devicePixelRatio;
@@ -168,6 +167,11 @@ export default class Main {
     faGL.texImage2D(faGL.TEXTURE_2D, 0, faGL.RGBA, faGL.RGBA, faGL.UNSIGNED_BYTE, gl.canvas);
     faGL.clear(faGL.COLOR_BUFFER_BIT);
     faGL.drawArrays(faGL.TRIANGLE_STRIP, 0, pNum);
+
+    // var rect = this.simple2DDemo();
+    // faGL.texImage2D(faGL.TEXTURE_2D, 0, faGL.RGBA, faGL.RGBA, faGL.UNSIGNED_BYTE, rect);
+    // faGL.clear(faGL.COLOR_BUFFER_BIT);
+    // faGL.drawArrays(faGL.TRIANGLE_STRIP, 0, pNum);
   }
 
   /**
@@ -266,8 +270,11 @@ export default class Main {
       type: 'x-shader/x-fragment'
     };
 
-    var width = window.innerWidth * window.devicePixelRatio;//设备像素比
-    var height = window.innerHeight * window.devicePixelRatio;
+    //var width = window.innerWidth * window.devicePixelRatio;//设备像素比
+    //var height = window.innerHeight * window.devicePixelRatio;
+
+    var width = window.innerWidth;
+    var height = window.innerHeight;
 
     var canvas = document.createElement('canvas');
     canvas.width = width;
@@ -371,5 +378,23 @@ export default class Main {
     gl.drawElements(gl.TRIANGLES, num, gl.UNSIGNED_BYTE, 0);
 
     return gl;
+  }
+
+  /**
+   * 简单2Dcanvas示例
+   */
+  simple2DDemo(){
+    var width = window.innerWidth;
+    var height = window.innerHeight;
+
+    var canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+
+    var ctx = canvas.getContext('2d');
+    ctx.fillStyle = 'red';
+    ctx.fillRect(0, 0, width, height);
+
+    return canvas;
   }
 }
