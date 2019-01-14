@@ -103,9 +103,6 @@ export default class Main {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    //canvas.width = 256;
-    //canvas.height = 256;
-
     var vertCode = {
       source: FxaaVert,
       type: 'x-shader/x-vertex'
@@ -158,20 +155,20 @@ export default class Main {
     //   faGL.drawArrays(faGL.TRIANGLE_STRIP, 0, pNum);
     // }
 
-    var gl = this.simpleThreeJSDemo();
-    faGL.texImage2D(faGL.TEXTURE_2D, 0, faGL.RGBA, faGL.RGBA, faGL.UNSIGNED_BYTE, gl.canvas);
-    faGL.clear(faGL.COLOR_BUFFER_BIT);
-    faGL.drawArrays(faGL.TRIANGLE_STRIP, 0, pNum);
+    // var gl = this.simpleThreeJSDemo();
+    // faGL.texImage2D(faGL.TEXTURE_2D, 0, faGL.RGBA, faGL.RGBA, faGL.UNSIGNED_BYTE, gl.canvas);
+    // faGL.clear(faGL.COLOR_BUFFER_BIT);
+    // faGL.drawArrays(faGL.TRIANGLE_STRIP, 0, pNum);
 
     // var gl = this.simleWebGLDemo();
     // faGL.texImage2D(faGL.TEXTURE_2D, 0, faGL.RGBA, faGL.RGBA, faGL.UNSIGNED_BYTE, gl.canvas);
     // faGL.clear(faGL.COLOR_BUFFER_BIT);
     // faGL.drawArrays(faGL.TRIANGLE_STRIP, 0, pNum);
 
-    // var rect = this.simple2DDemo();
-    // faGL.texImage2D(faGL.TEXTURE_2D, 0, faGL.RGBA, faGL.RGBA, faGL.UNSIGNED_BYTE, rect);
-    // faGL.clear(faGL.COLOR_BUFFER_BIT);
-    // faGL.drawArrays(faGL.TRIANGLE_STRIP, 0, pNum);
+    var rect = this.simple2DDemo();
+    faGL.texImage2D(faGL.TEXTURE_2D, 0, faGL.RGBA, faGL.RGBA, faGL.UNSIGNED_BYTE, rect);
+    faGL.clear(faGL.COLOR_BUFFER_BIT);
+    faGL.drawArrays(faGL.TRIANGLE_STRIP, 0, pNum);
   }
 
   /**
@@ -187,7 +184,7 @@ export default class Main {
     });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0xFFFFFF, 1.0);
-    //renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setPixelRatio(window.devicePixelRatio);
 
     var camera = new THREE.PerspectiveCamera(45, canvas.width / canvas.height, 1, 1500);
     camera.position.set(0, 0, 500 / camera.aspect);
@@ -384,6 +381,9 @@ export default class Main {
    * 简单2Dcanvas示例
    */
   simple2DDemo(){
+    //var width = window.innerWidth * window.devicePixelRatio;
+    //var height = window.innerHeight * window.devicePixelRatio;
+
     var width = window.innerWidth;
     var height = window.innerHeight;
 
@@ -393,7 +393,7 @@ export default class Main {
 
     var ctx = canvas.getContext('2d');
     ctx.fillStyle = 'red';
-    ctx.fillRect(0, 0, width, height);
+    ctx.fillRect(10, 10, width, height);
 
     return canvas;
   }
