@@ -158,15 +158,15 @@ export default class Main {
     //   faGL.drawArrays(faGL.TRIANGLE_STRIP, 0, pNum);
     // }
 
-    // var gl = this.simpleThreeJSDemo();
-    // faGL.texImage2D(faGL.TEXTURE_2D, 0, faGL.RGBA, faGL.RGBA, faGL.UNSIGNED_BYTE, gl.canvas);
-    // faGL.clear(faGL.COLOR_BUFFER_BIT);
-    // faGL.drawArrays(faGL.TRIANGLE_STRIP, 0, pNum);
-
-    var gl = this.simleWebGLDemo();
+    var gl = this.simpleThreeJSDemo();
     faGL.texImage2D(faGL.TEXTURE_2D, 0, faGL.RGBA, faGL.RGBA, faGL.UNSIGNED_BYTE, gl.canvas);
     faGL.clear(faGL.COLOR_BUFFER_BIT);
     faGL.drawArrays(faGL.TRIANGLE_STRIP, 0, pNum);
+
+    // var gl = this.simleWebGLDemo();
+    // faGL.texImage2D(faGL.TEXTURE_2D, 0, faGL.RGBA, faGL.RGBA, faGL.UNSIGNED_BYTE, gl.canvas);
+    // faGL.clear(faGL.COLOR_BUFFER_BIT);
+    // faGL.drawArrays(faGL.TRIANGLE_STRIP, 0, pNum);
 
     // var rect = this.simple2DDemo();
     // faGL.texImage2D(faGL.TEXTURE_2D, 0, faGL.RGBA, faGL.RGBA, faGL.UNSIGNED_BYTE, rect);
@@ -182,7 +182,7 @@ export default class Main {
     var viewCenter = new THREE.Vector3(0, 0, 0);
 
     var renderer = new THREE.WebGLRenderer({
-      antialias: false,
+      antialias: true,
       canvas: canvas
     });
     renderer.setSize(window.innerWidth, window.innerHeight);
