@@ -405,7 +405,6 @@ export default class Rubik {
     }
     this.group.rotateOnAxis(new THREE.Vector3(1, 0, 1), 25 / 180 * Math.PI);
     this.showInScene();
-    this.main.renderOnce();
     this.updateCurLocalAxisInWorld();
   }
 
@@ -437,7 +436,6 @@ export default class Rubik {
     }
     this.group.scale.set(percent, percent, percent);
     this.group.position.y = this.main.originHeight * (0.5 - percent / 2) * transformTag;
-    this.main.renderOnce();
     this.updateCurLocalAxisInWorld();
   }
 
@@ -964,7 +962,6 @@ export default class Rubik {
     if (number!=null){
       this.group.scale.set(number, number, number);
     }
-    this.main.renderOnce();
     this.updateCurLocalAxisInWorld();
   }
 }
