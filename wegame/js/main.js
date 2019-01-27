@@ -165,7 +165,6 @@ export default class Main {
   touchStart(event) {
     var touch = event.touches[0];
     this.startPoint = touch;
-
     if (!this.isRotating){//魔方转动时不能进行其它操作
       if (this.changeBtn.isActive){//存在遮罩层
         if (this.numSelector.isHover(touch)){
@@ -236,7 +235,7 @@ export default class Main {
    * 触摸结束
    */
   touchEnd() {
-    if (!this.startPoint.z){//触摸点坐标必须是屏幕坐标
+    if (this.startPoint&&!this.startPoint.z){//触摸点坐标必须是屏幕坐标
       var touch = {
         clientX: this.startPoint.x,
         clientY: this.startPoint.y
@@ -483,6 +482,9 @@ export default class Main {
           this.intersect = intersects[0];
           this.normalize = intersects[1].face.normal;
         }
+      }else{
+        this.intersect = null;
+        this.normalize = null;
       }
     }
   }
@@ -558,11 +560,11 @@ export default class Main {
       wx.hideLoading()
     },500)
 
-    if (this.frontRubik.startTime > 0) {
-      console.log(this.frontRubik.startTime);
-      console.log(this.frontRubik.startSequences);
-      console.log(this.frontRubik.resetProcess);
-    }
+    //if (this.frontRubik.startTime > 0) {
+      //console.log(this.frontRubik.startTime);
+      //console.log(this.frontRubik.startSequences);
+      //console.log(this.frontRubik.resetProcess);
+    //}
   }
 
   /**
