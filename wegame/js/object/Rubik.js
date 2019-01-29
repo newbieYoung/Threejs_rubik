@@ -405,7 +405,6 @@ export default class Rubik {
     }
     this.group.rotateOnAxis(new THREE.Vector3(1, 0, 1), 25 / 180 * Math.PI);
     this.showInScene();
-    this.updateCurLocalAxisInWorld();
   }
 
   /**
@@ -436,7 +435,6 @@ export default class Rubik {
     }
     this.group.scale.set(percent, percent, percent);
     this.group.position.y = this.main.originHeight * (0.5 - percent / 2) * transformTag;
-    this.updateCurLocalAxisInWorld();
   }
 
   /**
@@ -556,6 +554,7 @@ export default class Rubik {
    * 计算转动方向
    */
   getDirection(sub, normalize) {
+    this.updateCurLocalAxisInWorld();
     var direction;
     //判断差向量和x、y、z轴的夹角
     var xAngle = sub.angleTo(this.xLine);
@@ -962,6 +961,5 @@ export default class Rubik {
     if (number!=null){
       this.group.scale.set(number, number, number);
     }
-    this.updateCurLocalAxisInWorld();
   }
 }
