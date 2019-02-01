@@ -503,6 +503,7 @@ export default class Main {
   resetRubik(){
     this.frontRubik.reset();
     this.endRubik.reset();
+    this.debugInfo();
   }
 
   /**
@@ -519,6 +520,7 @@ export default class Main {
         }
         self.resetRotateParams();
         self.frontRubik.startReset();
+        self.debugInfo();
       });
     }
   }
@@ -595,5 +597,17 @@ export default class Main {
    */
   fxaa(){
 
+  }
+
+  /**
+   * 输出调试信息
+   */
+  debugInfo(){
+    var self = this;
+    setTimeout(function(){
+      console.log(self.frontRubik.toSequences());
+      console.log(self.frontRubik.getEntropy());
+      console.log(self.frontRubik.isReset());
+    },50);
   }
 }

@@ -150,6 +150,36 @@ export default class Rubik {
   }
 
   /**
+   * 获取信息熵（每个面单独判断，目前这种混乱程度的判断方法没有考虑每个面魔方颜色块的分布规律的影响，只考虑数量）
+   */
+  getEntropy(){
+    var sequences = this.toSequences();
+    var faceLen = Math.pow(this.orderNum, 2);
+    var H = 0;
+    for(var i=0;i<sequences.length;i=i+faceLen){
+      var letters = [];
+      var counts = [];
+      var h = 0;//单个面的信息熵
+      for (var j = 0; j < faceLen; j++) {
+        var letter = sequences[i+j];
+        var index = letters.indexOf(letter);
+        if (index==-1){//新增
+          letters.push(letter);
+          counts.push(1);
+        }else{
+          counts[index]++;//递加
+        }
+      }
+      for (var z = 0; z < counts.length; z++) {
+        var p = counts[z] / faceLen;
+        h += -(p * Math.log(p) / Math.log(2));//H = -∑Pi*log2(Pi)
+      }
+      H += h;
+    }
+    return H;
+  }
+
+  /**
    * 获取魔方状态序列
    */
   toSequences() {
