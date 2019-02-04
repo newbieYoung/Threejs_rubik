@@ -604,10 +604,8 @@ export default class Main {
    */
   debugInfo(){
     var self = this;
-    setTimeout(function(){
-      console.log(self.frontRubik.toSequences());
-      console.log(self.frontRubik.getEntropy());
-      console.log(self.frontRubik.isReset());
-    },50);
+    console.log(self.frontRubik.toSequences());
+    console.log(self.frontRubik.getEntropy());
+    console.log(self.frontRubik.isReset());
   }
 }

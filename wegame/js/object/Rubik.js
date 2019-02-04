@@ -183,6 +183,7 @@ export default class Rubik {
    * 获取魔方状态序列
    */
   toSequences() {
+    this.main.renderOnce();
     var sequences = [];
     for (var i = 0; i < this.UCubeIndex.length; i++) {
       var cube = this.getCubeByIndex(this.UCubeIndex[i]);
