@@ -487,13 +487,16 @@ export default class Rubik {
   }
 
   /**
-   * 转动动画
+   * 自动转动动画
    * currentstamp 当前时间
    * startstamp   开始时间
    */
-  rotateAnimation(elements, direction, currentstamp, startstamp, laststamp, callback ,totalTime) {
+  rotateAnimation(elements, direction, currentstamp, startstamp, laststamp, callback ,totalTime ,angle) {
     var self = this;
     var isAnimationEnd = false;//动画是否结束
+    if (!angle){
+      angle = 90;
+    }
 
     if (startstamp === 0) {
       startstamp = currentstamp;
@@ -511,37 +514,37 @@ export default class Rubik {
       case 1.2:
       case 2.4:
       case 3.3:
-        rotateMatrix = this.rotateAroundWorldAxis(origin, this.wZLine, -90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
+        rotateMatrix = this.rotateAroundWorldAxis(origin, this.wZLine, -angle * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
         break;
       case 0.2:
       case 1.1:
       case 2.3:
       case 3.4:
-        rotateMatrix = this.rotateAroundWorldAxis(origin, this.wZLine, 90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
+        rotateMatrix = this.rotateAroundWorldAxis(origin, this.wZLine, angle * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
         break;
       case 0.4:
       case 1.3:
       case 4.3:
       case 5.4:
-        rotateMatrix = this.rotateAroundWorldAxis(origin, this.wYLine, -90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
+        rotateMatrix = this.rotateAroundWorldAxis(origin, this.wYLine, -angle * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
         break;
       case 1.4:
       case 0.3:
       case 4.4:
       case 5.3:
-        rotateMatrix = this.rotateAroundWorldAxis(origin, this.wYLine, 90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
+        rotateMatrix = this.rotateAroundWorldAxis(origin, this.wYLine, angle * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
         break;
       case 2.2:
       case 3.1:
       case 4.1:
       case 5.2:
-        rotateMatrix = this.rotateAroundWorldAxis(origin, this.wXLine, 90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
+        rotateMatrix = this.rotateAroundWorldAxis(origin, this.wXLine, angle * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
         break;
       case 2.1:
       case 3.2:
       case 4.2:
       case 5.1:
-        rotateMatrix = this.rotateAroundWorldAxis(origin, this.wXLine, -90 * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
+        rotateMatrix = this.rotateAroundWorldAxis(origin, this.wXLine, -angle * Math.PI / 180 * (currentstamp - laststamp) / totalTime);
         break;
       default:
         break;
