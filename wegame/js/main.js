@@ -313,8 +313,9 @@ export default class Main {
   rotateRubik(){
     var self = this;
     this.isRotating = true;//转动标识置为true
-    var sub = this.movePoint.sub(this.startPoint);//计算滑动方向
-    var direction = this.targetRubik.getDirection(sub, this.normalize);//获得方向
+    var sub = this.movePoint.sub(this.startPoint);//计算滑动向量
+    var axis = this.targetRubik.getDirectionAxis(sub);//获得转动方向向量
+    var direction = this.targetRubik.getDirection(axis, this.normalize);//根据转动方向和滑动平面区分转动情形
     var cubeIndex = this.intersect.object.cubeIndex;
     this.targetRubik.rotateMove(cubeIndex, direction);
     var anotherIndex = cubeIndex - this.targetRubik.minCubeIndex + this.anotherRubik.minCubeIndex;

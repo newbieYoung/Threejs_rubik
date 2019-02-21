@@ -636,8 +636,7 @@ export default class Rubik {
   /**
    * 计算转动方向
    */
-  getDirection(sub, normalize) {
-    var axis = this.getDirectionAxis(sub);
+  getDirection(axis, normalize) {
     var direction;
 
     if(axis.equals(this.xLine)){
