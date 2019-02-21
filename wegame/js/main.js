@@ -561,12 +561,6 @@ export default class Main {
     setTimeout(function(){
       wx.hideLoading()
     },500)
-
-    //if (this.frontRubik.startTime > 0) {
-      //console.log(this.frontRubik.startTime);
-      //console.log(this.frontRubik.startSequences);
-      //console.log(this.frontRubik.resetProcess);
-    //}
   }
 
   /**

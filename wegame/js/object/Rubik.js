@@ -487,9 +487,9 @@ export default class Rubik {
   }
 
   /**
-   * 滑动魔方
+   * 转动一定角度
    */
-  slideMove(elements, direction ,angle) {
+  rotate(elements, direction ,angle) {
     var rotateMatrix = new THREE.Matrix4();//旋转矩阵
     var origin = new THREE.Vector3(0, 0, 0);
 
@@ -560,7 +560,7 @@ export default class Rubik {
     }
     angle = angle * Math.PI / 180 * (currentstamp - laststamp) / totalTime;
 
-    this.slideMove(elements,direction,angle);
+    this.rotate(elements,direction,angle);
     
     if (!isAnimationEnd) {
       requestAnimationFrame(function (timestamp) {
