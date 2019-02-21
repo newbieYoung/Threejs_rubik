@@ -582,11 +582,10 @@ export default class Rubik {
   }
 
   /**
-   * 计算转动方向
+   * 计算转动向量
    */
-  getDirection(sub, normalize) {
+  getDirectionAxis(sub){
     this.updateCurLocalAxisInWorld();
-    var direction;
     //判断差向量和x、y、z轴的夹角
     var xAngle = sub.angleTo(this.xLine);
     var xAngleAd = sub.angleTo(this.xLineAd);
@@ -596,82 +595,106 @@ export default class Rubik {
     var zAngleAd = sub.angleTo(this.zLineAd);
     var minAngle = Math.min.apply(null, [xAngle, xAngleAd, yAngle, yAngleAd, zAngle, zAngleAd]);//最小夹角
 
-    switch (minAngle) {
+    var axis;
+    switch (minAngle){
       case xAngle:
-        direction = 0;//向x轴正方向旋转90度（还要区分是绕z轴还是绕y轴）
-        if (normalize.equals(this.wYLine)) {
-          direction = direction + 0.1;//绕z轴顺时针
-        } else if (normalize.equals(this.wYLineAd)) {
-          direction = direction + 0.2;//绕z轴逆时针
-        } else if (normalize.equals(this.wZLine)) {
-          direction = direction + 0.3;//绕y轴逆时针
-        } else {
-          direction = direction + 0.4;//绕y轴顺时针
-        }
+        axis = this.xLine.clone();
         break;
       case xAngleAd:
-        direction = 1;//向x轴反方向旋转90度
-        if (normalize.equals(this.wYLine)) {
-          direction = direction + 0.1;
-        } else if (normalize.equals(this.wYLineAd)) {
-          direction = direction + 0.2;
-        } else if (normalize.equals(this.wZLine)) {
-          direction = direction + 0.3;
-        } else {
-          direction = direction + 0.4;
-        }
+        axis = this.xLineAd.clone();
         break;
       case yAngle:
-        direction = 2;//向y轴正方向旋转90度
-        if (normalize.equals(this.wZLine)) {
-          direction = direction + 0.1;
-        } else if (normalize.equals(this.wZLineAd)) {
-          direction = direction + 0.2;
-        } else if (normalize.equals(this.wXLine)) {
-          direction = direction + 0.3;
-        } else {
-          direction = direction + 0.4;
-        }
+        axis = this.yLine.clone();
         break;
       case yAngleAd:
-        direction = 3;//向y轴反方向旋转90度
-        if (normalize.equals(this.wZLine)) {
-          direction = direction + 0.1;
-        } else if (normalize.equals(this.wZLineAd)) {
-          direction = direction + 0.2;
-        } else if (normalize.equals(this.wXLine)) {
-          direction = direction + 0.3;
-        } else {
-          direction = direction + 0.4;
-        }
+        axis = this.yLineAd.clone();
         break;
       case zAngle:
-        direction = 4;//向z轴正方向旋转90度
-        if (normalize.equals(this.wYLine)) {
-          direction = direction + 0.1;
-        } else if (normalize.equals(this.wYLineAd)) {
-          direction = direction + 0.2;
-        } else if (normalize.equals(this.wXLine)) {
-          direction = direction + 0.3;
-        } else {
-          direction = direction + 0.4;
-        }
+        axis = this.zLine.clone();
         break;
       case zAngleAd:
-        direction = 5;//向z轴反方向旋转90度
-        if (normalize.equals(this.wYLine)) {
-          direction = direction + 0.1;
-        } else if (normalize.equals(this.wYLineAd)) {
-          direction = direction + 0.2;
-        } else if (normalize.equals(this.wXLine)) {
-          direction = direction + 0.3;
-        } else {
-          direction = direction + 0.4;
-        }
-        break;
-      default:
+        axis = this.zLineAd.clone();
         break;
     }
+
+    return axis;
+  }
+
+  /**
+   * 计算转动方向
+   */
+  getDirection(sub, normalize) {
+    var axis = this.getDirectionAxis(sub);
+    var direction;
+
+    if(axis.equals(this.xLine)){
+      direction = 0;//向x轴正方向旋转90度（还要区分是绕z轴还是绕y轴）
+      if (normalize.equals(this.wYLine)) {
+        direction = direction + 0.1;//绕z轴顺时针
+      } else if (normalize.equals(this.wYLineAd)) {
+        direction = direction + 0.2;//绕z轴逆时针
+      } else if (normalize.equals(this.wZLine)) {
+        direction = direction + 0.3;//绕y轴逆时针
+      } else {
+        direction = direction + 0.4;//绕y轴顺时针
+      }
+    }else if(axis.equals(this.xLineAd)){
+      direction = 1;//向x轴反方向旋转90度
+      if (normalize.equals(this.wYLine)) {
+        direction = direction + 0.1;
+      } else if (normalize.equals(this.wYLineAd)) {
+        direction = direction + 0.2;
+      } else if (normalize.equals(this.wZLine)) {
+        direction = direction + 0.3;
+      } else {
+        direction = direction + 0.4;
+      }
+    }else if(axis.equals(this.yLine)){
+      direction = 2;//向y轴正方向旋转90度
+      if (normalize.equals(this.wZLine)) {
+        direction = direction + 0.1;
+      } else if (normalize.equals(this.wZLineAd)) {
+        direction = direction + 0.2;
+      } else if (normalize.equals(this.wXLine)) {
+        direction = direction + 0.3;
+      } else {
+        direction = direction + 0.4;
+      }
+    }else if(axis.equals(this.yLineAd)){
+      direction = 3;//向y轴反方向旋转90度
+      if (normalize.equals(this.wZLine)) {
+        direction = direction + 0.1;
+      } else if (normalize.equals(this.wZLineAd)) {
+        direction = direction + 0.2;
+      } else if (normalize.equals(this.wXLine)) {
+        direction = direction + 0.3;
+      } else {
+        direction = direction + 0.4;
+      }
+    }else if(axis.equals(this.zLine)){
+      direction = 4;//向z轴正方向旋转90度
+      if (normalize.equals(this.wYLine)) {
+        direction = direction + 0.1;
+      } else if (normalize.equals(this.wYLineAd)) {
+        direction = direction + 0.2;
+      } else if (normalize.equals(this.wXLine)) {
+        direction = direction + 0.3;
+      } else {
+        direction = direction + 0.4;
+      }
+    }else if(axis.equals(this.zLineAd)){
+      direction = 5;//向z轴反方向旋转90度
+      if (normalize.equals(this.wYLine)) {
+        direction = direction + 0.1;
+      } else if (normalize.equals(this.wYLineAd)) {
+        direction = direction + 0.2;
+      } else if (normalize.equals(this.wXLine)) {
+        direction = direction + 0.3;
+      } else {
+        direction = direction + 0.4;
+      }
+    }
+
     return direction;
   }
 
