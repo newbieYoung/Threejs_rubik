@@ -62,7 +62,7 @@ export default class Main {
      * 相机放置在Z轴上方便计算；
      * Z轴坐标需要除以屏幕宽高比保证魔方在不同宽高比的屏幕中宽度所占的比例基本一致
      */
-    this.camera.position.set(0, 0, 300 / this.camera.aspect);
+    this.camera.position.set(0, 0, 270 / this.camera.aspect);
     this.camera.up.set(0, 1, 0);//正方向
     this.camera.lookAt(this.viewCenter);
 
