@@ -787,8 +787,6 @@ export default class Rubik {
    * 滑动魔方结束
    */
   slideMoveEnd(callback){
-    this.isRotating = true;
-
     var angle = this.slideAngle % 90;
     var endAngle = this.slideAngle;
     if(Math.abs(angle)>=45){
