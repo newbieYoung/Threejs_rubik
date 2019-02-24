@@ -24,13 +24,19 @@ export default class Main {
     this.endViewName = 'end-rubik';//反视角魔方名称
 
     this.raycaster = new THREE.Raycaster();//光线碰撞检测器
+    this.intersect;//碰撞光线穿过的元素
+    this.normalize;//触摸平面法向量
+    this.touch;
     this.targetRubik;//目标魔方
     this.anotherRubik;//非目标魔方
     this.isRotating = false;//魔方是否正在转动
-    this.intersect;//碰撞光线穿过的元素
-    this.normalize;//触摸平面法向量
-    this.startPoint;//触摸点
-    this.movePoint;//移动点
+    this.isSliding = false;//魔方是否正在滑动
+    this.startTouch;
+    this.startPoint;
+    this.startNormalize;
+    this.moveTouch;
+    this.movePoint;
+    this.moveNormalize;
 
     this.initThree();
     this.initCamera();
@@ -164,8 +170,7 @@ export default class Main {
    */
   touchStart(event) {
     var touch = event.touches[0];
-    this.startPoint = touch;
-    if (!this.isRotating){//魔方转动时不能进行其它操作
+    if (!this.isRotating && !this.isSliding){//正在操作魔方时不能进行其它操作
       if (this.changeBtn.isActive){//存在遮罩层
         if (this.numSelector.isHover(touch)){
           var selectedData = this.numSelector.options[this.numSelector.hoveredItem].data;
@@ -191,11 +196,12 @@ export default class Main {
           this.restoreRubik();
         } else {
           this.getIntersects(event);
-          if (!this.isRotating && this.intersect) {//触摸点在魔方上
-            this.startPoint = this.intersect.point;//开始转动，设置起始点
-          }
-          if (!this.isRotating && !this.intersect) {//触摸点没在魔方上
-            this.startPoint = new THREE.Vector2(touch.clientX, touch.clientY);
+          if (this.intersect.length>0){
+            this.startTouch = this.touch;
+            this.startPoint = this.intersect;
+            this.startNormalize = this.normalize;
+          }else{
+            this.startTouch = event.touches;
           }
         }
       }
@@ -214,17 +220,17 @@ export default class Main {
         var endPercent = 1 - frontPercent;
         this.rubikResize(frontPercent, endPercent);
       } else if (!this.resetBtn.isActive && !this.disorganizeBtn.isActive && !this.saveBtn.isActive && !this.restoreBtn.isActive && !this.changeBtn.isActive) {
-        this.getIntersects(event);
-        if (this.startPoint && this.intersect) {//移动点在魔方上
-          this.movePoint = this.intersect.point;
-          if (!this.movePoint.equals(this.startPoint)) {//触摸点和移动点不一样则意味着可以得到滑动方向
-            this.rotateRubik();
-          }
-        }
-        if (this.startPoint && !this.intersect) {//触摸点没在魔方上
-          this.movePoint = new THREE.Vector2(touch.clientX, touch.clientY);
-          if (!this.movePoint.equals(this.startPoint)) {
-            this.rotateView();
+        if (this.startPoint && this.startNormalize && this.startTouch){
+          if (!this.isSliding){
+            this.getIntersects(event);
+            if (this.intersect.length){
+              this.moveTouch = this.touch;
+              this.movePoint = this.intersect;
+              this.moveNormalize = this.normalize;
+              this.targetRubik.slideMove(this.startTouch, this.moveTouch, this.anotherRubik, this.startPoint, this.startNormalize, this.movePoint, this.moveNormalize);
+            }
+          }else{
+            this.targetRubik.slideMove(this.startTouch, event.touches, this.anotherRubik);
           }
         }
       }
@@ -235,25 +241,27 @@ export default class Main {
    * 触摸结束
    */
   touchEnd() {
-    if (this.startPoint&&!this.startPoint.z){//触摸点坐标必须是屏幕坐标
-      var touch = {
-        clientX: this.startPoint.x,
-        clientY: this.startPoint.y
-      };
-      if (this.changeBtn.isActive && !this.numSelector.isHover(touch)) {
+    var self = this;
+    if(this.isSliding){
+      this.targetRubik.slideMoveEnd();
+      this.anotherRubik.slideMoveEnd(function () {
+        self.resetRotateParams();
+      });
+    }else{
+      if (this.changeBtn.isActive && !this.numSelector.isHover(this.startTouch[0])) {
         this.changeBtn.disable();
         this.numSelector.hideInScene();
-      } else if (this.changeBtn.isHover(touch)) {
+      } else if (this.changeBtn.isHover(this.startTouch[0]) && !this.isRotating && !this.isSliding) {
         this.changeBtn.enable();
         this.numSelector.showInScene();
       }
+      this.numSelector.disable();
+      this.touchLine.disable();
+      this.resetBtn.disable();
+      this.disorganizeBtn.disable();
+      this.saveBtn.disable();
+      this.restoreBtn.disable();
     }
-    this.numSelector.disable();
-    this.touchLine.disable();
-    this.resetBtn.disable();
-    this.disorganizeBtn.disable();
-    this.saveBtn.disable();
-    this.restoreBtn.disable();
   }
 
   /**
@@ -438,34 +446,44 @@ export default class Main {
    */
   resetRotateParams(){
     this.isRotating = false;
-    this.targetRubik = null;
-    this.anotherRubik = null;
+    this.isSliding = false;
     this.intersect = null;
     this.normalize = null;
+    this.touch = null;
+    this.targetRubik = null;
+    this.anotherRubik = null;
     this.startPoint = null;
+    this.startTouch = null;
+    this.startNormalize = null;
     this.movePoint = null;
+    this.moveTouch = null;
+    this.moveNormalize = null;
   }
 
   /**
    * 获取操作焦点以及该焦点所在平面的法向量
    */
   getIntersects(event) {
-    var touch = event.touches[0];
-    var mouse = new THREE.Vector2();
-    mouse.x = (touch.clientX / this.width) * 2 - 1;
-    mouse.y = -(touch.clientY / this.height) * 2 + 1;
-    this.raycaster.setFromCamera(mouse, this.camera);
+    var points = [];
+    var vectors = [];
+    var events = [];
+
+    var touchs = event.touches;
+
+    //根据第一个触摸点判断视图
     var rubikTypeName;
-    if (this.touchLine.screenRect.top > touch.clientY) {
+    var firstTouch = touchs[0];
+    if (this.touchLine.screenRect.top > firstTouch.clientY) {
       this.targetRubik = this.frontRubik;
       this.anotherRubik = this.endRubik;
       rubikTypeName = this.frontViewName;
-    } else if (this.touchLine.screenRect.top + this.touchLine.screenRect.height < touch.clientY) {
+    } else if (this.touchLine.screenRect.top + this.touchLine.screenRect.height < firstTouch.clientY) {
       this.targetRubik = this.endRubik;
       this.anotherRubik = this.frontRubik;
       rubikTypeName = this.endViewName;
     }
-    //Raycaster方式定位选取元素，可能会选取多个，以第一个为准
+
+    //根据视图选取待判断元素
     var targetIntersect;
     for (var i = 0; i < this.scene.children.length; i++) {
       if (this.scene.children[i].childType == rubikTypeName) {
@@ -473,20 +491,40 @@ export default class Main {
         break;
       }
     }
+
     if (targetIntersect){
-      var intersects = this.raycaster.intersectObjects(targetIntersect.children);
-      if (intersects.length >= 2) {
-        if (intersects[0].object.cubeType === 'coverCube') {
-          this.intersect = intersects[1];
-          this.normalize = intersects[0].face.normal;
-        } else {
-          this.intersect = intersects[0];
-          this.normalize = intersects[1].face.normal;
+      //排除掉不符合视图的触摸点
+      var results = [];
+      for (var i = 0; i < touchs.length; i++) {
+        var touch = touchs[i];
+        if ((rubikTypeName == this.endViewName && this.touchLine.screenRect.top + this.touchLine.screenRect.height < touch.clientY) || (rubikTypeName == this.frontViewName && this.touchLine.screenRect.top > touch.clientY)) {
+          results.push(touch);
         }
-      }else{
-        this.intersect = null;
-        this.normalize = null;
       }
+
+      //获取符合规则触摸点在3D场景中的焦点以及该焦点所在平面的法向量
+      for (var i = 0; i < results.length; i++) {
+        var touch = results[i];
+        var mouse = new THREE.Vector2();
+        mouse.x = (touch.clientX / this.width) * 2 - 1;
+        mouse.y = -(touch.clientY / this.height) * 2 + 1;
+        this.raycaster.setFromCamera(mouse, this.camera);
+        var intersects = this.raycaster.intersectObjects(targetIntersect.children);
+        if (intersects.length >= 2) {
+          if (intersects[0].object.cubeType === 'coverCube') {
+            points.push(intersects[1]);
+            vectors.push(intersects[0].face.normal);
+          } else {
+            points.push(intersects[0]);
+            vectors.push(intersects[1].face.normal);
+          }
+          events.push(touch);
+        }
+      }
+
+      this.intersect = points;
+      this.normalize = vectors;
+      this.touch = events;
     }
   }
 
@@ -599,8 +637,8 @@ export default class Main {
    */
   debugInfo(){
     var self = this;
-    console.log(self.frontRubik.toSequences());
-    console.log(self.frontRubik.getEntropy());
-    console.log(self.frontRubik.isReset());
+    //console.log(self.frontRubik.toSequences());
+    //console.log(self.frontRubik.getEntropy());
+    //console.log(self.frontRubik.isReset());
   }
 }

@@ -543,11 +543,11 @@ export default class Rubik {
    * currentstamp 当前时间
    * startstamp   开始时间
    */
-  rotateAnimation(elements, direction, currentstamp, startstamp, laststamp, callback ,totalTime ,angle) {
+  rotateAnimation(elements, direction, currentstamp, startstamp, laststamp, callback ,totalTime ,rotateAngle) {
     var self = this;
     var isAnimationEnd = false;//动画是否结束
-    if (!angle){
-      angle = 90;
+    if (rotateAngle == null){
+      rotateAngle = 90;
     }
 
     if (startstamp === 0) {
@@ -558,13 +558,13 @@ export default class Rubik {
       isAnimationEnd = true;
       currentstamp = startstamp + totalTime;
     }
-    angle = angle * Math.PI / 180 * (currentstamp - laststamp) / totalTime;
+    var angle = rotateAngle * Math.PI / 180 * (currentstamp - laststamp) / totalTime;
 
     this.rotate(elements,direction,angle);
     
     if (!isAnimationEnd) {
       requestAnimationFrame(function (timestamp) {
-        self.rotateAnimation(elements, direction, timestamp, startstamp, currentstamp, callback, totalTime);
+        self.rotateAnimation(elements, direction, timestamp, startstamp, currentstamp, callback, totalTime, rotateAngle);
       });
     }else{
       callback();
@@ -725,6 +725,162 @@ export default class Rubik {
   }
 
   /**
+   * 滑动魔方参数重置
+   */
+  slideReset(){
+    this.slideElements = null;
+    this.slideDirection = null;
+    this.slideAngle = null;
+    this.slideAbsAngle = null;
+    this.slideStartTime = null;
+    this.slideCurrentTime = null;
+  }
+
+  /**
+   * 滑动魔方
+   */
+  slideMove(startTouch, moveTouch, anotherRubik, startPoint, startNormalize, movePoint, moveNormalize){
+    if (this.slideElements == null) {
+      var sub = movePoint[0].point.sub(startPoint[0].point);//计算滑动向量
+      if (sub.length() > 0) {
+        this.main.isSliding = true;
+        var axis = this.getDirectionAxis(sub);//获得转动方向向量
+        var cudeIndex = startPoint[0].object.cubeIndex
+        this.slideDirection = this.getDirection(axis, startNormalize[0]);//根据转动方向和滑动平面区分转动情形
+        this.slideAngle = 0;
+        this.slideAbsAngle = 0;
+        this.slideStartTime = new Date().getTime();
+        this.slideCurrentTime = new Date().getTime();
+
+        if (moveNormalize.length >= 2 && moveNormalize[0].equals(moveNormalize[1])) {//同一面多指操作
+          this.slideElements = this.cubes;
+        } else {
+          this.slideElements = this.getBoxs(cudeIndex, this.slideDirection);
+        }
+
+        //设置另外一个视图魔方滑动参数
+        anotherRubik.slideDirection = this.slideDirection;
+        anotherRubik.slideAngle = this.slideAngle;
+        anotherRubik.slideAbsAngle = 0;
+        anotherRubik.slideStartTime = this.slideStartTime;
+        anotherRubik.slideCurrentTime = this.slideCurrentTime;
+        anotherRubik.slideElements = [];
+        for (var i = 0; i < this.slideElements.length; i++) {
+          anotherRubik.slideElements.push(anotherRubik.getCubeByIndex(this.slideElements[i].cubeIndex - this.minCubeIndex));
+        }
+      }
+    }else{
+      var angle = this.getRotateAngle(startTouch[0], moveTouch[0], this.slideDirection);
+      this.rotate(this.slideElements, this.slideDirection, angle * Math.PI / 180);
+      this.slideAngle += angle;
+      this.slideAbsAngle += Math.abs(angle);
+      this.slideCurrentTime = new Date().getTime();
+
+      anotherRubik.rotate(anotherRubik.slideElements, anotherRubik.slideDirection, angle * Math.PI / 180);
+      anotherRubik.slideAngle = this.slideAngle;
+      anotherRubik.slideAbsAngle = this.slideAbsAngle;
+      anotherRubik.slideCurrentTime = this.slideCurrentTime;
+    }
+  }
+
+  /**
+   * 滑动魔方结束
+   */
+  slideMoveEnd(callback){
+    this.isRotating = true;
+
+    var angle = this.slideAngle % 90;
+    var endAngle = this.slideAngle;
+    if(Math.abs(angle)>=45){
+      if(angle>0){
+        endAngle = parseInt(this.slideAngle / 90) * 90 + 90;
+      }else{
+        endAngle = parseInt(this.slideAngle / 90) * 90 - 90;
+      }
+    }else{
+      if (angle > 0) {
+        endAngle = parseInt(this.slideAngle / 90) * 90;
+      } else {
+        endAngle = parseInt(this.slideAngle / 90) * 90;
+      }
+    }
+
+    var rotateAngle = endAngle - this.slideAngle;
+    var totalTime = Math.abs(rotateAngle) / this.slideAbsAngle * (this.slideCurrentTime - this.slideStartTime);
+
+    var self = this;
+    requestAnimationFrame(function (timestamp) {
+      self.rotateAnimation(self.slideElements, self.slideDirection, timestamp, 0, 0, function () {
+        self.updateCubeIndex(self.slideElements);
+        self.slideReset();
+        if (callback != null) {
+          callback();
+        }
+      }, totalTime, rotateAngle);
+    });
+  }
+
+  /**
+   * 获取旋转角度
+   */
+  getRotateAngle(startTouch,moveTouch,direction){
+    var rotateAngle = 0;
+    var angle = 0;
+    switch (direction){
+      case 0.3:
+      case 4.4:
+      case 1.4:
+      case 5.3:
+        angle = (moveTouch.clientX - startTouch.clientX) / window.innerWidth * 180;
+        break;
+      case 1.3:
+      case 5.4:
+      case 0.4:
+      case 4.3:
+        angle = (startTouch.clientX - moveTouch.clientX) / window.innerWidth * 180;
+        break;
+      case 3.1:
+      case 3.4:
+      case 3.2:
+      case 3.3:
+        angle = (moveTouch.clientY - startTouch.clientY) / window.innerWidth * 180;
+        break;
+      case 2.1:
+      case 2.4:
+      case 2.2:
+      case 2.3:
+        angle = (startTouch.clientY - moveTouch.clientY) / window.innerWidth * 180;
+        break;
+      case 4.1:
+      case 1.2:
+        var u = new THREE.Vector2(moveTouch.clientX - startTouch.clientX, startTouch.clientY - moveTouch.clientY);
+        var v = new THREE.Vector2(2,-1);
+        angle = u.dot(v) / v.length() / window.innerWidth * 180;
+        break;
+      case 5.1:
+      case 0.2:
+        var u = new THREE.Vector2(moveTouch.clientX - startTouch.clientX, startTouch.clientY - moveTouch.clientY);
+        var v = new THREE.Vector2(-2, 1);
+        angle = u.dot(v) / v.length() / window.innerWidth * 180;
+        break;
+      case 0.1:
+      case 5.2:
+        var u = new THREE.Vector2(moveTouch.clientX - startTouch.clientX, startTouch.clientY - moveTouch.clientY);
+        var v = new THREE.Vector2(2, 1);
+        angle = u.dot(v) / v.length() / window.innerWidth * 180;
+        break;
+      case 1.1:
+      case 4.2:
+        var u = new THREE.Vector2(moveTouch.clientX - startTouch.clientX, startTouch.clientY - moveTouch.clientY);
+        var v = new THREE.Vector2(-2, -1);
+        angle = u.dot(v) / v.length() / window.innerWidth * 180;
+        break;
+    }
+    rotateAngle = angle - this.slideAngle;
+    return rotateAngle;
+  }
+
+  /**
    * 转动魔方
    */
   rotateMove(cubeIndex, direction, callback, totalTime) {
@@ -734,12 +890,6 @@ export default class Rubik {
     requestAnimationFrame(function (timestamp) {
       self.rotateAnimation(elements, direction, timestamp, 0, 0,function(){
         self.updateCubeIndex(elements);
-        if(self.startTime>0){//记录
-          self.resetProcess.push({
-            func: 'rotateMove',
-            params: [cubeIndex, direction, callback, totalTime]
-          });
-        }
         if (callback){
           callback();
         }
@@ -758,12 +908,6 @@ export default class Rubik {
       requestAnimationFrame(function (timestamp) {
         self.rotateAnimation(elements, direction, timestamp, 0, 0, function () {
           self.updateCubeIndex(elements);
-          if (self.startTime > 0) {//记录
-            self.resetProcess.push({
-              func: 'rotateMoveWhole',
-              params: [cubeIndex, direction, callback, totalTime]
-            });
-          }
           if (callback) {
             callback();
           }
