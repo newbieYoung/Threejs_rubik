@@ -789,7 +789,7 @@ export default class Rubik {
   slideMoveEnd(callback){
     var angle = this.slideAngle % 90;
     var endAngle = this.slideAngle;
-    if(Math.abs(angle)>=45){
+    if(Math.abs(angle)>=30){//转动阀值
       if(angle>0){
         endAngle = parseInt(this.slideAngle / 90) * 90 + 90;
       }else{

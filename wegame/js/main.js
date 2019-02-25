@@ -170,6 +170,7 @@ export default class Main {
    */
   touchStart(event) {
     var touch = event.touches[0];
+    this.startTouch = event.touches;
     if (!this.isRotating && !this.isSliding){//正在操作魔方时不能进行其它操作
       if (this.changeBtn.isActive){//存在遮罩层
         if (this.numSelector.isHover(touch)){
@@ -200,8 +201,6 @@ export default class Main {
             this.startTouch = this.touch;
             this.startPoint = this.intersect;
             this.startNormalize = this.normalize;
-          }else{
-            this.startTouch = event.touches;
           }
         }
       }
@@ -220,7 +219,7 @@ export default class Main {
         var endPercent = 1 - frontPercent;
         this.rubikResize(frontPercent, endPercent);
       } else if (!this.resetBtn.isActive && !this.disorganizeBtn.isActive && !this.saveBtn.isActive && !this.restoreBtn.isActive && !this.changeBtn.isActive) {
-        if (this.startPoint && this.startNormalize && this.startTouch){
+        if (this.startPoint && this.startPoint.length > 0){
           if (!this.isSliding){
             this.getIntersects(event);
             if (this.intersect.length){
