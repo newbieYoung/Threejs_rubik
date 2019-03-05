@@ -10,6 +10,12 @@ import ChangeBtn from 'object/ChangeBtn.js'
 import UIComponent from 'object/UIComponent.js'
 import UISelector from 'object/UISelector.js'
 
+require('threejs/CopyShader.js')
+require('threejs/EffectComposer.js')
+require('threejs/RenderPass.js')
+require('threejs/ShaderPass.js')
+require('threejs/SSAARenderPass.js')
+
 /**
  * 游戏主函数
  */
@@ -37,6 +43,7 @@ export default class Main {
     this.initScene();
     this.initLight();
     this.initObject();
+    this.ssaa();
     this.render();
   }
 
@@ -45,12 +52,10 @@ export default class Main {
    */
   initThree() {
     this.renderer = new THREE.WebGLRenderer({
-      antialias: true,
       canvas:canvas
     });
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(this.width, this.height);
-    this.renderer.setClearColor(0xFFFFFF, 1.0);
   }
 
   /**
@@ -79,6 +84,7 @@ export default class Main {
    */
   initScene() {
     this.scene = new THREE.Scene();
+    this.scene.background = new THREE.Color(0xffffff);
   }
 
   /**
@@ -131,15 +137,31 @@ export default class Main {
    * 渲染
    */
   render() {
-    this.renderer.clear();
+    requestAnimationFrame(this.render.bind(this), canvas);
 
     if(this.tagRubik){
       this.tagRubik.group.rotation.x += 0.01;
       this.tagRubik.group.rotation.y += 0.01;
     }
 
-    this.renderer.render(this.scene, this.camera);
-    requestAnimationFrame(this.render.bind(this), canvas);
+    //this.renderer.render(this.scene, this.camera);
+    this.composer.render();
+  }
+
+  /**
+   * ssaa抗锯齿
+   */
+  ssaa(){
+    this.composer = new THREE.EffectComposer(this.renderer);
+
+    var ssaaRenderPass = new THREE.SSAARenderPass(this.scene, this.camera);
+    ssaaRenderPass.unbiased = false;
+    ssaaRenderPass.sampleLevel = 2;
+    this.composer.addPass(ssaaRenderPass);
+
+    var copyPass = new THREE.ShaderPass(THREE.CopyShader);
+    copyPass.renderToScreen = true;
+    this.composer.addPass(copyPass);
   }
 
   /**
