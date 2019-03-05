@@ -14,7 +14,8 @@ require('threejs/CopyShader.js')
 require('threejs/EffectComposer.js')
 require('threejs/RenderPass.js')
 require('threejs/ShaderPass.js')
-require('threejs/SSAARenderPass.js')
+require('threejs/SMAAShader.js')
+require('threejs/SMAAPass.js')
 
 /**
  * 游戏主函数
@@ -43,7 +44,9 @@ export default class Main {
     this.initScene();
     this.initLight();
     this.initObject();
-    this.ssaa();
+    //this.ssaa();
+    //this.fxaa();
+    this.smaa();
     this.render();
   }
 
@@ -162,6 +165,39 @@ export default class Main {
     var copyPass = new THREE.ShaderPass(THREE.CopyShader);
     copyPass.renderToScreen = true;
     this.composer.addPass(copyPass);
+  }
+
+  /**
+   * fxaa抗锯齿
+   */
+  fxaa(){
+    this.renderer.setViewport(0, 0, this.width, this.height);
+    this.composer = new THREE.EffectComposer(this.renderer);
+
+    var renderPass = new THREE.RenderPass(this.scene, this.camera);
+    var fxaaPass = new THREE.ShaderPass(THREE.FXAAShader);
+    fxaaPass.renderToScreen = true;
+    var pixelRatio = this.renderer.getPixelRatio();
+    fxaaPass.material.uniforms['resolution'].value.x = 1 / (this.width * pixelRatio);
+    fxaaPass.material.uniforms['resolution'].value.y = 1 / (this.height * pixelRatio);
+    
+    this.composer.addPass(renderPass);
+    this.composer.addPass(fxaaPass);
+  }
+
+  /**
+   * smaa抗锯齿
+   */
+  smaa(){
+    this.composer = new THREE.EffectComposer(this.renderer);
+
+    var renderPass = new THREE.RenderPass(this.scene, this.camera);
+    var pixelRatio = this.renderer.getPixelRatio();
+    var smaaPass = new THREE.SMAAPass(this.width * pixelRatio, this.height * pixelRatio);
+    smaaPass.renderToScreen = true;
+
+    this.composer.addPass(renderPass);
+    this.composer.addPass(smaaPass);
   }
 
   /**
