@@ -804,18 +804,27 @@ export default class Rubik {
     }
 
     var rotateAngle = endAngle - this.slideAngle;
-    var totalTime = Math.abs(rotateAngle) / this.slideAbsAngle * (this.slideCurrentTime - this.slideStartTime);
+    var rotateSpeed = this.slideAbsAngle / (this.slideCurrentTime - this.slideStartTime); // 手指滑动旋转速度
+    var totalTime = Math.abs(rotateAngle) / rotateSpeed;
 
     var self = this;
-    requestAnimationFrame(function (timestamp) {
-      self.rotateAnimation(self.slideElements, self.slideDirection, timestamp, 0, 0, function () {
-        self.updateCubeIndex(self.slideElements);
-        self.slideReset();
-        if (callback != null) {
-          callback();
-        }
-      }, totalTime, rotateAngle);
-    });
+    if (totalTime>0){//当手指滑动刚好停在初始状态时不需要自动还原
+      requestAnimationFrame(function (timestamp) {
+        self.rotateAnimation(self.slideElements, self.slideDirection, timestamp, 0, 0, function () {
+          self.updateCubeIndex(self.slideElements);
+          self.slideReset();
+          if (callback != null) {
+            callback();
+          }
+        }, totalTime, rotateAngle);
+      });
+    }else{
+      self.updateCubeIndex(self.slideElements);
+      self.slideReset();
+      if (callback != null) {
+        callback();
+      }
+    }
   }
 
   /**
