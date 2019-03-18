@@ -82,9 +82,9 @@
             }
 
             var cubeParams = {//魔方参数
-                x:-75,
-                y:75,
-                z:75,
+                x:0,
+                y:0,
+                z:0,
                 num:3,
                 len:50,
                 colors:['rgba(255,193,37,1)','rgba(0,191,255,1)',
@@ -93,39 +93,37 @@
             };
 
             /**
-             * 魔方
-             * x、y、z 魔方正面左上角坐标
-             * num 魔方单位方向上数量
-             * len 魔方单位正方体宽高
+             * 简易魔方
+             * x、y、z 魔方中心点坐标
+             * num 魔方阶数
+             * len 小方块宽高
              * colors 魔方六面体颜色
              */
-            function SimpleCube(x,y,z,num,len,colors){
-                var cubes = [];
-                for(var i=0;i<num;i++){
-                    for(var j=0;j<num*num;j++){
-                        var cubegeo = new THREE.BoxGeometry(len,len,len);
-                        var materials = [];
-                        var myFaces = [];
-                        //一个小正方体有六个面，每个面使用相同材质的纹理，但是颜色不一样
-                        myFaces.push(faces(colors[0]));
-                        myFaces.push(faces(colors[1]));
-                        myFaces.push(faces(colors[2]));
-                        myFaces.push(faces(colors[3]));
-                        myFaces.push(faces(colors[4]));
-                        myFaces.push(faces(colors[5]));
-                        for (var k = 0; k < 6; k++) {
-                            var texture = new THREE.Texture(myFaces[k]);
-                            texture.needsUpdate = true;
-                            materials.push(new THREE.MeshLambertMaterial({
-                                map: texture
-                            }));
-                        }
-                        var cube = new THREE.Mesh( cubegeo, materials );
-                        //假设整个魔方的中心在坐标系原点，推出每个小正方体的中心
-                        cube.position.x = (x+len/2)+(j%3)*len;
-                        cube.position.y = (y-len/2)-parseInt(j/3)*len;
-                        cube.position.z = (z-len/2)-i*len;
+            function SimpleCube(x, y, z, num, len, colors) {
+                //魔方左上角坐标
+                var leftUpX = x - num / 2 * len;
+                var leftUpY = y + num / 2 * len;
+                var leftUpZ = z + num / 2 * len;
 
+                //根据颜色生成材质
+                var materialArr = [];
+                for (var i = 0; i < colors.length; i++) {
+                    var texture = new THREE.Texture(faces(colors[i]));
+                    texture.needsUpdate = true;
+                    var material = new THREE.MeshLambertMaterial({ map: texture });
+                    materialArr.push(material);
+                }
+
+                var cubes = [];
+                for (var i = 0; i < num; i++) {
+                    for (var j = 0; j < num * num; j++) {
+                        var cubegeo = new THREE.BoxGeometry(len, len, len);
+                        var cube = new THREE.Mesh(cubegeo, materialArr);
+
+                        //依次计算各个小方块中心点坐标
+                        cube.position.x = (leftUpX + len / 2) + (j % num) * len;
+                        cube.position.y = (leftUpY - len / 2) - parseInt(j / num) * len;
+                        cube.position.z = (leftUpZ - len / 2) - i * len;
                         cubes.push(cube)
                     }
                 }

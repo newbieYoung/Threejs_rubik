@@ -28,8 +28,8 @@ function SimpleCube(x, y, z, num, len, colors) {
 
   //根据颜色生成材质
   var materialArr = [];
-  for (var i = 0; i < BasicParams.colors.length; i++) {
-    var texture = new THREE.Texture(faces(BasicParams.colors[i]));
+  for (var i = 0; i < colors.length; i++) {
+    var texture = new THREE.Texture(faces(colors[i]));
     texture.needsUpdate = true;
     var material = new THREE.MeshLambertMaterial({ map: texture });
     materialArr.push(material);

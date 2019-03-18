@@ -32,7 +32,7 @@ function SimpleCube(x, y, z, num, len, colors) {
 
       var myFaces = [];
       for (var k = 0; k < 6; k++) {
-        myFaces[k] = faces(BasicParams.colors[k]);
+        myFaces[k] = faces(colors[k]);
       }
 
       var materials = [];

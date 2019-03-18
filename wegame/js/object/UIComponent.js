@@ -5,7 +5,7 @@ import * as THREE from '../threejs/three.js'
  * isActive
  * radio
  * uiRadio
- * uiParams : {pixelRatio,width,height,radius,backgroundColor,borderTop,borderRight,borderBottom,borderLeft,borderColor,fontSize,fontColor,fontFamily,fontWeight,content}
+ * uiParams : {pixelRatio,width,height,radius,backgroundColor,borderTop,borderRight,borderBottom,borderLeft,borderColor,fontSize,fontColor,fontFamily,content}
  * plane
  * realWidth
  * realHeight
@@ -171,14 +171,14 @@ export default class UIComponent {
   }
 
   //文字
-  _text(canvas, fontSize, fontFamily, fontColor, content, fontWeight){
+  _text(canvas, fontSize, fontFamily, fontColor, content){
     var context = canvas.getContext('2d');
-    var fontStyle = fontWeight+' '+fontSize + 'px ' + fontFamily;
+    var fontStyle = fontSize + 'px ' + fontFamily;
     context.font = fontStyle;
     context.fillStyle = fontColor;
     context.textAlign = 'center';
     context.textBaseline = 'middle';
-    context.fillText(content, canvas.width/2, canvas.height/2, canvas.width);
+    context.fillText(content, canvas.width/2, canvas.height/2);
   }
 
   //边框
@@ -220,7 +220,7 @@ export default class UIComponent {
       this._border(canvas, this.uiParams.borderTop * this.uiParams.pixelRatio, this.uiParams.borderRight * this.uiParams.pixelRatio, this.uiParams.borderBottom * this.uiParams.pixelRatio, this.uiParams.borderLeft * this.uiParams.pixelRatio, this.uiParams.borderColor)
     }
     if (this.uiParams.content){
-      this._text(canvas, this.uiParams.fontSize * this.uiParams.pixelRatio, this.uiParams.fontFamily, this.uiParams.fontColor, this.uiParams.content, this.uiParams.fontWeight);
+      this._text(canvas, this.uiParams.fontSize * this.uiParams.pixelRatio, this.uiParams.fontFamily, this.uiParams.fontColor, this.uiParams.content);
     }
     return canvas;
   }

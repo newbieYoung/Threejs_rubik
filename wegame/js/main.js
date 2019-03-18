@@ -500,13 +500,6 @@ export default class Main {
   }
 
   /**
-   * 抗锯齿
-   */
-  fxaa(){
-
-  }
-
-  /**
    * 输出调试信息
    */
   debugInfo(){
