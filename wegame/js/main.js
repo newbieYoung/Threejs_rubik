@@ -68,7 +68,7 @@ export default class Main {
      * 相机放置在Z轴上方便计算；
      * Z轴坐标需要除以屏幕宽高比保证魔方在不同宽高比的屏幕中宽度所占的比例基本一致
      */
-    this.camera.position.set(0, 0, 250 / this.camera.aspect);
+    this.camera.position.set(0, 0, 280 / this.camera.aspect);
     this.camera.up.set(0, 1, 0);//正方向
     this.camera.lookAt(this.viewCenter);
 
@@ -181,18 +181,18 @@ export default class Main {
           this.clearTagRubik();
         }
       }else{
-        if (this.touchLine.isHover(touch)) {
+        if (this.touchLine.isHover(touch)){
           this.touchLine.enable();
-        } else if (this.resetBtn.isHover(touch)) {
+        } else if (this.resetBtn.isHover(touch)){
           this.resetBtn.enable();
           this.resetRubik();
-        } else if (this.disorganizeBtn.isHover(touch)) {
+        } else if (this.disorganizeBtn.isHover(touch)){
           this.disorganizeBtn.enable();
           this.disorganizeRubik();
-        } else if (this.saveBtn.isHover(touch)) {
+        } else if (this.saveBtn.isHover(touch)){
           this.saveBtn.enable();
           this.saveRubik();
-        } else if (this.restoreBtn.isHover(touch)) {
+        } else if (this.restoreBtn.isHover(touch)){
           this.restoreBtn.enable();
           this.restoreRubik();
         } else {
@@ -248,12 +248,12 @@ export default class Main {
         self.resetRotateParams();
       });
     }else{
-      if (this.changeBtn.isActive && !this.numSelector.isHover(this.startTouch[0])) {
-        this.changeBtn.disable();
-        this.numSelector.hideInScene();
-      } else if (this.changeBtn.isHover(this.startTouch[0]) && !this.isRotating && !this.isSliding) {
+      if (!this.changeBtn.isActive && this.changeBtn.isHover(this.startTouch[0]) && !this.isRotating && !this.isSliding){
         this.changeBtn.enable();
         this.numSelector.showInScene();
+      }else{
+        this.changeBtn.disable();
+        this.numSelector.hideInScene();
       }
       this.numSelector.disable();
       this.touchLine.disable();
