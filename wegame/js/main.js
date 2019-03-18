@@ -248,7 +248,7 @@ export default class Main {
         self.resetRotateParams();
       });
     }else{
-      if (!this.changeBtn.isActive && this.changeBtn.isHover(this.startTouch[0]) && !this.isRotating && !this.isSliding){
+      if (this.startTouch && !this.changeBtn.isActive && this.changeBtn.isHover(this.startTouch[0]) && !this.isRotating && !this.isSliding){
         this.changeBtn.enable();
         this.numSelector.showInScene();
       }else{
