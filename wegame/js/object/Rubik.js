@@ -122,7 +122,8 @@ export default class Rubik {
   constructor(main) {
     this.main = main;
     this.initStatus = [];
-    this.defaultTotalTime = 250;//默认转动动画时长
+    this.slideLimitAngle = 15;//缓动转动阀值
+    this.defaultTotalTime = 200;//默认转动动画时长
     this.orderNum = 3;//默认三阶魔方
     this.cubeLen = 50;//默认小方块尺寸
     this.isVisible = false;//在场景中是否可见
@@ -789,7 +790,7 @@ export default class Rubik {
   slideMoveEnd(callback){
     var angle = this.slideAngle % 90;
     var endAngle = this.slideAngle;
-    if(Math.abs(angle)>=30){//转动阀值
+    if (Math.abs(angle) >= this.slideLimitAngle){//转动阀值
       if(angle>0){
         endAngle = parseInt(this.slideAngle / 90) * 90 + 90;
       }else{
@@ -902,6 +903,25 @@ export default class Rubik {
         }
       }, totalTime);
     });
+  }
+
+  /**
+   * 转动魔方整体
+   */
+  rotateMoveWhole(cubeIndex, direction, callback, totalTime) {
+    if (cubeIndex != null && direction != null) {
+      var self = this;
+      totalTime = totalTime ? totalTime : this.defaultTotalTime;
+      var elements = this.cubes;
+      requestAnimationFrame(function (timestamp) {
+        self.rotateAnimation(elements, direction, timestamp, 0, 0, function () {
+          self.updateCubeIndex(elements);
+          if (callback) {
+            callback();
+          }
+        }, totalTime);
+      });
+    }
   }
 
   /**
