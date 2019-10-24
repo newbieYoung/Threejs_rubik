@@ -42,7 +42,8 @@
     	</ul>
         <div id="canvas-frame"></div>
         <script src="//cdn.bootcss.com/eruda/1.4.2/eruda.min.js"></script>
-		<script>eruda.init();</script>
+        <script>eruda.init();</script>
+        <script type="text/javascript" src="./lib/tool.js"></script>
 		<script type="text/javascript" src="./kociemba.js"></script>
 		<script type="text/javascript">
 			Module['onRuntimeInitialized'] = function() {
@@ -119,7 +120,7 @@
 		        //调用kociemba算法获得自动还原命名
 		        var rubik = getRubikSequence();
 		        console.log(rubik);
-		        var ptr  = allocate(intArrayFromString(rubik), 'i8', ALLOC_NORMAL);
+		        var ptr  = allocate(intArrayFromString(rubik), 'i8', ALLOC_NONE);
 		        var p0 = Module._solve(ptr);
 		        var command = Module.UTF8ToString(p0);
 		        console.log(command);
