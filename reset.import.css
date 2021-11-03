@@ -1,21 +1,4 @@
-/*
- * Basic reset css for mobile
- * author : cheunglong
- */
-html, body, div, span, iframe, h1, h2, h3, h4, h5, h6, p, blockquote,a,address,
-em, img, ol, ul, li, fieldset, form, label, legend, table, tbody, tfoot, thead, tr, th, td,i,b,s,button {
-    margin:0; padding:0; border:0; font-weight:inherit; font-style:inherit; font-size:100%;font-family: punctuation,"PingFangSC-Regular","Microsoft Yahei","sans-serif";
-    -webkit-font-smoothing: subpixel-antialiased;
+body {
+  margin: 0;
+  padding: 0;
 }
-
-ul,ol{list-style: none}
-a img { border:none;vertical-align: top; }
-a {text-decoration: none;}
-
-button {overflow:visible;padding:0;margin:0;border:0 none;background-color:transparent;}
-button::-moz-focus-inner { padding:0;}
-
-input[type=password] {-webkit-text-security:disc;}
-textarea:focus,input:focus,button:focus{outline:none;}
-body {word-wrap:break-word;}
-* {-webkit-tap-highlight-color:rgba(0,0,0,0);}
