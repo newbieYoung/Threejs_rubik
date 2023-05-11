@@ -28,14 +28,18 @@ export default class EventTarget {
         }
     }
 
-    removeEventListener(type, listener) {
-        const listeners = _events.get(this)[type]
+    removeEventListener(type, listener, options = {}) {
+        const events = _events.get(this)
 
-        if (listeners && listeners.length > 0) {
-            for (let i = listeners.length; i--; i > 0) {
-                if (listeners[i] === listener) {
-                    listeners.splice(i, 1)
-                    break
+        if (events) {
+            const listeners = events[type]
+
+            if (listeners && listeners.length > 0) {
+                for (let i = listeners.length; i--; i > 0) {
+                    if (listeners[i] === listener) {
+                        listeners.splice(i, 1)
+                        break
+                    }
                 }
             }
         }

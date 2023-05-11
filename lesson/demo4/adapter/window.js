@@ -5,24 +5,27 @@ import getImageComputedStyle from './style/ImageComputedStyle'
 import getCanvasComputedStyle from './style/CanvasComputedStyle'
 import Event from './Event'
 
-export navigator from './navigator'
-export XMLHttpRequest from './XMLHttpRequest'
-export WebSocket from './WebSocket'
-export Worker from './Worker'
-export Image from './Image'
-export ImageBitmap from './ImageBitmap'
-export Audio from './Audio'
-export FileReader from './FileReader'
-export HTMLElement from './HTMLElement'
-export HTMLImageElement from './HTMLImageElement'
-export HTMLCanvasElement from './HTMLCanvasElement'
-export HTMLMediaElement from './HTMLMediaElement'
-export HTMLAudioElement from './HTMLAudioElement'
-export HTMLVideoElement from './HTMLVideoElement'
-export WebGLRenderingContext from './WebGLRenderingContext'
+export { default as navigator } from './navigator'
+export { default as XMLHttpRequest } from './XMLHttpRequest'
+export { default as WebSocket } from './WebSocket'
+export { default as Worker } from './Worker'
+export { default as Image } from './Image'
+export { default as ImageBitmap } from './ImageBitmap'
+export { default as Audio } from './Audio'
+export { default as FileReader } from './FileReader'
+export { default as Element } from './Element'
+export { default as HTMLElement } from './HTMLElement'
+export { default as HTMLImageElement } from './HTMLImageElement'
+export { default as HTMLCanvasElement } from './HTMLCanvasElement'
+export { default as HTMLMediaElement } from './HTMLMediaElement'
+export { default as HTMLAudioElement } from './HTMLAudioElement'
+export { default as HTMLVideoElement } from './HTMLVideoElement'
+export { default as WebGLRenderingContext } from './WebGLRenderingContext'
 export { TouchEvent, PointerEvent, MouseEvent } from './EventIniter/index.js'
-export localStorage from './localStorage'
-export location from './location'
+export { default as localStorage } from './localStorage'
+export { default as location } from './location'
+export { btoa, atob } from './Base64.js'
+export { default as Symbol } from './Symbol'
 export * from './WindowProperties'
 
 const { platform } = wx.getSystemInfoSync()
@@ -65,14 +68,14 @@ function focus() {}
 function blur() {}
 
 if (platform !== 'devtools') {
-    const wxPerf = wx.getPerformance();
+    const wxPerf = wx.getPerformance ? wx.getPerformance() : Date;
     const consoleTimers = {};
     console.time = function(name) {
         consoleTimers[name] = wxPerf.now();
     };
 
     console.timeEnd = function(name) {
-        var timeStart = consoleTimers[name];
+        const timeStart = consoleTimers[name];
         if(!timeStart) {
             return;
         }
@@ -96,21 +99,30 @@ function eventHandlerFactory() {
     }
 }
 
-wx.onWindowResize(eventHandlerFactory())
+if (wx.onWindowResize) {
+    wx.onWindowResize(eventHandlerFactory())
+}
 
+const _setTimeout = setTimeout;
+const _clearTimeout = clearTimeout;
+const _setInterval = setInterval;
+const _clearInterval = clearInterval;
+const _requestAnimationFrame = requestAnimationFrame;
+const _cancelAnimationFrame = cancelAnimationFrame;
 
 export {
     canvas,
     alert,
     focus,
     blur,
-    setTimeout,
-    setInterval,
-    clearTimeout,
-    clearInterval,
-    requestAnimationFrame,
-    cancelAnimationFrame,
     getComputedStyle,
     scrollTo,
-    scrollBy
+    scrollBy,
+
+    _setTimeout as setTimeout,
+    _clearTimeout as clearTimeout,
+    _setInterval as setInterval,
+    _clearInterval as clearInterval,
+    _requestAnimationFrame as requestAnimationFrame,
+    _cancelAnimationFrame as cancelAnimationFrame
 }
